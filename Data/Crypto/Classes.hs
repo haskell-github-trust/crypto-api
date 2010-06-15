@@ -37,23 +37,26 @@ class (Binary d, Serialize d)
   finalize	:: ctx -> B.ByteString -> d
   strength	:: Tagged d Int
   needAlignment :: Tagged d Int
-  hash :: L.ByteString -> d
-  hash msg = res
-    where
-    res = finalize ctx end
-    ctx = foldl' updateCtx initialCtx blks
-    (blks,end) = makeBlocks msg blockLen (needAlignment .::. res)
-    blockLen = (blockLength .::. res) `div` 8
-  hash' :: B.ByteString -> d
-  hash' msg = res
-    where
-    res = finalize (foldl' updateCtx initialCtx blks) end
-    (blks, end) = makeBlocks (L.fromChunks [msg]) (blockLength .::. res `div` 8) (needAlignment .::. res)
-  hashFunc :: Hash c d => d -> (L.ByteString -> d)
-  hashFunc d = f
-    where
-    f = hash
-    a = f undefined `asTypeOf` d
+
+hash :: L.ByteString -> d
+hash msg = res
+  where
+  res = finalize ctx end
+  ctx = foldl' updateCtx initialCtx blks
+  (blks,end) = makeBlocks msg blockLen (needAlignment .::. res)
+  blockLen = (blockLength .::. res) `div` 8
+
+hash' :: B.ByteString -> d
+hash' msg = res
+  where
+  res = finalize (foldl' updateCtx initialCtx blks) end
+  (blks, end) = makeBlocks (L.fromChunks [msg]) (blockLength .::. res `div` 8) (needAlignment .::. res)
+
+hashFunc :: Hash c d => d -> (L.ByteString -> d)
+hashFunc d = f
+  where
+  f = hash
+  a = f undefined `asTypeOf` d
 
 {-# INLINE makeBlocks #-}
 makeBlocks :: L.ByteString -> ByteLength -> Int -> ([B.ByteString], B.ByteString)
