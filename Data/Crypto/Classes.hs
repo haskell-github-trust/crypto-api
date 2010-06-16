@@ -1,7 +1,7 @@
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
 module Data.Crypto.Classes
 	( Hash(..)
-	, Cipher(..)
+	, BlockCipher(..)
 	, for
 	, (.::.)
 	, hash
@@ -31,21 +31,20 @@ class (Binary d, Serialize d)
   updateCtx	:: ctx -> B.ByteString -> ctx -- ^ Used to update a context, repeatedly called until add data is exhausted
   finalize	:: ctx -> B.ByteString -> d   -- ^ Finializing a context, plus any message data less than the block size, into a digest
   strength	:: Tagged d BitLength	      -- ^ The believed cryptographic strength of the digest (computation time required to break)
-  needAlignment :: Tagged d ByteLength	      -- ^ Alignment needed for correct operations (ex: MD5 works on 32 bit words, so 4 bytes)
 
 hash :: (Hash ctx d) => L.ByteString -> d
 hash msg = res
   where
   res = finalize ctx end
   ctx = foldl' updateCtx initialCtx blks
-  (blks,end) = makeBlocks msg blockLen (needAlignment .::. res)
+  (blks,end) = makeBlocks msg blockLen
   blockLen = (blockLength .::. res) `div` 8
 
 hash' :: (Hash ctx d) => B.ByteString -> d
 hash' msg = res
   where
   res = finalize (foldl' updateCtx initialCtx blks) end
-  (blks, end) = makeBlocks (L.fromChunks [msg]) (blockLength .::. res `div` 8) (needAlignment .::. res)
+  (blks, end) = makeBlocks (L.fromChunks [msg]) (blockLength .::. res `div` 8)
 
 hashFunc :: Hash c d => d -> (L.ByteString -> d)
 hashFunc d = f
@@ -54,18 +53,16 @@ hashFunc d = f
   a = f undefined `asTypeOf` d
 
 {-# INLINE makeBlocks #-}
-makeBlocks :: L.ByteString -> ByteLength -> Int -> ([B.ByteString], B.ByteString)
-makeBlocks msg len ali = go msg
+makeBlocks :: L.ByteString -> ByteLength -> ([B.ByteString], B.ByteString)
+makeBlocks msg len = go msg
   where
   go lps = 
-	if B.length blk' == len
-		then let (rest,end) = go lps in (blk':rest, end)
+	if B.length blk == len
+		then let (rest,end) = go lps in (blk:rest, end)
 		else ([],blk)
     where
-    blk = if isAligned blk' then blk' else B.copy blk'
-    blk' = B.concat $ L.toChunks top
+    blk = B.concat $ L.toChunks top
     (top,rest) = L.splitAt (fromIntegral len) lps
-    isAligned (I.PS _ off _) = off `rem` ali == 0
 
 for :: Tagged a b -> a -> b
 for t _ = unTagged t
@@ -73,9 +70,9 @@ for t _ = unTagged t
 (.::.) :: Tagged a b -> a -> b
 (.::.) = for
 
-class Cipher k where
-  blockSize	 :: Tagged k BitLength
-  encrypt	 :: k -> B.ByteString -> B.ByteString
-  decrypt	 :: k -> B.ByteString -> B.ByteString
-  buildKey	 :: B.ByteString -> Maybe k
-  keyLength	 :: k -> BitLength	-- ^ keyLength may inspect its argument to return the length
+class BlockCipher k where
+  blockSize	:: Tagged k BitLength
+  encryptBlock	:: k -> B.ByteString -> B.ByteString
+  decryptBlock	:: k -> B.ByteString -> B.ByteString
+  buildKey	:: B.ByteString -> Maybe k
+  keyLength	:: k -> BitLength	-- ^ keyLength may inspect its argument to return the length
