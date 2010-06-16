@@ -4,6 +4,8 @@ module Data.Crypto.Classes
 	, Cipher(..)
 	, for
 	, (.::.)
+	, hash
+	, hash'
 	, hashFunc
 	) where
 
@@ -16,29 +18,22 @@ import Data.List (foldl')
 import Data.Tagged
 import Data.Crypto.Types
 
-{-
+-- |The Hash class is intended as the generic interface
+-- targeted by maintainers of Haskell digest implementations.
+-- Using this generic interface, higher level functions
+-- such as 'hash' and 'hash'' provide a useful API
+-- for comsumers of hash implementations.
 class (Binary d, Serialize d)
     => Hash ctx d | d -> ctx, ctx -> d where
-  outputLength	:: Tagged d BitLength
-  blockLength	:: Tagged d BitLength
-  hash		:: ByteString -> d
-  initialCtx	:: ctx
-  updateCtx	:: ctx -> ByteString -> ctx
-  finalize	:: ctx -> d
-  strength	:: Tagged d Int
--}
+  outputLength	:: Tagged d BitLength	      -- ^ The size of the digest when encoded
+  blockLength	:: Tagged d BitLength	      -- ^ The size of data operated on in each round of the digest computation
+  initialCtx	:: ctx			      -- ^ An initial context, provided with the first call to 'updateCtx'
+  updateCtx	:: ctx -> B.ByteString -> ctx -- ^ Used to update a context, repeatedly called until add data is exhausted
+  finalize	:: ctx -> B.ByteString -> d   -- ^ Finializing a context, plus any message data less than the block size, into a digest
+  strength	:: Tagged d BitLength	      -- ^ The believed cryptographic strength of the digest (computation time required to break)
+  needAlignment :: Tagged d ByteLength	      -- ^ Alignment needed for correct operations (ex: MD5 works on 32 bit words, so 4 bytes)
 
-class (Binary d, Serialize d)
-    => Hash ctx d | d -> ctx, ctx -> d where
-  outputLength	:: Tagged d BitLength
-  blockLength	:: Tagged d BitLength
-  initialCtx	:: ctx
-  updateCtx	:: ctx -> B.ByteString -> ctx
-  finalize	:: ctx -> B.ByteString -> d
-  strength	:: Tagged d Int
-  needAlignment :: Tagged d Int
-
-hash :: L.ByteString -> d
+hash :: (Hash ctx d) => L.ByteString -> d
 hash msg = res
   where
   res = finalize ctx end
@@ -46,7 +41,7 @@ hash msg = res
   (blks,end) = makeBlocks msg blockLen (needAlignment .::. res)
   blockLen = (blockLength .::. res) `div` 8
 
-hash' :: B.ByteString -> d
+hash' :: (Hash ctx d) => B.ByteString -> d
 hash' msg = res
   where
   res = finalize (foldl' updateCtx initialCtx blks) end
@@ -77,7 +72,6 @@ for t _ = unTagged t
 
 (.::.) :: Tagged a b -> a -> b
 (.::.) = for
-
 
 class Cipher k where
   blockSize	 :: Tagged k BitLength
