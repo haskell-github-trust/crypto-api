@@ -80,28 +80,30 @@ for t _ = unTagged t
 (.::.) :: Tagged a b -> a -> b
 (.::.) = for
 
-class (Binary k, Cereal k) => BlockCipher k where
+class CryptoRandomGen g where -- Consider just using the MonadRandom
+	generate :: g -> Int -> (B.ByteString,g)
+
+class (Binary k, Serialize k) => BlockCipher k where
   blockSize	:: Tagged k BitLength
   encryptBlock	:: k -> B.ByteString -> B.ByteString
   decryptBlock	:: k -> B.ByteString -> B.ByteString
   buildKey	:: B.ByteString -> Maybe k
   keyLength	:: k -> BitLength	-- ^ keyLength may inspect its argument to return the length
 
-class (Binary p, Cereal p) => AsymCipher p where
+class (Binary p, Serialize p) => AsymCipher p where
   generateKeypair :: (CryptoRandomGen g) => g -> BitLength -> (p,p)
-  buildKey        :: B.ByteString -> Maybe k
   encryptAsym     :: p -> B.ByteString -> B.ByteString
   decryptAsym     :: p -> B.ByteString -> B.ByteString
-  keyLength       :: p -> BitLength
+  asymKeyLength       :: p -> BitLength
 
 signUsing :: (Hash c d, AsymCipher p) => d -> p -> L.ByteString -> B.ByteString
-signUsing d p msg = encryptAsym (hashFunc d msg)
+signUsing d p = encryptAsym p . Data.Serialize.encode . hashFunc d
 
 signUsing' :: (Hash c d, AsymCipher p) => d -> p -> B.ByteString -> B.ByteString
-signUsing' d p msg = encryptAsm (hashFunc' d msg)
+signUsing' d p = encryptAsym p . Data.Serialize.encode . hashFunc' d
 
-class (Binary k, Cereal k) => StreamCipher k where
-  buildKey      :: B.ByteString -> Maybe k
-  encryptStream :: k -> B.ByteString -> B.ByteString
-  decryptStream :: k -> B.ByteString -> B.ByteString
-  keyLength	:: k -> BitLength
+class (Binary k, Serialize k) => StreamCipher k where
+  buildStreamKey	:: B.ByteString -> Maybe k
+  encryptStream		:: k -> B.ByteString -> B.ByteString
+  decryptStream 	:: k -> B.ByteString -> B.ByteString
+  streamKeyLength	:: k -> BitLength
