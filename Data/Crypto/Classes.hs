@@ -23,6 +23,8 @@ import Data.Crypto.Types
 -- Using this generic interface, higher level functions
 -- such as 'hash' and 'hash'' provide a useful API
 -- for comsumers of hash implementations.
+--
+-- Any instantiated implementation must handle unaligned data
 class (Binary d, Serialize d)
     => Hash ctx d | d -> ctx, ctx -> d where
   outputLength	:: Tagged d BitLength	      -- ^ The size of the digest when encoded
@@ -32,6 +34,7 @@ class (Binary d, Serialize d)
   finalize	:: ctx -> B.ByteString -> d   -- ^ Finializing a context, plus any message data less than the block size, into a digest
   strength	:: Tagged d BitLength	      -- ^ The believed cryptographic strength of the digest (computation time required to break)
 
+-- |Hash a lazy ByteString, creating a digest
 hash :: (Hash ctx d) => L.ByteString -> d
 hash msg = res
   where
@@ -40,6 +43,7 @@ hash msg = res
   (blks,end) = makeBlocks msg blockLen
   blockLen = (blockLength .::. res) `div` 8
 
+-- |Hash a strict ByteString, creating a digest
 hash' :: (Hash ctx d) => B.ByteString -> d
 hash' msg = res
   where
@@ -50,6 +54,12 @@ hashFunc :: Hash c d => d -> (L.ByteString -> d)
 hashFunc d = f
   where
   f = hash
+  a = f undefined `asTypeOf` d
+
+hashFunc' :: Hash c d => d -> (B.ByteString -> d)
+hashFunc' d = f
+  where
+  f = hash'
   a = f undefined `asTypeOf` d
 
 {-# INLINE makeBlocks #-}
@@ -70,9 +80,28 @@ for t _ = unTagged t
 (.::.) :: Tagged a b -> a -> b
 (.::.) = for
 
-class BlockCipher k where
+class (Binary k, Cereal k) => BlockCipher k where
   blockSize	:: Tagged k BitLength
   encryptBlock	:: k -> B.ByteString -> B.ByteString
   decryptBlock	:: k -> B.ByteString -> B.ByteString
   buildKey	:: B.ByteString -> Maybe k
   keyLength	:: k -> BitLength	-- ^ keyLength may inspect its argument to return the length
+
+class (Binary p, Cereal p) => AsymCipher p where
+  generateKeypair :: (CryptoRandomGen g) => g -> BitLength -> (p,p)
+  buildKey        :: B.ByteString -> Maybe k
+  encryptAsym     :: p -> B.ByteString -> B.ByteString
+  decryptAsym     :: p -> B.ByteString -> B.ByteString
+  keyLength       :: p -> BitLength
+
+signUsing :: (Hash c d, AsymCipher p) => d -> p -> L.ByteString -> B.ByteString
+signUsing d p msg = encryptAsym (hashFunc d msg)
+
+signUsing' :: (Hash c d, AsymCipher p) => d -> p -> B.ByteString -> B.ByteString
+signUsing' d p msg = encryptAsm (hashFunc' d msg)
+
+class (Binary k, Cereal k) => StreamCipher k where
+  buildKey      :: B.ByteString -> Maybe k
+  encryptStream :: k -> B.ByteString -> B.ByteString
+  decryptStream :: k -> B.ByteString -> B.ByteString
+  keyLength	:: k -> BitLength
