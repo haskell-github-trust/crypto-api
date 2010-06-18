@@ -17,6 +17,7 @@ import qualified Data.ByteString.Internal as I
 import Data.List (foldl')
 import Data.Tagged
 import Data.Crypto.Types
+import Control.Monad.Random
 
 -- |The Hash class is intended as the generic interface
 -- targeted by maintainers of Haskell digest implementations.
@@ -50,12 +51,14 @@ hash' msg = res
   res = finalize (foldl' updateCtx initialCtx blks) end
   (blks, end) = makeBlocks (L.fromChunks [msg]) (blockLength .::. res `div` 8)
 
+-- |Obtain a lazy hash function from a digest
 hashFunc :: Hash c d => d -> (L.ByteString -> d)
 hashFunc d = f
   where
   f = hash
   a = f undefined `asTypeOf` d
 
+-- Obtain a strict hash function from a digest
 hashFunc' :: Hash c d => d -> (B.ByteString -> d)
 hashFunc' d = f
   where
@@ -74,14 +77,13 @@ makeBlocks msg len = go msg
     blk = B.concat $ L.toChunks top
     (top,rest) = L.splitAt (fromIntegral len) lps
 
+-- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
 for t _ = unTagged t
 
+-- Same as `for`
 (.::.) :: Tagged a b -> a -> b
 (.::.) = for
-
-class CryptoRandomGen g where -- Consider just using the MonadRandom
-	generate :: g -> Int -> (B.ByteString,g)
 
 class (Binary k, Serialize k) => BlockCipher k where
   blockSize	:: Tagged k BitLength
@@ -91,7 +93,7 @@ class (Binary k, Serialize k) => BlockCipher k where
   keyLength	:: k -> BitLength	-- ^ keyLength may inspect its argument to return the length
 
 class (Binary p, Serialize p) => AsymCipher p where
-  generateKeypair :: (CryptoRandomGen g) => g -> BitLength -> (p,p)
+  generateKeypair :: (RandomGen g, MonadRandom m) => g -> BitLength -> m (p,p)
   encryptAsym     :: p -> B.ByteString -> B.ByteString
   decryptAsym     :: p -> B.ByteString -> B.ByteString
   asymKeyLength       :: p -> BitLength
