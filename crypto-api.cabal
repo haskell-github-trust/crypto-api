@@ -2,8 +2,8 @@ name:		crypto-api
 version:	0.0.0.1
 license:	BSD3
 license-file:	LICENSE
-author:		Thomas DuBuisson <thomas.dubuisson@gmail.com>
-maintainer:	Thomas DuBuisson
+author:		Thomas DuBuisson <thomas.dubuisson@gmail.com>, Dominic Steinitz
+maintainer:	Thomas DuBuisson <thomas.dubuisson@gmail.com>
 description:	A generic interface for cryptographic operations.
 		Maintainers of hash and cipher implementations are
 		encouraged to add instances for the classes defined
@@ -22,4 +22,4 @@ Library
   Build-Depends: base == 4.*, bytestring >= 0.9 && < 0.10, binary >= 0.4.0, cereal >= 0.2, tagged, MonadRandom
   ghc-options:	-O2 -funfolding-use-threshold66 -funfolding-creation-threshold66 -fexcess-precision -funbox-strict-fields
   hs-source-dirs:
-  exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC
+  exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC, Data.LargeWord
