@@ -22,4 +22,4 @@ Library
   Build-Depends: base == 4.*, bytestring >= 0.9 && < 0.10, binary >= 0.4.0, cereal >= 0.2, tagged, MonadRandom
   ghc-options:	-O2 -funfolding-use-threshold66 -funfolding-creation-threshold66 -fexcess-precision -funbox-strict-fields
   hs-source-dirs:
-  exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC, Data.LargeWord
+  exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC, Data.LargeWord, Data.Crypto.Modes
