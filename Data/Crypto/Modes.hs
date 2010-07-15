@@ -23,6 +23,7 @@ import qualified Data.Serialize.Put as SP
 import qualified Data.Serialize.Get as SG
 import Data.Bits (xor)
 import Data.Crypto.Classes
+import System.Random (RandomGen)
 
 -- Initilization Vectors for key 'k' (IV k) are used
 -- for various modes and guarrenteed to be blockSize
@@ -97,20 +98,20 @@ cbc' k (IV v) plaintext =
 
 -- |Cipher block chaining decryption for strict bytestrings
 unCbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
-unCbc' k (IV iv) ciphertext =
+unCbc' k (IV v) ciphertext =
 	let blks = chunkFor' k ciphertext
 	    (pts, iv) = go blks v
 	in (B.concat pts, IV iv)
   where
   go [] iv = ([], iv)
   go (c:cs) iv =
-	let p = zwp' (decryptBlock k b) iv
+	let p = zwp' (decryptBlock k c) iv
 	    (ps, ivFinal) = go cs c
 	in (p:ps, ivFinal)
 
 -- |Cipher block chaining encryption for lazy bytestrings
 cbc :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
-cbc k (IV iv) pt =
+cbc k (IV v) plaintext =
 	let blks = chunkFor k plaintext
 	    (cts, iv) = go blks v
 	in (L.fromChunks cts, IV iv)
@@ -123,14 +124,14 @@ cbc k (IV iv) pt =
 
 -- |Cipher block chaining decryption for lazy bytestrings
 unCbc :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
-unCbc k (IV iv) ciphertext =
+unCbc k (IV v) ciphertext =
 	let blks = chunkFor k ciphertext
 	    (pts, iv) = go blks v
 	in (L.fromChunks pts, IV iv)
   where
   go [] iv = ([], iv)
   go (c:cs) iv =
-	let p = zwp' (decryptBlock k b) iv
+	let p = zwp' (decryptBlock k c) iv
 	    (ps, ivFinal) = go cs c
 	in (p:ps, ivFinal)
 
@@ -154,55 +155,110 @@ unEcb' k ct =
 	let chunks = chunkFor' k ct
 	in B.concat $ map (decryptBlock k) chunks
 
+-- |Ciphertext feed-back encryption mode with s == blockSize
 cfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
-cfb = unCfb
+cfb k (IV v) msg =
+	let blks = chunkFor k msg
+	    (cs,ivF) = go v blks
+	in (L.fromChunks cs, IV ivF)
+  where
+  go iv [] = ([],iv)
+  go iv (b:bs) =
+	let c = zwp' (encryptBlock k iv) b
+	    (cs,ivFinal) = go c bs
+	in (c:cs, ivFinal)
 
 unCfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
-unCfb k (IV iv) msg =
+unCfb k (IV v) msg = 
+	let blks = chunkFor k msg
+	    (ps, ivF) = go v blks
+	in (L.fromChunks ps, IV ivF)
+  where
+  go iv [] = ([], iv)
+  go iv (b:bs) =
+	let p = zwp' (encryptBlock k iv) b
+	    (ps, ivF) = go b bs
+	in (p:ps, ivF)
+
+cfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+cfb' k (IV v) msg =
+	let blks = chunkFor' k msg
+	    (cs,ivF) = go v blks
+	in (B.concat cs, IV ivF)
+  where
+  go iv [] = ([],iv)
+  go iv (b:bs) =
+	let c = zwp' (encryptBlock k iv) b
+	    (cs,ivFinal) = go c bs
+	in (c:cs, ivFinal)
+
+unCfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+unCfb' k (IV v) msg =
+	let blks = chunkFor' k msg
+	    (ps, ivF) = go v blks
+	in (B.concat ps, IV ivF)
+  where
+  go iv [] = ([], iv)
+  go iv (b:bs) =
+	let p = zwp' (encryptBlock k iv) b
+	    (ps, ivF) = go b bs
+	in (p:ps, ivF)
+
+ofb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+ofb = unOfb
+
+unOfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+unOfb k (IV iv) msg =
 	let ivStr = iterate (encryptBlock k) iv
-	    ivLen = B.length iv
-	    LPStoPS = B.concat . L.toChunks
-	    newIV = IV . LPStoPS . L.take ivLen . L.drop (L.length msg) . L.fromChunks $ ivStr
+	    ivLen = fromIntegral (B.length iv)
+	    newIV = IV . B.concat . L.toChunks . L.take ivLen . L.drop (L.length msg) . L.fromChunks $ ivStr
 	in (zwp (L.fromChunks ivStr) msg, newIV)
 
-cfb' :: BlockCipher k => k -> IV k -> B.ByteString -> B.ByteString
-cfb' = unCfb'
+ofb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+ofb' = unOfb'
 
-unCfb' :: BlockCipher k => k -> IV k -> B.ByteString -> B.ByteString
-unCfb' k (IV iv) msg =
+unOfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+unOfb' k (IV iv) msg =
 	let ivStr = collect (B.length msg + ivLen) (iterate (encryptBlock k) iv)
 	    ivLen = B.length iv
-	    newIV = IV . B.concat . L.toChunks . L.take ivLen . L.drop (L.length msg) . L.fromChunks $ ivStr
-	in (zwp' ivStr msg, newIV)
+	    mLen = fromIntegral (B.length msg)
+	    newIV = IV . B.concat . L.toChunks . L.take (fromIntegral ivLen) . L.drop mLen . L.fromChunks $ ivStr
+	in (zwp' (B.concat ivStr) msg, newIV)
 
 ctr :: BlockCipher k => k -> Counter k -> L.ByteString -> (L.ByteString, Counter k)
-ctr k (Ctr c) = undefined
+ctr k (Ctr counter) msg =
+	let blks = chunkFor k msg
+	    (cs, cnt') = go counter blks
+	in (L.fromChunks cs, Ctr cnt')
+  where
+  go cnt [] = ([], cnt)
+  go cnt (b:bs) =
+	let c = zwp' (encryptBlock k cnt) b
+	    (Ctr cnt') = incCtr (Ctr cnt)
+	    (cs, cntFinal) = go cnt' bs
+	in (c:cs, cntFinal)
 
 unCtr :: BlockCipher k => k -> Counter k -> L.ByteString -> (L.ByteString, Counter k)
 unCtr = ctr
+	    
 
 ctr' :: BlockCipher k => k -> Counter k -> B.ByteString -> (B.ByteString, Counter k)
-ctr' k (Ctr c) = undefined
+ctr' k (Ctr counter) msg = 
+	let blks = chunkFor' k msg
+	    (cs, cnt') = go counter blks
+	in (B.concat cs, Ctr cnt')
+  where
+  go cnt [] = ([], cnt)
+  go cnt (b:bs) =
+	let c = zwp' (encryptBlock k cnt) b
+	    (Ctr cnt') = incCtr (Ctr cnt)
+	    (cs, cntFinal) = go cnt' bs
+	in (c:cs, cntFinal)
 
 unCtr' :: BlockCipher k => k -> Counter k -> B.ByteString -> (B.ByteString, Counter k)
 unCtr' = ctr'
 
-ofb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
-ofb k (IV iv) msg = undefined
-
-unOfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString , IV k)
-unOfb k (IV iv) msg = undefined
-
-ofb' :: BlockCipher k => k ->  IV k -> B.ByteString -> (B.ByteString, IV k)
-ofb' k (IV iv) msg = undefined
-
-unOfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
-unOfb' k (IV iv) msg = undefined
-
-buildIV :: B.ByteString -> Maybe (IV k)
-buildIV = undefined
-
-getIV :: IO (IV k)
+getIV :: RandomGen g => g -> (IV k, g)
 getIV = undefined
 
 ivBlockSizeBytes :: BlockCipher k => IV k -> Int
@@ -226,7 +282,7 @@ instance BlockCipher k => Bin.Binary (IV k) where
 	put (IV iv) = BP.putByteString iv
 
 -- See NIST SP 800-38A, Appendix B
-getCtr :: IO (Counter k)
+getCtr :: RandomGen g => g -> (Counter k, g)
 getCtr = undefined
 incCtr :: Counter k -> Counter k
 incCtr = undefined
@@ -245,6 +301,5 @@ instance BlockCipher k => Bin.Binary (Counter k) where
 		return (Ctr c)
 	put (Ctr c) = BP.putByteString c
 
-
--- TODO: GCM, CMAC
+-- TODO: GCM, GMAC
 -- Consider the AES-only modes of XTS, CCM

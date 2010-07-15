@@ -17,7 +17,7 @@ import qualified Data.ByteString.Internal as I
 import Data.List (foldl')
 import Data.Tagged
 import Data.Crypto.Types
-import Control.Monad.Random
+import System.Random
 
 -- |The Hash class is intended as the generic interface
 -- targeted by maintainers of Haskell digest implementations.
@@ -93,7 +93,7 @@ class (Binary k, Serialize k) => BlockCipher k where
   keyLength	:: k -> BitLength	-- ^ keyLength may inspect its argument to return the length
 
 class (Binary p, Serialize p) => AsymCipher p where
-  generateKeypair :: (RandomGen g, MonadRandom m) => g -> BitLength -> m (p,p)
+  generateKeypair :: RandomGen g => g -> BitLength -> Maybe ((p,p),g)
   encryptAsym     :: p -> B.ByteString -> B.ByteString
   decryptAsym     :: p -> B.ByteString -> B.ByteString
   asymKeyLength       :: p -> BitLength
