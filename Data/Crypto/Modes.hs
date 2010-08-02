@@ -11,6 +11,7 @@ module Data.Crypto.Modes
 	-- , gmc
 	-- , xts
 	-- , ccm
+	-- , ctr, unCtr, ctr', unCtr'
 	) where
 
 import qualified Data.ByteString as B
@@ -23,14 +24,12 @@ import qualified Data.Serialize.Put as SP
 import qualified Data.Serialize.Get as SG
 import Data.Bits (xor)
 import Data.Crypto.Classes
-import System.Random (RandomGen)
+import System.Random (RandomGen, next)
 
 -- Initilization Vectors for key 'k' (IV k) are used
 -- for various modes and guarrenteed to be blockSize
 -- bits long.
 data IV k = IV { initializationVector :: B.ByteString } deriving (Eq, Ord, Show)
-
-data Counter k = Ctr { count :: B.ByteString } deriving (Eq, Ord, Show)
 
 collect :: Int -> [B.ByteString] -> [B.ByteString]
 collect 0 _ = []
@@ -225,41 +224,28 @@ unOfb' k (IV iv) msg =
 	    newIV = IV . B.concat . L.toChunks . L.take (fromIntegral ivLen) . L.drop mLen . L.fromChunks $ ivStr
 	in (zwp' (B.concat ivStr) msg, newIV)
 
-ctr :: BlockCipher k => k -> Counter k -> L.ByteString -> (L.ByteString, Counter k)
-ctr k (Ctr counter) msg =
-	let blks = chunkFor k msg
-	    (cs, cnt') = go counter blks
-	in (L.fromChunks cs, Ctr cnt')
+unfoldK :: (b -> Maybe (a,b)) -> b -> ([a],b)
+unfoldK f i = 
+	case (f i) of
+		Nothing -> ([], i)
+		Just (a,i') ->
+			let (as, iF) = unfoldK f i'
+			in (a:as, iF)
+
+genByteString :: (RandomGen g) => g -> Int -> (B.ByteString, g)
+genByteString g bytes =
+	let (ws, (g', _)) = unfoldK go (g,bytes)
+	in (B.pack ws, g')
   where
-  go cnt [] = ([], cnt)
-  go cnt (b:bs) =
-	let c = zwp' (encryptBlock k cnt) b
-	    (Ctr cnt') = incCtr (Ctr cnt)
-	    (cs, cntFinal) = go cnt' bs
-	in (c:cs, cntFinal)
+  go (_,0) = Nothing
+  go (j,c) = let (n,j') = next j in Just (fromIntegral n, (j', c-1))
 
-unCtr :: BlockCipher k => k -> Counter k -> L.ByteString -> (L.ByteString, Counter k)
-unCtr = ctr
-	    
-
-ctr' :: BlockCipher k => k -> Counter k -> B.ByteString -> (B.ByteString, Counter k)
-ctr' k (Ctr counter) msg = 
-	let blks = chunkFor' k msg
-	    (cs, cnt') = go counter blks
-	in (B.concat cs, Ctr cnt')
-  where
-  go cnt [] = ([], cnt)
-  go cnt (b:bs) =
-	let c = zwp' (encryptBlock k cnt) b
-	    (Ctr cnt') = incCtr (Ctr cnt)
-	    (cs, cntFinal) = go cnt' bs
-	in (c:cs, cntFinal)
-
-unCtr' :: BlockCipher k => k -> Counter k -> B.ByteString -> (B.ByteString, Counter k)
-unCtr' = ctr'
-
-getIV :: RandomGen g => g -> (IV k, g)
-getIV = undefined
+getIV :: (BlockCipher k, RandomGen g) => g -> (IV k, g)
+getIV g =
+	let bytes = ivBlockSizeBytes iv
+	    (bs,g') = genByteString g bytes
+	    iv = IV bs
+	in (iv, g')
 
 ivBlockSizeBytes :: BlockCipher k => IV k -> Int
 ivBlockSizeBytes iv = (blockSize `for` (keyForIV iv)) `div` 8
@@ -280,26 +266,6 @@ instance BlockCipher k => Bin.Binary (IV k) where
 		iv <- BG.getByteString bytes
 		return (IV iv)
 	put (IV iv) = BP.putByteString iv
-
--- See NIST SP 800-38A, Appendix B
-getCtr :: RandomGen g => g -> (Counter k, g)
-getCtr = undefined
-incCtr :: Counter k -> Counter k
-incCtr = undefined
-
-instance BlockCipher k => Serialize (Counter k) where
-	get = do
-	  	let bytes = blockSize .::. (undefined :: k) `div` 8
-		c <- SG.getByteString bytes
-		return (Ctr c)
-	put (Ctr c) = SP.putByteString c
-
-instance BlockCipher k => Bin.Binary (Counter k) where
-	get = do
-	  	let bytes = blockSize .::. (undefined :: k) `div` 8
-		c <- BG.getByteString bytes
-		return (Ctr c)
-	put (Ctr c) = BP.putByteString c
 
 -- TODO: GCM, GMAC
 -- Consider the AES-only modes of XTS, CCM

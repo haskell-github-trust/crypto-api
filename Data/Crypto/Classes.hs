@@ -7,6 +7,7 @@ module Data.Crypto.Classes
 	, hash
 	, hash'
 	, hashFunc
+	, hashFunc'
 	) where
 
 import Data.Binary
@@ -26,12 +27,13 @@ import System.Random
 -- for comsumers of hash implementations.
 --
 -- Any instantiated implementation must handle unaligned data
-class (Binary d, Serialize d)
+class (Binary d, Serialize d, Eq d, Ord d)
     => Hash ctx d | d -> ctx, ctx -> d where
   outputLength	:: Tagged d BitLength	      -- ^ The size of the digest when encoded
   blockLength	:: Tagged d BitLength	      -- ^ The size of data operated on in each round of the digest computation
   initialCtx	:: ctx			      -- ^ An initial context, provided with the first call to 'updateCtx'
-  updateCtx	:: ctx -> B.ByteString -> ctx -- ^ Used to update a context, repeatedly called until add data is exhausted
+  updateCtx	:: ctx -> B.ByteString -> ctx -- ^ Used to update a context, repeatedly called until all data is exhausted
+                                              --   must operate correctly for imputs of n*blockLength bytes for n `elem` [0..]
   finalize	:: ctx -> B.ByteString -> d   -- ^ Finializing a context, plus any message data less than the block size, into a digest
   strength	:: Tagged d BitLength	      -- ^ The believed cryptographic strength of the digest (computation time required to break)
 
