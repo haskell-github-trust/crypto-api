@@ -5,7 +5,6 @@ module Benchmark.Crypto
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 import Data.Serialize as Ser
-import Numeric
 import Criterion
 import Criterion.Config
 import qualified Criterion.MultiMap as M

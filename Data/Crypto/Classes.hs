@@ -108,6 +108,6 @@ signUsing' d p = encryptAsym p . Data.Serialize.encode . hashFunc' d
 
 class (Binary k, Serialize k) => StreamCipher k where
   buildStreamKey	:: B.ByteString -> Maybe k
-  encryptStream		:: k -> B.ByteString -> B.ByteString
-  decryptStream 	:: k -> B.ByteString -> B.ByteString
+  encryptStream		:: k -> iv -> B.ByteString -> (B.ByteString, iv)
+  decryptStream 	:: k -> iv -> B.ByteString -> (B.ByteString, iv)
   streamKeyLength	:: k -> BitLength
