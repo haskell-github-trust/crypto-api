@@ -1,21 +1,22 @@
-name:                crypto-api
+name:           crypto-api
 version:        0.0.0.1
 license:        BSD3
-license-file:        LICENSE
-author:                Thomas DuBuisson <thomas.dubuisson@gmail.com>, Dominic Steinitz
-maintainer:        Thomas DuBuisson <thomas.dubuisson@gmail.com>
-description:        A generic interface for cryptographic operations.
+license-file:   LICENSE
+copyright:      Thomas DuBuisson <thomas.dubuisosn@gmail.com>
+author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>, Dominic Steinitz
+maintainer:     Thomas DuBuisson <thomas.dubuisson@gmail.com>
+description:    A generic interface for cryptographic operations.
                 Maintainers of hash and cipher implementations are
                 encouraged to add instances for the classes defined
                 in Data.Crypto.Classes.  Crypto users are similarly
                 encoraged to use the interfaces defined in the Classes
                 module.
-synopsis:        A generic interface for cryptographic operations
-category:        Data, Cryptography
-stability:        stable
-build-type:        Simple
-cabal-version:        >= 1.6
-tested-with:        GHC == 6.12.1
+synopsis:       A generic interface for cryptographic operations
+category:       Data, Cryptography
+stability:      stable
+build-type:     Simple
+cabal-version:  >= 1.6
+tested-with:    GHC == 6.12.1
 extra-source-files:
 
 flag test
@@ -37,7 +38,7 @@ Library
                  cereal >= 0.2 && <0.3,
                  tagged,
                  random
-  ghc-options:        -O2 -funfolding-use-threshold66 -funfolding-creation-threshold66 -fexcess-precision -funbox-strict-fields
+  ghc-options:   -O2 -funfolding-use-threshold66 -funfolding-creation-threshold66 -fexcess-precision -funbox-strict-fields
   hs-source-dirs:
   exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC, Data.LargeWord, Data.Crypto.Modes, System.Crypto.Random
   if flag(alg-tests)
