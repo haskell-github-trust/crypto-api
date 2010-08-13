@@ -152,54 +152,46 @@ getTestSig :: FilePath -> String
 getTestSig f = take 3 f ++ take 1 (drop (length f - 4) f)
 
 nistTestsToKAT_AES :: BlockCipher k => k -> TypedTest -> [KAT B.ByteString B.ByteString]
-nistTestsToKAT_AES exampleK ("ECBe", tests) =
+nistTestsToKAT_AES eK ("ECBe", tests) =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
-  testToKAT :: NistTest -> Maybe (KAT B.ByteString B.ByteString)
-  testToKAT t = do
-	ct <- lookup "CIPHERTEXT" t
-	pt <- lookup "PLAINTEXT" t
-	k  <- lookup "KEY" t
-	let realKey = fromJust (buildKey (hexStringToBS k)) `asTypeOf` exampleK
-	return (K (hexStringToBS pt) (encryptBlock realKey) (hexStringToBS ct))
+  testToKAT t = testToKatBasic t encryptBlock True eK
 
 nistTestToKAT_AES eK ("ECBd", tests) =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
-  testToKAT t = do
-	ct <- lookup "CIPHERTEXT" t
-	pt <- lookup "PLAINTEXT" t
-	k  <- lookup "KEY" t
-	let realKey = (fromJust . buildKey . hexStringToBS $ k) `asTypeOf` eK
-	return (K (hexStringToBS ct) (decryptBlock realKey) (hexStringToBS pt))
+  testToKAT t = testToKatBasic t decryptBlock False eK
 
 nistTestToKAT_AES ek ("CBCe", tests) =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
-  testToKAT :: NistTest -> Maybe (KAT B.ByteString B.ByteString)
   testToKAT t = do
-	ct <- lookup "CIPHERTEXT" t
-	pt <- lookup "PLAINTEXT" t
-	k  <- lookup "KEY" t
 	Right iv <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
-	let realKey = (fromJust . buildKey . hexStringToBS $ k) `asTypeOf` ek
-	return (K (hexStringToBS pt) (fst . cbc' realKey iv) (hexStringToBS ct))
+	testToKatBasic t ((\i k -> fst . cbc' k i) iv) True ek
 
 nistTestToKAT_AES ek ("CBCd", tests) =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
   testToKAT t = do
+	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
+	testToKatBasic t ((\i k -> fst . unCbc' k i) iv) False ek
+
+nistTestToKAT_AES eK _ = [] -- FIXME add CTR, OFB, GCM and other modes
+
+testToKatBasic t f enc ek = do
 	ct <- lookup "CIPHERTEXT" t
 	pt <- lookup "PLAINTEXT" t
 	k  <- lookup "KEY" t
-	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
 	let realKey = (fromJust . buildKey . hexStringToBS $ k) `asTypeOf` ek
-	return (K (hexStringToBS ct) (fst . unCbc' realKey iv) (hexStringToBS pt))
-nistTestToKAT_AES eK _ = []
+	    ctBS = hexStringToBS ct
+	    ptBS = hexStringToBS pt
+	if enc
+	    then return (K ptBS (f realKey) ctBS)
+	    else return (K ctBS (f realKey)  ptBS)
 
 type Properties = [(String, String)]
 type Record = (String, String)
