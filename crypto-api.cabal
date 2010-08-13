@@ -39,7 +39,7 @@ Library
                  random
   ghc-options:        -O2 -funfolding-use-threshold66 -funfolding-creation-threshold66 -fexcess-precision -funbox-strict-fields
   hs-source-dirs:
-  exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC, Data.LargeWord, Data.Crypto.Modes
+  exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC, Data.LargeWord, Data.Crypto.Modes, System.Crypto.Random
   if flag(alg-tests)
     exposed-modules: Test.Crypto
     build-depends: QuickCheck >= 2.0, parsec >= 3.1, directory >= 1.0.1.0
