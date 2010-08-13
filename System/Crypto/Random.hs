@@ -1,10 +1,12 @@
+{-# LANGUAGE CPP #-}
 module System.Crypto.Random 
 	( getEntropy
 	) where
 
-import System.IO (openFile)
+import System.IO (openFile, hClose, IOMode(..))
 import Data.ByteString as B
 import Data.ByteString.Lazy as L
+import Data.Crypto.Types
 
 #if defined(_WIN32)
 {- C example for windows rng - taken from a blog, can't recall which one but thank you!
@@ -68,8 +70,8 @@ getEntropy = getEnt "/dev/urandom"
 -- getTrueEntropy = getEnt "/dev/random"
 
 getEnt :: FilePath -> ByteLength -> IO B.ByteString
-getEnt n file = do
-        h <- openFile file
+getEnt file n = do
+        h <- openFile file ReadMode
         bs <- B.hGet h n
         let !bs' = bs
         hClose h
