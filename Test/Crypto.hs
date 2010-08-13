@@ -19,14 +19,11 @@ module Test.Crypto
 	, Test(..)
 	, KAT(..)
 	, runKATs
-	, parseKATs
-	, parseProperty
-	, parseRecord
-	, parseCount
 	, getAES_KATs
 	) where
 
 import Test.QuickCheck
+import Test.ParseNistKATs
 import Data.Crypto.Classes
 import Data.Crypto.Modes
 import qualified Data.ByteString.Lazy.Char8 as LC
@@ -192,61 +189,6 @@ testToKatBasic t f enc ek = do
 	if enc
 	    then return (K ptBS (f realKey) ctBS)
 	    else return (K ctBS (f realKey)  ptBS)
-
-type Properties = [(String, String)]
-type Record = (String, String)
-type NistTest = [Record]
-type TypedTest = (String, [NistTest])
-
--- |parse a NIST KAT file
-parseKATs :: Parser (Properties, [NistTest])
-parseKATs = do
-	ps <- many1 parseProperty
-	parseCount
-	rsA <- many parseRecord
-	let rs = chunkAt ((== "COUNT") . fst) rsA
-	return (ps, rs)
-  where
-  chunkAt _ [] = [[]]
-  chunkAt f (a:as) = if f a then []:chunkAt f as else let (ms:rest) = chunkAt f as in (a:ms) : rest
-
-parseCount :: Parser ()
-parseCount = do
-	many space
-	string "COUNT = "
-	many1 digit
-	many space
-	return ()
-
-parseProperty :: Parser (String, String)
-parseProperty = do
-	char '['
-	t1 <- token
-	m <- optionMaybe (char ']')
-	case m of
-		Nothing -> return (t1, "")
-		Just _  -> do
-                	many space
-                	char '='
-                	many space
-                	t2 <- token
-			char ']'
-			return (t1, t2)
-  where
-  token = manyTill anyChar (char ']')
-
--- |parse a property or record (count) of a NIST KAT file
-parseRecord :: Parser Record
-parseRecord = do
-	t1 <- token
-	many space
-	char '='
-	many space
-	t2 <- token
-	many space
-	return (t1, t2)
-  where
-  token = many1 alphaNum -- manyTill anyChar ((space >> return ()) <|> eof)
 
 md5KATs :: Hash c d => d -> [KAT L.ByteString d]
 md5KATs d =

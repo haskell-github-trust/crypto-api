@@ -41,7 +41,7 @@ Library
   hs-source-dirs:
   exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC, Data.LargeWord, Data.Crypto.Modes, System.Crypto.Random
   if flag(alg-tests)
-    exposed-modules: Test.Crypto
+    exposed-modules: Test.Crypto, Test.ParseNistKATs
     build-depends: QuickCheck >= 2.0, parsec >= 3.1, directory >= 1.0.1.0
     data-files: Test/KAT_AES/*.txt
   if flag(benchmarks)
