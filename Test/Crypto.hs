@@ -23,6 +23,7 @@ module Test.Crypto
 	, parseProperty
 	, parseRecord
 	, parseCount
+	, getAES_KATs
 	) where
 
 import Test.QuickCheck
@@ -31,7 +32,7 @@ import Data.Crypto.Modes
 import qualified Data.ByteString.Lazy.Char8 as LC
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
-import Control.Monad (forM)
+import Control.Monad (forM, liftM)
 import Data.Word (Word8)
 import Data.Either (rights)
 import Data.Maybe (maybeToList)
@@ -42,6 +43,7 @@ import Data.Maybe (fromJust)
 import Text.Parsec
 import Text.Parsec.ByteString
 import System.Directory (getDirectoryContents)
+import Paths_crypto_api
 
 instance Arbitrary Word8 where
     arbitrary = (arbitrary :: Gen Int) >>= return . fromIntegral
@@ -109,7 +111,9 @@ makeHashPropTests d =
 	, T (prop_OutputLengthIsByteAligned d) "prop_OuputLengthIsByteAligned"
 	]
 
-makeBlockCipherTests = []
+-- |FIXME make some generic blockcipher tests
+makeBlockCipherPropTests :: BlockCipher k => k -> [Test]
+makeBlockCipherPropTests _ = []
 
 data KAT i o = K i (i -> o) o
 
@@ -122,6 +126,7 @@ runKATs = all goodKAT
 toD :: Hash c d => d -> String -> d
 toD d str = (Bin.decode $ L.fromChunks [hexStringToBS str]) `asTypeOf` d
 
+hexStringToBS :: String -> B.ByteString
 hexStringToBS [] = B.empty
 hexStringToBS (_:[]) = error "Not an even number of hex characters in alledged 'digest'"
 hexStringToBS (a:b:xs) = B.cons (rHex (a:b:[])) (hexStringToBS xs)
@@ -133,7 +138,8 @@ cogStr = "The quick brown fox jumps over the lazy cog"
 
 getAES_KATs :: BlockCipher k => k -> IO [KAT B.ByteString B.ByteString]
 getAES_KATs k = do
-	files <- getDirectoryContents "KAT_AES"
+	dataDir <- getDataFileName ""
+	files <- getDirectoryContents dataDir
 	recEs <- mapM (parseFromFile parseKATs) files
 	let recs = map snd (rights recEs)
 	    testTypes = map getTestSig files :: [String]
@@ -169,8 +175,30 @@ nistTestToKAT_AES eK ("ECBd", tests) =
 	let realKey = (fromJust . buildKey . hexStringToBS $ k) `asTypeOf` eK
 	return (K (hexStringToBS ct) (decryptBlock realKey) (hexStringToBS pt))
 
-nistTestToKAT_AES ek ("CBCe", tests) = undefined
-nistTestToKAT_AES ek ("CBCd", tests) = undefined
+nistTestToKAT_AES ek ("CBCe", tests) =
+	let ks = map testToKAT tests
+	in concatMap maybeToList ks
+  where
+  testToKAT :: NistTest -> Maybe (KAT B.ByteString B.ByteString)
+  testToKAT t = do
+	ct <- lookup "CIPHERTEXT" t
+	pt <- lookup "PLAINTEXT" t
+	k  <- lookup "KEY" t
+	Right iv <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
+	let realKey = (fromJust . buildKey . hexStringToBS $ k) `asTypeOf` ek
+	return (K (hexStringToBS pt) (fst . cbc' realKey iv) (hexStringToBS ct))
+
+nistTestToKAT_AES ek ("CBCd", tests) =
+	let ks = map testToKAT tests
+	in concatMap maybeToList ks
+  where
+  testToKAT t = do
+	ct <- lookup "CIPHERTEXT" t
+	pt <- lookup "PLAINTEXT" t
+	k  <- lookup "KEY" t
+	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
+	let realKey = (fromJust . buildKey . hexStringToBS $ k) `asTypeOf` ek
+	return (K (hexStringToBS ct) (fst . unCbc' realKey iv) (hexStringToBS pt))
 nistTestToKAT_AES eK _ = []
 
 type Properties = [(String, String)]
@@ -297,6 +325,11 @@ makeSHA384Tests = makeHashTests "sha384" sha384KATs
 
 makeSHA512Tests :: Hash c d => d -> [Test]
 makeSHA512Tests = makeHashTests "sha512" sha512KATs
+
+makeAESTests :: BlockCipher k => k -> IO [Test]
+makeAESTests k = do
+	kats <- getAES_KATs k
+	return (T (runKATs kats) "AES-KATs" : makeBlockCipherPropTests k)
 
 -- |Run a single test
 runTest :: Test -> IO ()
