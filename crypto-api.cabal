@@ -46,7 +46,7 @@ Library
     build-depends: QuickCheck >= 2.0, parsec >= 3.1, directory >= 1.0.1.0
     data-files: Test/KAT_AES/*.txt
   if flag(benchmarks)
-    exposed-modes: Benchmark.Crypto
+    exposed-modules: Benchmark.Crypto
     build-depends: criterion >= 0.5
     
 
