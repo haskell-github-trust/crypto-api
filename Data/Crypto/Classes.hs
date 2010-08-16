@@ -73,7 +73,7 @@ makeBlocks msg len = go msg
   where
   go lps = 
 	if B.length blk == len
-		then let (rest,end) = go lps in (blk:rest, end)
+		then let (full,end) = go rest in (blk:full, end)
 		else ([],blk)
     where
     blk = B.concat $ L.toChunks top
