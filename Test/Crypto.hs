@@ -20,6 +20,11 @@ module Test.Crypto
 	, KAT(..)
 	, runKATs
 	, getAES_KATs
+	, prop_LazyStrictEqual
+	, prop_DigestLen
+	, prop_GetPutHash
+	, prop_BlockLengthIsByteAligned
+	, prop_OutputLengthIsByteAligned
 	) where
 
 import Test.QuickCheck
