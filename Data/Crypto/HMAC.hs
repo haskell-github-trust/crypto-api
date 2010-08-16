@@ -21,3 +21,6 @@ hmac k msg = res
   ko = fc $ B.map (`xor` 0x5c) k'
   ki = fc $ B.map (`xor` 0x36) k'
   fc = L.fromChunks . \s -> [s]
+
+hmac' :: (Hash c d) => B.ByteString -> B.ByteString -> d
+hmac' k = hmac k . L.fromChunks . return
