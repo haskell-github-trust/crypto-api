@@ -80,7 +80,7 @@ prop_DigestLen d lps =
 	f' = hashFunc' d
 	h = Bin.encode . f $ lps
 	h' = Ser.encode . f' . B.concat . L.toChunks $ lps
-	o = outputLength `for` d
+	o = (outputLength `for` d) `div` 8
 
 -- |Verify the Serilize and Binary (decode . encode = id)
 prop_GetPutHash :: Hash c d => d -> L.ByteString -> Bool
