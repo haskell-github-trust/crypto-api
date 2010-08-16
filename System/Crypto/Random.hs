@@ -1,9 +1,14 @@
 {-# LANGUAGE CPP #-}
 module System.Crypto.Random 
 	( getEntropy
+	, CryptHandle
+	, openHandle
+	, hGetEntropy
+	, closeHandle
 	) where
 
-import System.IO (openFile, hClose, IOMode(..))
+import System.IO (openFile, hClose, IOMode(..), Handle)
+import Control.Monad (liftM)
 import Data.ByteString as B
 import Data.ByteString.Lazy as L
 import Data.Crypto.Types
@@ -52,7 +57,27 @@ getEntropy n = do
 	let !bs' = bs
 	cryptReleaseCtx h
 	return bs'
+
+openHandle :: IO CryptHandle
+openHandle = liftM CH cryptAcquireCtx
+
+closeHandle (CH h) = cryptReleaseCtx h
+
+hGetEntropy :: CryptHandle -> Int -> IO B.ByteString 
+hGetEntropy (CH h) = cryptGenRandom h
+
 #else
+newtype CryptHandle = CH Handle
+
+
+openHandle :: IO CryptHandle
+openHandle = liftM CH (openFile "/dev/urandom" ReadMode)
+
+closeHandle (CH h) = hClose h
+
+hGetEntropy :: CryptHandle -> Int -> IO B.ByteString 
+hGetEntropy (CH h) = B.hGet h
+
 -- |Inefficiently get a specific number of bytes of cryptographically
 -- secure random data using the system-specific facilities.
 --
