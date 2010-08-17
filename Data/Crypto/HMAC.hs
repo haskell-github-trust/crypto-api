@@ -13,7 +13,7 @@ hmac k msg = res
   res = f . L.append ko . Bin.encode  . f . L.append ki $ msg
   f = hash
   keylen = B.length k
-  blen = blockLength .::. res
+  blen = blockLength .::. res `div` 8
   k' = case compare keylen blen of
          GT -> encode . f . fc $ k
          EQ -> k

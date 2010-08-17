@@ -13,8 +13,8 @@ import Criterion
 import Control.Monad (liftM)
 
 -- 128KB strings
-ps = B.replicate (2^27) 0
-lps = L.replicate (2^27) 0
+ps = B.replicate (2^17) 0
+lps = L.replicate (2^17) 0
 
 benchmarkHash :: Hash c d => d -> String -> Benchmark
 benchmarkHash h name =
