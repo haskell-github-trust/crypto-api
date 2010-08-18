@@ -142,7 +142,7 @@ getAES_KATs :: BlockCipher k => k -> IO [KAT B.ByteString B.ByteString]
 getAES_KATs k = do
 	dataDir <- getDataFileName ""
 	files <- getDirectoryContents dataDir
-	recEs <- mapM (parseFromFile parseKATs) files
+	recEs <- mapM (parseFromFile parseCategory) files
 	let recs = map snd (rights recEs)
 	    testTypes = map getTestSig files :: [String]
 	    tts = zip testTypes recs :: [TypedTest]
