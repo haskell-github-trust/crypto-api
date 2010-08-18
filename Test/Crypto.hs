@@ -15,6 +15,7 @@ module Test.Crypto
 	, makeSHA256Tests
 	, makeSHA384Tests
 	, makeSHA512Tests
+	, katToTest
 	, runTests
 	, Test(..)
 	, KAT(..)
@@ -25,6 +26,7 @@ module Test.Crypto
 	, prop_GetPutHash
 	, prop_BlockLengthIsByteAligned
 	, prop_OutputLengthIsByteAligned
+	, hexStringToBS
 	) where
 
 import Test.QuickCheck
@@ -102,7 +104,10 @@ prop_OutputLengthIsByteAligned d =
 	let b = outputLength `for` d
 	in b == (b `div` 8) * 8
 
-data Test = forall a. Testable a => T a String
+data Test = forall a. Testable a => T a String | TK Bool String
+
+katToTest :: (Eq b) => KAT a b -> Test
+katToTest (K i f o s) = TK (f i == o) s
 
 makeHashPropTests :: Hash c d => d -> [Test]
 makeHashPropTests d =
@@ -117,12 +122,12 @@ makeHashPropTests d =
 makeBlockCipherPropTests :: BlockCipher k => k -> [Test]
 makeBlockCipherPropTests _ = []
 
-data KAT i o = K i (i -> o) o
+data KAT i o = K i (i -> o) o String
 
 runKATs :: (Eq o) => [KAT i o] -> Bool
 runKATs = all goodKAT
   where
-  goodKAT (K i f o) = f i == o
+  goodKAT (K i f o _) = f i == o
 
 -- *Known Answer Tests
 toD :: Hash c d => d -> String -> d
@@ -185,6 +190,7 @@ nistTestToKAT_AES ek ("CBCd", tests) =
 nistTestToKAT_AES eK _ = [] -- FIXME add CTR, OFB, GCM and other modes
 
 testToKatBasic t f enc ek = do
+	cnt <- lookup "COUNT" t
 	ct <- lookup "CIPHERTEXT" t
 	pt <- lookup "PLAINTEXT" t
 	k  <- lookup "KEY" t
@@ -192,89 +198,90 @@ testToKatBasic t f enc ek = do
 	    ctBS = hexStringToBS ct
 	    ptBS = hexStringToBS pt
 	if enc
-	    then return (K ptBS (f realKey) ctBS)
-	    else return (K ctBS (f realKey)  ptBS)
+	    then return (K ptBS (f realKey) ctBS cnt)
+	    else return (K ctBS (f realKey)  ptBS cnt)
 
 md5KATs :: Hash c d => d -> [KAT L.ByteString d]
 md5KATs d =
-	[ K "" hash (toD d "d41d8cd98f00b204e9800998ecf8427e")
-	, K "a" hash (toD d "0cc175b9c0f1b6a831c399e269772661")
-        , K "abc" hash (toD d "900150983cd24fb0d6963f7d28e17f72")
-	, K "message digest" hash (toD d "f96b697d7cb7938d525a2f31aaf161d0")
-	, K "abcdefghijklmnopqrstuvwxyz" hash (toD d "c3fcd3d76192e4007dfb496cca67e13b")
-	, K "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" hash (toD d "d174ab98d277d9f5a5611c2c9f419d9f")
-	, K "12345678901234567890123456789012345678901234567890123456789012345678901234567890" hash (toD d "57edf4a22be3c955ac49da2e2107b67a")
+	[ K "" hash (toD d "d41d8cd98f00b204e9800998ecf8427e") "md5KAT1"
+	, K "a" hash (toD d "0cc175b9c0f1b6a831c399e269772661") "md5KAT2"
+        , K "abc" hash (toD d "900150983cd24fb0d6963f7d28e17f72") "md5KAT3"
+	, K "message digest" hash (toD d "f96b697d7cb7938d525a2f31aaf161d0") "md5KAT4"
+	, K "abcdefghijklmnopqrstuvwxyz" hash (toD d "c3fcd3d76192e4007dfb496cca67e13b") "md5KAT5"
+	, K "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" hash (toD d "d174ab98d277d9f5a5611c2c9f419d9f") "md5KAT6"
+	, K "12345678901234567890123456789012345678901234567890123456789012345678901234567890" hash (toD d "57edf4a22be3c955ac49da2e2107b67a") "md5KAT7"
 	]
 
 sha1KATs d =
-	[ K "" hash (toD d "da39a3ee5e6b4b0d3255bfef95601890afd80709")
-	, K dogStr hash (toD d "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12")
-	, K cogStr hash (toD d "de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3")
+	[ K "" hash (toD d "da39a3ee5e6b4b0d3255bfef95601890afd80709") "sha1KAT1"
+	, K dogStr hash (toD d "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12") "sha1KAT2"
+	, K cogStr hash (toD d "de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3") "sha1KAT3"
 	]
 sha224KATs d =
-	[ K "" hash (toD d "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f")
-	, K dogStr hash (toD d "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525")
-	, K cogStr hash (toD d "fee755f44a55f20fb3362cdc3c493615b3cb574ed95ce610ee5b1e9b")
+	[ K "" hash (toD d "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f") "sha224KAT1"
+	, K dogStr hash (toD d "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525") "sha224KAT2"
+	, K cogStr hash (toD d "fee755f44a55f20fb3362cdc3c493615b3cb574ed95ce610ee5b1e9b") "sha224KAT3"
 	]
 sha256KATs d =
-	[ K "" hash (toD d "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
+	[ K "" hash (toD d "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855") "sha256KAT1"
 	, K dogStr hash
-	  (toD d "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592")
+	  (toD d "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592") "sha256KAT2"
 	, K cogStr hash
-	  (toD d "e4c4d8f3bf76b692de791a173e05321150f7a345b46484fe427f6acc7ecc81be")
+	  (toD d "e4c4d8f3bf76b692de791a173e05321150f7a345b46484fe427f6acc7ecc81be") "sha256KAT3"
 	]
 sha384KATs d =
 	[ K "" hash
-	  (toD d "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b")
+	  (toD d "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b") "sha384KAT1"
 	, K dogStr hash
-	  (toD d "ca737f1014a48f4c0b6dd43cb177b0afd9e5169367544c494011e3317dbf9a509cb1e5dc1e85a941bbee3d7f2afbc9b1")
+	  (toD d "ca737f1014a48f4c0b6dd43cb177b0afd9e5169367544c494011e3317dbf9a509cb1e5dc1e85a941bbee3d7f2afbc9b1") "sha384KAT2"
 	, K cogStr hash
-	  (toD d "098cea620b0978caa5f0befba6ddcf22764bea977e1c70b3483edfdf1de25f4b40d6cea3cadf00f809d422feb1f0161b")
+	  (toD d "098cea620b0978caa5f0befba6ddcf22764bea977e1c70b3483edfdf1de25f4b40d6cea3cadf00f809d422feb1f0161b") "sha384KAT3"
 	]
 sha512KATs d =
 	[ K "" hash (toD d $ "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a92"
 	            ++ "1d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417"
-		    ++ "a81a538327af927da3e")
+		    ++ "a81a538327af927da3e") "sha512KAT1"
 	, K dogStr hash (toD d $ "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a30"
 	            ++ "9d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097"
-	            ++ "821233fa0538f3db854fee6")
+	            ++ "821233fa0538f3db854fee6") "sha512KAT2"
 	, K cogStr hash (toD d $ "3eeee1d0e11733ef152a6c29503b3ae20c4f1f3cda4cb26f1bc1"
 		    ++ "a41f91c7fe4ab3bd86494049e201c4bd5155f31ecb7a3c8606843c4"
-		    ++ "cc8dfcab7da11c8ae5045")
+		    ++ "cc8dfcab7da11c8ae5045") "sha512KAT3"
 	]
 
 -- |Generic routine to construct a series of tests for any hash.  Used by the 'make[SHA,MD5]Tests routines.
-makeHashTests :: Hash c d => String -> (d -> [KAT L.ByteString d]) -> d -> [Test]
-makeHashTests s k d = T (runKATs (k d)) (s ++ "-KAT") : makeHashPropTests d
+makeHashTests :: Hash c d => (d -> [KAT L.ByteString d]) -> d -> [Test]
+makeHashTests k d = map katToTest (k d) ++ makeHashPropTests d
 
 makeMD5Tests :: Hash c d => d -> [Test]
-makeMD5Tests = makeHashTests "md5" md5KATs
+makeMD5Tests = makeHashTests md5KATs
 
 makeSHA1Tests :: Hash c d => d -> [Test]
-makeSHA1Tests = makeHashTests "sha1" sha1KATs
+makeSHA1Tests = makeHashTests sha1KATs
 
 makeSHA224Tests :: Hash c d => d -> [Test]
-makeSHA224Tests = makeHashTests "sha224" sha224KATs
+makeSHA224Tests = makeHashTests sha224KATs
 
 makeSHA256Tests :: Hash c d => d -> [Test]
-makeSHA256Tests = makeHashTests "sha256" sha256KATs
+makeSHA256Tests = makeHashTests sha256KATs
 
 makeSHA384Tests :: Hash c d => d -> [Test]
-makeSHA384Tests = makeHashTests "sha384" sha384KATs
+makeSHA384Tests = makeHashTests sha384KATs
 
 makeSHA512Tests :: Hash c d => d -> [Test]
-makeSHA512Tests = makeHashTests "sha512" sha512KATs
+makeSHA512Tests = makeHashTests sha512KATs
 
 makeAESTests :: BlockCipher k => k -> IO [Test]
 makeAESTests k = do
 	kats <- getAES_KATs k
-	return (T (runKATs kats) "AES-KATs" : makeBlockCipherPropTests k)
+	return (map katToTest kats ++ makeBlockCipherPropTests k)
 
 -- |Run a single test
 runTest :: Test -> IO ()
 runTest (T a s) = do
     putStr ("prop_" ++ s ++ ": ")
     quickCheck a
+runTest (TK b s) = putStr ("kat_" ++ s ++ ": " ++ show b)
 
 -- |Run a list of tests
 runTests :: [Test] -> IO ()

@@ -1,6 +1,7 @@
 module Test.ParseNistKATs
 	( parseCategory, parseProperty
 	, Properties, Record, NistTest, TypedTest
+	, module Text.Parsec
 	) where
 
 import Text.Parsec
