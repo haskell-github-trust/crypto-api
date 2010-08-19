@@ -1,6 +1,6 @@
 module Test.ParseNistKATs
 	( parseCategory, parseProperty
-	, Properties, Record, NistTest, TypedTest
+	, Properties, Record, NistTest, TypedTest, TestCategory
 	, module Text.Parsec
 	) where
 
@@ -50,20 +50,18 @@ parseProperty :: Parser (String, String)
 parseProperty = do
         char '['
         t1 <- token
-        m <- optionMaybe (char ']')
+	many space
+        m <- optionMaybe (char '=')
         res <- case m of
-                Nothing -> return (t1, "")
-                Just _  -> do
-                        many space
-                        char '='
+                Nothing  -> return (t1, "")
+                Just _ -> do
                         many space
                         t2 <- token
-                        char ']'
                         return (t1, t2)
 	optional (many space)
 	return res
   where
-  token = manyTill anyChar (char ']')
+  token = manyTill anyChar (oneOf [']', ' ', '\t'])
 
 -- |parse a property or record (count) of a NIST KAT file
 parseRecord :: Parser Record

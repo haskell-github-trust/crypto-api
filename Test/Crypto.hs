@@ -281,7 +281,7 @@ runTest :: Test -> IO ()
 runTest (T a s) = do
     putStr ("prop_" ++ s ++ ": ")
     quickCheck a
-runTest (TK b s) = putStr ("kat_" ++ s ++ ": " ++ show b)
+runTest (TK b s) = putStrLn ("kat_" ++ s ++ ": " ++ show b)
 
 -- |Run a list of tests
 runTests :: [Test] -> IO ()
