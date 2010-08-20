@@ -29,10 +29,6 @@ Data-Files: Test/KAT_AES/*.txt
 extra-source-files:
         Test/KAT_AES/*.txt
 
-flag test
-  description: Build a program to test the modes
-  default: False
-
 flag alg-tests
   description: Include Test.Crypto module for testing hash and cipher instances
   default: True
@@ -58,11 +54,3 @@ Library
   if flag(benchmarks)
     exposed-modules: Benchmark.Crypto
     build-depends: criterion >= 0.5
-    
-
-Executable test
-  main-is: Test/Main.hs
-  build-depends base
-  if !flag(test)
-    buildable: False
-
