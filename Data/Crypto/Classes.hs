@@ -35,7 +35,6 @@ class (Binary d, Serialize d, Eq d, Ord d)
   updateCtx	:: ctx -> B.ByteString -> ctx -- ^ Used to update a context, repeatedly called until all data is exhausted
                                               --   must operate correctly for imputs of n*blockLength bytes for n `elem` [0..]
   finalize	:: ctx -> B.ByteString -> d   -- ^ Finializing a context, plus any message data less than the block size, into a digest
-  strength	:: Tagged d BitLength	      -- ^ The believed cryptographic strength of the digest (computation time required to break)
 
 -- |Hash a lazy ByteString, creating a digest
 hash :: (Hash ctx d) => L.ByteString -> d
