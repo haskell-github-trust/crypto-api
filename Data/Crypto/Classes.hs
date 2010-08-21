@@ -49,8 +49,10 @@ hash msg = res
 hash' :: (Hash ctx d) => B.ByteString -> d
 hash' msg = res
   where
-  res = finalize (foldl' updateCtx initialCtx blks) end
-  (blks, end) = makeBlocks (L.fromChunks [msg]) (blockLength .::. res `div` 8)
+  res = finalize (updateCtx initialCtx top) end
+  (top, end) = B.splitAt remlen msg
+  remlen = B.length msg - (B.length msg `rem` bLen)
+  bLen = blockLength `for` res `div` 8
 
 -- |Obtain a lazy hash function from a digest
 hashFunc :: Hash c d => d -> (L.ByteString -> d)
@@ -68,15 +70,19 @@ hashFunc' d = f
 
 {-# INLINE makeBlocks #-}
 makeBlocks :: L.ByteString -> ByteLength -> ([B.ByteString], B.ByteString)
-makeBlocks msg len = go msg
+makeBlocks msg len = go (L.toChunks msg)
   where
-  go lps = 
-	if B.length blk == len
-		then let (full,end) = go rest in (blk:full, end)
-		else ([],blk)
-    where
-    blk = B.concat $ L.toChunks top
-    (top,rest) = L.splitAt (fromIntegral len) lps
+  go [] = ([],B.empty)
+  go (x:xs)
+    | B.length x >= len =
+	let l = B.length x `rem` len
+	    (top,end) = B.splitAt len x
+	    (rest,trueEnd) = go (end:xs)
+	in (top:rest, trueEnd)
+    | otherwise =
+	case xs of
+		[] -> ([], x)
+		(a:as) -> go (B.append x a : as)
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
