@@ -113,7 +113,7 @@ signUsing d p = encryptAsym p . Data.Serialize.encode . hashFunc d
 signUsing' :: (Hash c d, AsymCipher p) => d -> p -> B.ByteString -> B.ByteString
 signUsing' d p = encryptAsym p . Data.Serialize.encode . hashFunc' d
 
-class (Binary k, Serialize k) => StreamCipher k where
+class (Binary k, Serialize k) => StreamCipher k iv | k -> iv where
   buildStreamKey	:: B.ByteString -> Maybe k
   encryptStream		:: k -> iv -> B.ByteString -> (B.ByteString, iv)
   decryptStream 	:: k -> iv -> B.ByteString -> (B.ByteString, iv)
