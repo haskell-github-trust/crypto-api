@@ -39,9 +39,11 @@ foreign import stdcall unsafe "CryptReleaseContext"
 
 cryptAcquireCtx ... = liftM CH (c_cryptAcquireCtx ...)
 
+-- FIXME check errors
 cryptGenRandom :: CryptHandle -> Int -> IO B.ByteString
 cryptGenRandom (CH h) i = B.create i (c_cryptGenRandom h (fromIntegral i))
 
+-- FIXME check errors
 cryptReleaseCtx :: CryptHandle -> IO ()
 cryptReleaseCtx (CH h) = c_cryptReleaseCtx h 0
 
@@ -73,6 +75,7 @@ newtype CryptHandle = CH Handle
 openHandle :: IO CryptHandle
 openHandle = liftM CH (openFile "/dev/urandom" ReadMode)
 
+closeHandle :: CryptHandle -> IO ()
 closeHandle (CH h) = hClose h
 
 hGetEntropy :: CryptHandle -> Int -> IO B.ByteString 

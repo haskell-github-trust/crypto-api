@@ -2,6 +2,8 @@
 module Data.Crypto.Classes
 	( Hash(..)
 	, BlockCipher(..)
+	, StreamCipher(..)
+	, AsymCipher(..)
 	, for
 	, (.::.)
 	, hash
