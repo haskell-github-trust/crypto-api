@@ -2,7 +2,7 @@
 -- |
 -- Module      :  Data.LargeWord
 -- Copyright   :  (c) Dominic Steinitz 2004
--- License     :  BSD-style (see the file ReadMe.tex)
+-- License     :  BSD
 -- 
 -- Maintainer  :  dominic.steinitz@blueyonder.co.uk
 -- Stability   :  experimental
