@@ -75,8 +75,8 @@ makeBlocks msg len = go (L.toChunks msg)
   go [] = ([],B.empty)
   go (x:xs)
     | B.length x >= len =
-	let l = B.length x `rem` len
-	    (top,end) = B.splitAt len x
+	let l = B.length x - B.length x `rem` len
+	    (top,end) = B.splitAt l x
 	    (rest,trueEnd) = go (end:xs)
 	in (top:rest, trueEnd)
     | otherwise =
