@@ -43,7 +43,8 @@ Library
                  binary >= 0.4.0 && <0.6.0,
                  cereal >= 0.2 && <0.3,
                  tagged == 0.1.*,
-                 random >= 1 && < 2
+                 random >= 1 && < 2,
+                 filepath >= 1.1
   ghc-options:   -O2
   hs-source-dirs:
   exposed-modules: Data.Crypto.Classes, Data.Crypto.Types, Data.Crypto.HMAC, Data.LargeWord, Data.Crypto.Modes, System.Crypto.Random

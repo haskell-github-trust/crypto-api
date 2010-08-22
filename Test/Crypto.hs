@@ -15,12 +15,13 @@ module Test.Crypto
 	, makeSHA256Tests
 	, makeSHA384Tests
 	, makeSHA512Tests
-	, katToTest
+--	, katToTest
 	, runTests
 	, Test(..)
-	, KAT(..)
-	, runKATs
-	, getAES_KATs
+--	, KAT(..)
+--	, runKATs
+--	, getAES_KATs
+	, makeAESTests
 	, prop_LazyStrictEqual
 	, prop_DigestLen
 	, prop_GetPutHash
@@ -36,17 +37,19 @@ import Data.Crypto.Modes
 import qualified Data.ByteString.Lazy.Char8 as LC
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
-import Control.Monad (forM, liftM)
+import Control.Monad (forM, liftM, filterM)
 import Data.Word (Word8)
 import Data.Either (rights)
 import Data.Maybe (maybeToList)
+import Data.List (intersperse)
 import qualified Data.Binary as Bin
 import qualified Data.Serialize as Ser
 import Numeric (readHex)
 import Data.Maybe (fromJust)
 import Text.Parsec
 import Text.Parsec.ByteString
-import System.Directory (getDirectoryContents)
+import System.Directory (getDirectoryContents, doesFileExist)
+import System.FilePath (takeFileName, combine, dropExtension, (</>))
 import Paths_crypto_api
 
 instance Arbitrary Word8 where
@@ -106,6 +109,10 @@ prop_OutputLengthIsByteAligned d =
 
 data Test = forall a. Testable a => T a String | TK Bool String
 
+instance Show Test where
+	show (T _ name)  = "Test    " ++ name
+	show (TK b name) = "KA Test " ++ name
+
 katToTest :: (Eq b) => KAT a b -> Test
 katToTest (K i f o s) = TK (f i == o) s
 
@@ -145,51 +152,69 @@ cogStr = "The quick brown fox jumps over the lazy cog"
 
 getAES_KATs :: BlockCipher k => k -> IO [KAT B.ByteString B.ByteString]
 getAES_KATs k = do
-	dataDir <- getDataFileName ""
-	files <- getDirectoryContents dataDir
+	dataDir <- getDataFileName ("Test" </> "KAT_AES")
+	filesAndDirs <- getDirectoryContents dataDir
+	files <- filterM doesFileExist (map (combine dataDir) filesAndDirs)
 	recEs <- mapM (parseFromFile parseCategory) files
 	let recs = map snd (rights recEs)
-	    testTypes = map getTestSig files :: [String]
+	    fName = map takeFileName files
+	    testTypes = map getTestSig fName :: [String]
 	    tts = zip testTypes recs :: [TypedTest]
-	    kats = concatMap (nistTestsToKAT_AES k) (zip testTypes recs)
+	    kats = concatMap (uncurry (nistTestsToKAT_AES k)) (zip (zip testTypes recs) fName)
 	return kats
 
 -- Obtain the type of AES test, such as "ECBe" or "CBCd"
 getTestSig :: FilePath -> String
-getTestSig f = take 3 f ++ take 1 (drop (length f - 4) f)
+getTestSig f = take 3 f ++ [last (dropExtension f)]
 
-nistTestsToKAT_AES :: BlockCipher k => k -> TypedTest -> [KAT B.ByteString B.ByteString]
-nistTestsToKAT_AES eK ("ECBe", tests) =
+nistTestsToKAT_AES :: BlockCipher k => k -> TypedTest -> String -> [KAT B.ByteString B.ByteString]
+nistTestsToKAT_AES eK ("ECBe", tests) n =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
-  testToKAT t = testToKatBasic t encryptBlock True eK
+  testToKAT t = testToKatBasic t encryptBlock True eK n
 
-nistTestToKAT_AES eK ("ECBd", tests) =
+nistTestsToKAT_AES eK ("ECBd", tests) n =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
-  testToKAT t = testToKatBasic t decryptBlock False eK
+  testToKAT t = testToKatBasic t decryptBlock False eK n
 
-nistTestToKAT_AES ek ("CBCe", tests) =
+nistTestsToKAT_AES ek ("CBCe", tests) n =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
   testToKAT t = do
 	Right iv <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
-	testToKatBasic t ((\i k -> fst . cbc' k i) iv) True ek
+	testToKatBasic t ((\i k -> fst . cbc' k i) iv) True ek n
 
-nistTestToKAT_AES ek ("CBCd", tests) =
+nistTestsToKAT_AES ek ("CBCd", tests) n =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
   testToKAT t = do
 	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
-	testToKatBasic t ((\i k -> fst . unCbc' k i) iv) False ek
+	testToKatBasic t ((\i k -> fst . unCbc' k i) iv) False ek n
 
-nistTestToKAT_AES eK _ = [] -- FIXME add CTR, OFB, GCM and other modes
+nistTestsToKAT_AES ek ("OFBe", tests) n =
+	let ks = map testToKAT tests
+	in concatMap maybeToList ks
+  where
+  testToKAT t = do
+	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
+	testToKatBasic t ((\i k -> fst . ofb' k i) iv) True ek n
 
-testToKatBasic t f enc ek = do
+nistTestsToKAT_AES ek ("OFBd", tests) n =
+	let ks = map testToKAT tests
+	in concatMap maybeToList ks
+  where 
+  testToKAT t = do
+	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
+	testToKatBasic t ((\i k -> fst . unOfb' k i) iv) False ek n
+
+nistTestsToKAT_AES eK _ _ = [] -- FIXME add CTR, OFB, GCM and other modes
+
+testToKatBasic t f enc ek name = do
 	cnt <- lookup "COUNT" t
 	ct <- lookup "CIPHERTEXT" t
 	pt <- lookup "PLAINTEXT" t
@@ -198,8 +223,8 @@ testToKatBasic t f enc ek = do
 	    ctBS = hexStringToBS ct
 	    ptBS = hexStringToBS pt
 	if enc
-	    then return (K ptBS (f realKey) ctBS cnt)
-	    else return (K ctBS (f realKey)  ptBS cnt)
+	    then return (K ptBS (f realKey) ctBS (name ++ "-" ++ cnt))
+	    else return (K ctBS (f realKey) ptBS (name ++ "-" ++ cnt))
 
 md5KATs :: Hash c d => d -> [KAT L.ByteString d]
 md5KATs d =
