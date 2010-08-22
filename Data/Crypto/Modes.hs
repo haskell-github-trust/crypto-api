@@ -8,6 +8,7 @@ module Data.Crypto.Modes
 	, cbc', unCbc'
 	, cfb', unCfb'
 	, ofb', unOfb'
+	, IV
 	-- , gmc
 	-- , xts
 	-- , ccm
