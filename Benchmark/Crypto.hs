@@ -16,6 +16,10 @@ import Control.Monad (liftM)
 ps = B.replicate (2^17) 0
 lps = L.replicate (2^17) 0
 
+-- 4MB strings
+ps4MB = B.replicate (2^22) 0
+lps4MB = B.replicate (2^22) 0
+
 benchmarkHash :: Hash c d => d -> String -> Benchmark
 benchmarkHash h name =
         let benchs = bgroup name [ bench "lazy"   (whnf (hashFunc h) lps)
@@ -27,8 +31,8 @@ op f str = whnf (B.unpack . Ser.encode . f) str
 
 benchmarkBlockCipher :: BlockCipher k => k -> String -> Benchmark
 benchmarkBlockCipher k name =
-	let benchs = bgroup name [ bench "enc" (whnf (ecb' k) ps)
-				 , bench "dec" (whnf (unEcb' k) ps)] :: Benchmark
+	let benchs = bgroup name [ bench "enc" (whnf (ecb' k) ps4MB)
+				 , bench "dec" (whnf (unEcb' k) ps4MB)] :: Benchmark
 	in benchs
 
 benchmarkRNG :: (Int -> IO B.ByteString) -> String -> Benchmark
