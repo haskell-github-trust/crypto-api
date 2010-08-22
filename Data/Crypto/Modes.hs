@@ -31,6 +31,7 @@ import System.Random (RandomGen, next)
 -- bits long.
 data IV k = IV { initializationVector :: B.ByteString } deriving (Eq, Ord, Show)
 
+-- gather a specified number of bytes from the list of bytestrings
 collect :: Int -> [B.ByteString] -> [B.ByteString]
 collect 0 _ = []
 collect _ [] = []
@@ -208,7 +209,7 @@ ofb = unOfb
 
 unOfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 unOfb k (IV iv) msg =
-	let ivStr = iterate (encryptBlock k) iv
+	let ivStr = drop 1 (iterate (encryptBlock k) iv)
 	    ivLen = fromIntegral (B.length iv)
 	    newIV = IV . B.concat . L.toChunks . L.take ivLen . L.drop (L.length msg) . L.fromChunks $ ivStr
 	in (zwp (L.fromChunks ivStr) msg, newIV)
@@ -218,7 +219,7 @@ ofb' = unOfb'
 
 unOfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 unOfb' k (IV iv) msg =
-	let ivStr = collect (B.length msg + ivLen) (iterate (encryptBlock k) iv)
+	let ivStr = collect (B.length msg + ivLen) (drop 1 (iterate (encryptBlock k) iv))
 	    ivLen = B.length iv
 	    mLen = fromIntegral (B.length msg)
 	    newIV = IV . B.concat . L.toChunks . L.take (fromIntegral ivLen) . L.drop mLen . L.fromChunks $ ivStr
