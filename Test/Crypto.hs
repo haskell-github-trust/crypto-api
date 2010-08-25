@@ -7,7 +7,7 @@
   
    or
   
->        runTests =<< makeAESTests (AESKey $ B.replicate 16 0)
+>        runTests =<< makeAESTests (undefined :: AESKey)
   
    TODO: More KATs are needed - particularly ones for non-AES, SHA, or MD5
    algorithms.
