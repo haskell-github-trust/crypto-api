@@ -81,7 +81,8 @@ zwp  a b =
 	in (zwp' a' b') : go as' bs'
 
 -- |zipWith xor + Pack
---This should be optimized to use the bytestring libraries 'zipWith'' function due to rewrite rules.
+-- As a result of rewrite rules, this should automatically be optimized (at compile time) 
+-- to use the bytestring libraries 'zipWith'' function.
 zwp' a = B.pack . B.zipWith xor a
 
 -- |Cipher block chaining encryption mode on strict bytestrings
@@ -156,7 +157,7 @@ unEcb' k ct =
 	let chunks = chunkFor' k ct
 	in B.concat $ map (decryptBlock k) chunks
 
--- |Ciphertext feed-back encryption mode with s == blockSize
+-- |Ciphertext feed-back encryption mode for lazy bytestrings (with s == blockSize)
 cfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 cfb k (IV v) msg =
 	let blks = chunkFor k msg
@@ -169,6 +170,7 @@ cfb k (IV v) msg =
 	    (cs,ivFinal) = go c bs
 	in (c:cs, ivFinal)
 
+-- |Ciphertext feed-back decryption mode for lazy bytestrings (with s == blockSize)
 unCfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 unCfb k (IV v) msg = 
 	let blks = chunkFor k msg
@@ -181,6 +183,7 @@ unCfb k (IV v) msg =
 	    (ps, ivF) = go b bs
 	in (p:ps, ivF)
 
+-- |Ciphertext feed-back encryption mode for strict bytestrings (with s == blockSize)
 cfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 cfb' k (IV v) msg =
 	let blks = chunkFor' k msg
@@ -193,6 +196,7 @@ cfb' k (IV v) msg =
 	    (cs,ivFinal) = go c bs
 	in (c:cs, ivFinal)
 
+-- |Ciphertext feed-back decryption mode for strict bytestrings (with s == blockSize)
 unCfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 unCfb' k (IV v) msg =
 	let blks = chunkFor' k msg
@@ -205,9 +209,11 @@ unCfb' k (IV v) msg =
 	    (ps, ivF) = go b bs
 	in (p:ps, ivF)
 
+-- |Output feedback mode for lazy bytestrings
 ofb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 ofb = unOfb
 
+-- |Output feedback mode for lazy bytestrings
 unOfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 unOfb k (IV iv) msg =
 	let ivStr = drop 1 (iterate (encryptBlock k) iv)
@@ -215,9 +221,11 @@ unOfb k (IV iv) msg =
 	    newIV = IV . B.concat . L.toChunks . L.take ivLen . L.drop (L.length msg) . L.fromChunks $ ivStr
 	in (zwp (L.fromChunks ivStr) msg, newIV)
 
+-- |Output feedback mode for strict bytestrings
 ofb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 ofb' = unOfb'
 
+-- |Output feedback mode for strict bytestrings
 unOfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 unOfb' k (IV iv) msg =
 	let ivStr = collect (B.length msg + ivLen) (drop 1 (iterate (encryptBlock k) iv))

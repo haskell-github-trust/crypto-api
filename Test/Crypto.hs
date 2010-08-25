@@ -1,32 +1,37 @@
 {-# LANGUAGE OverloadedStrings, ExistentialQuantification #-}
 {-| Basic tests for some common cryptographic algorithms
- -
- - Most user only need to run the make/run tests functions:
- -
- -     runTests (makeMD5Tests (undefined :: MD5Digest))
- -
- - More KATs are needed, particularly ones with length greater than the
- - blockSize for the hash operations. Please feel free to submit patches
- - adding KATs to the suite.
+  
+   Most user only need to run the {make,run}Tests functions:
+  
+>        runTests (makeMD5Tests (undefined :: MD5Digest))
+  
+   or
+  
+>        runTests =<< makeAESTests (AESKey $ B.replicate 16 0)
+  
+   TODO: More KATs are needed - particularly ones for non-AES, SHA, or MD5
+   algorithms.
  -}
 module Test.Crypto
-	( makeMD5Tests
+	(
+	-- * Hash KATs
+	  makeMD5Tests
 	, makeSHA1Tests
 	, makeSHA256Tests
 	, makeSHA384Tests
 	, makeSHA512Tests
---	, katToTest
+	-- * Block Cipher KATs
+	, makeAESTests
+	-- * Test Infrastructure
 	, runTests
 	, Test(..)
---	, KAT(..)
---	, runKATs
---	, getAES_KATs
-	, makeAESTests
+	-- * Hash property tests
 	, prop_LazyStrictEqual
 	, prop_DigestLen
 	, prop_GetPutHash
 	, prop_BlockLengthIsByteAligned
 	, prop_OutputLengthIsByteAligned
+	-- * Utils
 	, hexStringToBS
 	) where
 
@@ -296,6 +301,9 @@ makeSHA384Tests = makeHashTests sha384KATs
 makeSHA512Tests :: Hash c d => d -> [Test]
 makeSHA512Tests = makeHashTests sha512KATs
 
+-- |Based on NIST KATs, build a list 
+-- of Tests for the instantiated AES
+-- algorithm.
 makeAESTests :: BlockCipher k => k -> IO [Test]
 makeAESTests k = do
 	kats <- getAES_KATs k

@@ -32,7 +32,7 @@ import System.Random
 class (Binary d, Serialize d, Eq d, Ord d)
     => Hash ctx d | d -> ctx, ctx -> d where
   outputLength	:: Tagged d BitLength	      -- ^ The size of the digest when encoded
-  blockLength	:: Tagged d BitLength	      -- ^ The size of data operated on in each round of the digest computation
+  blockLength	:: Tagged d BitLength	      -- ^ The amount of data operated on in each round of the digest computation
   initialCtx	:: ctx			      -- ^ An initial context, provided with the first call to 'updateCtx'
   updateCtx	:: ctx -> B.ByteString -> ctx -- ^ Used to update a context, repeatedly called until all data is exhausted
                                               --   must operate correctly for imputs of n*blockLength bytes for n `elem` [0..]
@@ -63,7 +63,7 @@ hashFunc d = f
   f = hash
   a = f undefined `asTypeOf` d
 
--- Obtain a strict hash function from a digest
+-- |Obtain a strict hash function from a digest
 hashFunc' :: Hash c d => d -> (B.ByteString -> d)
 hashFunc' d = f
   where
@@ -94,12 +94,19 @@ for t _ = unTagged t
 (.::.) :: Tagged a b -> a -> b
 (.::.) = for
 
+-- |The BlockCipher class is intended as the generic interface
+-- targeted by maintainers of Haskell cipher implementations.
+-- Using this generic interface higher level functions
+-- such as 'cbc', and other functions from Data.Crypto.Modes, provide a useful API
+-- for comsumers of cipher implementations.
+--
+-- Any instantiated implementation must handle unaligned data
 class (Binary k, Serialize k) => BlockCipher k where
-  blockSize	:: Tagged k BitLength
-  encryptBlock	:: k -> B.ByteString -> B.ByteString
-  decryptBlock	:: k -> B.ByteString -> B.ByteString
-  buildKey	:: B.ByteString -> Maybe k
-  keyLength	:: k -> BitLength	-- ^ keyLength may inspect its argument to return the length
+  blockSize	:: Tagged k BitLength			-- ^ The size of a single block; the smallest unit on which the cipher operates.
+  encryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ encrypt data of size n*blockLength where n `elem` [0..]  (ecb encryption)
+  decryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ decrypt data of size n*blockLength where n `elem` [0..]  (ecb decryption)
+  buildKey	:: B.ByteString -> Maybe k		-- ^ smart constructor for keys from a bytestring.
+  keyLength	:: k -> BitLength			-- ^ keyLength may inspect its argument to return the length
 
 class (Binary p, Serialize p) => AsymCipher p where
   generateKeypair :: RandomGen g => g -> BitLength -> Maybe ((p,p),g)

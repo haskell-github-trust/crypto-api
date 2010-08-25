@@ -7,6 +7,7 @@ import Data.Serialize (encode)
 import qualified Data.Binary as Bin
 import Data.Bits (xor)
 
+-- |Message authentication code calculation for lazy bytestrings
 hmac :: (Hash c d) => B.ByteString -> L.ByteString -> d
 hmac k msg = res
   where
@@ -22,5 +23,6 @@ hmac k msg = res
   ki = fc $ B.map (`xor` 0x36) k'
   fc = L.fromChunks . \s -> [s]
 
+-- |Message authentication code calculation for strict bytestrings
 hmac' :: (Hash c d) => B.ByteString -> B.ByteString -> d
 hmac' k = hmac k . L.fromChunks . return
