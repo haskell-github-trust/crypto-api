@@ -20,6 +20,7 @@
 module Benchmark.Crypto
 	( benchmarkHash
 	, benchmarkBlockCipher
+	, benchmarkRNG
 	) where
 
 import Data.Crypto.Classes
@@ -51,11 +52,10 @@ op :: Ser.Serialize d => (a -> d) -> a -> Pure
 op f str = whnf (B.unpack . Ser.encode . f) str
 
 -- |Benchmark a block cipher by calling the 'ecb'' and 'unEcb'' functions
--- on a 4MB bytestring.
 benchmarkBlockCipher :: BlockCipher k => k -> String -> Benchmark
 benchmarkBlockCipher k name =
-	let benchs = bgroup name [ bench "enc" (whnf (ecb' k) ps4MB)
-				 , bench "dec" (whnf (unEcb' k) ps4MB)] :: Benchmark
+	let benchs = bgroup name [ bench "enc" (whnf (ecb' k) ps)
+				 , bench "dec" (whnf (unEcb' k) ps)] :: Benchmark
 	in benchs
 
 -- |Benchmark an RNG by requesting 128MB of random data
