@@ -14,17 +14,17 @@
  -}
 module Test.Crypto
 	(
+	-- * Test Infrastructure
+	  runTests
+	, Test(..)
 	-- * Hash KATs
-	  makeMD5Tests
+	, makeMD5Tests
 	, makeSHA1Tests
 	, makeSHA256Tests
 	, makeSHA384Tests
 	, makeSHA512Tests
 	-- * Block Cipher KATs
 	, makeAESTests
-	-- * Test Infrastructure
-	, runTests
-	, Test(..)
 	-- * Hash property tests
 	, prop_LazyStrictEqual
 	, prop_DigestLen

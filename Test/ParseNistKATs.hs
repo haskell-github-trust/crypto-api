@@ -1,3 +1,31 @@
+-- |NIST KAT files are composed of properties, such as:
+--
+-- >	[SHA-1]
+-- >	[PredictionResistance = True]
+-- >	[EntropyInputSize = 128]
+--
+-- and individual known answer tests using these properties, ex:
+--
+-- >	COUNT = 0
+-- >	EntropyInput = 7
+-- >	PersonalizationString =
+-- >	Result = 8
+-- >
+-- >	COUNT = 1
+-- >	EntropyInput = 4
+-- >	PersonalizationString = 
+-- >	Result = 2
+--
+-- Using 'many parseCategory' this input would be converted to a
+-- single element list of 'TestCategory':
+--
+-- >	[([("SHA-1",""), ("PredictionResistance", "True"), ("EntropyInputSize", "128")],
+-- >	  	[   [("COUNT", "0"), ("EntropyInput", "7"), ("PersonalizationString", ""), ("Result", "8")], 
+-- >		  , [("COUNT", "1"), ("EntropyInput", "4"), ("PersonalizationString", ""), ("Result", "2")]])]
+--
+-- that is, a list of tuples, the first element is a list of properties (key/value pairs) and
+-- the second element is a list of tests.  Each test is itself a list of records (key/value pairs).
+-- Properties apply to all tests contained in the second element of the tuple.
 module Test.ParseNistKATs
 	( parseCategory, parseProperty
 	, Properties, Record, NistTest, TypedTest, TestCategory
@@ -7,15 +35,13 @@ module Test.ParseNistKATs
 import Text.Parsec
 import Text.Parsec.ByteString
 
+
 type Properties = [(String, String)]
 type Record = (String, String)
 type NistTest = [Record]
 type TypedTest = (String, [NistTest])
 
 type TestCategory = (Properties, [NistTest])
-
-parseManyCategories :: Parser [TestCategory]
-parseManyCategories = many parseCategory
 
 -- |parse a NIST KAT file
 parseCategory :: Parser (Properties, [NistTest])
