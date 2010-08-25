@@ -102,16 +102,21 @@ prop_GetPutHash d lps =
   h = f lps
   h' = f' . B.concat . L.toChunks $ lps
 
+-- |verify:
+--
+-- > blockLength .::. d `rem` 8 == 0
 prop_BlockLengthIsByteAligned :: Hash c d => d -> Bool
-prop_BlockLengthIsByteAligned d =
-	let b = blockLength `for` d
-	in b == (b `div` 8) * 8
+prop_BlockLengthIsByteAligned d = blockLength .::. d `rem` 8 == 0
 
+-- |verify
+--
+-- > outputLength .::. d `rem` 8 == 0
 prop_OutputLengthIsByteAligned :: Hash c d => d -> Bool
-prop_OutputLengthIsByteAligned d =
-	let b = outputLength `for` d
-	in b == (b `div` 8) * 8
+prop_OutputLengthIsByteAligned d = blockLength .::. d `rem` 8 == 0
 
+-- |A Test can either be a quickcheck property (constructor 'T') or a
+-- known answer test (aka KAT, constructor 'TK').  Known answer tests
+-- are simply stored as their boolean result along with a test name.
 data Test = forall a. Testable a => T a String | TK Bool String
 
 instance Show Test where
@@ -123,11 +128,11 @@ katToTest (K i f o s) = TK (f i == o) s
 
 makeHashPropTests :: Hash c d => d -> [Test]
 makeHashPropTests d =
-	[ T (prop_LazyStrictEqual d) "prop_LazyStrictEqual"
-	, T (prop_DigestLen d) "prop_DigestLen"
-	, T (prop_GetPutHash d) "prop_GetPutHash"
-	, T (prop_BlockLengthIsByteAligned d) "prop_BlockLengthIsByteAligned"
-	, T (prop_OutputLengthIsByteAligned d) "prop_OuputLengthIsByteAligned"
+	[ T (prop_LazyStrictEqual d) "LazyStrictEqual"
+	, T (prop_DigestLen d) "DigestLen"
+	, T (prop_GetPutHash d) "GetPutHash"
+	, T (prop_BlockLengthIsByteAligned d) "BlockLengthIsByteAligned"
+	, T (prop_OutputLengthIsByteAligned d) "OuputLengthIsByteAligned"
 	]
 
 -- |FIXME make some generic blockcipher tests
@@ -145,6 +150,11 @@ runKATs = all goodKAT
 toD :: Hash c d => d -> String -> d
 toD d str = (Bin.decode $ L.fromChunks [hexStringToBS str]) `asTypeOf` d
 
+-- |Convert hex strings to bytestrings, for example:
+-- 
+-- > "3adf91c0" ==> B.pack [0x3a, 0xdf, 0x91, 0xc0]
+--
+-- Strings of odd length will cause an exception as will non-hex characters such as '0x'.
 hexStringToBS :: String -> B.ByteString
 hexStringToBS [] = B.empty
 hexStringToBS (_:[]) = error "Not an even number of hex characters in alledged 'digest'"
