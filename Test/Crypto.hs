@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, ExistentialQuantification #-}
+{-# LANGUAGE OverloadedStrings, ExistentialQuantification, ViewPatterns #-}
 {-| Basic tests for some common cryptographic algorithms
   
    Most user only need to run the {make,run}Tests functions:
@@ -182,6 +182,20 @@ getAES_KATs k = do
 getTestSig :: FilePath -> String
 getTestSig f = take 3 f ++ [last (dropExtension f)]
 
+sigToF :: BlockCipher k => String -> Maybe (k -> IV k -> B.ByteString ->  (B.ByteString, IV k))
+sigToF "CBCe" = Just cbc'
+sigToF "CBCd" = Just unCbc'
+sigToF "OFBe" = Just ofb'
+sigToF "OFBd" = Just unOfb'
+sigToF _ = Nothing
+
+isEnc :: String -> Bool
+isEnc str | null str = False
+	  | last str == 'e' = True
+	  | otherwise = False
+
+funcAndBool x = (sigToF x, isEnc x)
+
 nistTestsToKAT_AES :: BlockCipher k => k -> TypedTest -> String -> [KAT B.ByteString B.ByteString]
 nistTestsToKAT_AES eK ("ECBe", tests) n =
 	let ks = map testToKAT tests
@@ -195,37 +209,13 @@ nistTestsToKAT_AES eK ("ECBd", tests) n =
   where
   testToKAT t = testToKatBasic t decryptBlock False eK n
 
-nistTestsToKAT_AES ek ("CBCe", tests) n =
+nistTestsToKAT_AES ek (funcAndBool -> (Just modeFunc,enc), tests) n =
 	let ks = map testToKAT tests
 	in concatMap maybeToList ks
   where
   testToKAT t = do
 	Right iv <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
-	testToKatBasic t ((\i k -> fst . cbc' k i) iv) True ek n
-
-nistTestsToKAT_AES ek ("CBCd", tests) n =
-	let ks = map testToKAT tests
-	in concatMap maybeToList ks
-  where
-  testToKAT t = do
-	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
-	testToKatBasic t ((\i k -> fst . unCbc' k i) iv) False ek n
-
-nistTestsToKAT_AES ek ("OFBe", tests) n =
-	let ks = map testToKAT tests
-	in concatMap maybeToList ks
-  where
-  testToKAT t = do
-	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
-	testToKatBasic t ((\i k -> fst . ofb' k i) iv) True ek n
-
-nistTestsToKAT_AES ek ("OFBd", tests) n =
-	let ks = map testToKAT tests
-	in concatMap maybeToList ks
-  where 
-  testToKAT t = do
-	(Right iv) <- liftM (Ser.decode . hexStringToBS) (lookup "IV" t)
-	testToKatBasic t ((\i k -> fst . unOfb' k i) iv) False ek n
+	testToKatBasic t ((\i k -> fst . modeFunc k i) iv) enc ek n
 
 nistTestsToKAT_AES eK _ _ = [] -- FIXME add CTR, OFB, GCM and other modes
 
