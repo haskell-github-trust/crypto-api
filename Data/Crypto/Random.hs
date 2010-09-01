@@ -12,7 +12,7 @@ import Foreign.Storable (sizeOf)
 import Data.Tagged
 import Data.Bits (xor, setBit, shiftR, shiftL)
 
-data GenError = GenErrorOther String | GenRequestedTooManyBytes
+data GenError = GenErrorOther String | RequestedTooManyBytes | RangeInvalid | NeedReseed
 
 instance (RandomGenerator g) => RandomGen (OldRandomClass g) where
 	next (ORC g) =
@@ -52,7 +52,9 @@ class RandomGenerator g where
 
 -- 'genInteger g (low,high)' will generate an integer between [low, high] inclusivly.
 genInteger :: RandomGenerator g => g -> (Integer, Integer) -> Either GenError (Integer, g)
-genInteger g (low,high) =
+genInteger g (low,high) 
+	| high <= low = Left RangeInvalid
+	| otherwise = 
     let range = high - low
         nrBytes = base2Log range
         offset = genBytes g (fromIntegral nrBytes)
@@ -62,16 +64,17 @@ genInteger g (low,high) =
             case decode bs of
 	       Left str -> Left (GenErrorOther str)
                Right v  -> if nrBytes > fromIntegral (maxBound :: Int)
-                             then Left (GenRequestedTooManyBytes)
-                             else Right (low + v, g')
+                             then Left RequestedTooManyBytes -- Or we could use 'range invalid'
+                             else let res = low + v
+				   in if res > high then genInteger g' (low, high) else Right (res, g')
 
 base2Log :: Integer -> Integer
 base2Log i
-	| i > setBit 0 64 = 64 + base2Log (i `shiftR` 64)
-	| i > setBit 0 32 = 32 + base2Log (i `shiftR` 32)
-	| i > setBit 0 16 = 16 + base2Log (i `shiftR` 16)
-	| i > setBit 0 8  = 8  + base2Log (i `shiftR` 8)
-	| i > setBit 0 0  = 1  + base2Log (i `shiftR` 1)
+	| i >= setBit 0 64 = 65 + base2Log (i `shiftR` 65)
+	| i >= setBit 0 32 = 33 + base2Log (i `shiftR` 33)
+	| i >= setBit 0 16 = 17 + base2Log (i `shiftR` 17)
+	| i >= setBit 0 8  = 9  + base2Log (i `shiftR` 9)
+	| i >= setBit 0 0  = 1  + base2Log (i `shiftR` 1)
 	| otherwise       = 0
 
 bs2i :: B.ByteString -> Integer
