@@ -1,18 +1,27 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Data.Crypto.Random
 	( OldRandomClass (..)
 	, RandomGenerator(..)
 	, genInteger
-	, base2Log
+	, GenError (..)
 	) where
 
-import System.Random
+import System.Crypto.Random (getEntropy)
+import System.Random (RandomGen(..))
+import Control.Monad (liftM)
 import Data.Serialize
 import qualified Data.ByteString as B
 import Foreign.Storable (sizeOf)
 import Data.Tagged
 import Data.Bits (xor, setBit, shiftR, shiftL)
 
-data GenError = GenErrorOther String | RequestedTooManyBytes | RangeInvalid | NeedReseed
+data GenError =			-- Expected use:
+	  GenErrorOther String	-- Misc
+	| RequestedTooManyBytes	-- Requested more bytes than a single pass can generate (ex: genBytes g i | i > 2^(2^32))
+	| RangeInvalid		-- When using genInteger g (l,h), l >= h.
+	| NeedReseed		-- Some generators cease operation after too high a count without a reseed (ex: NIST SP 800-90)
+	| NotEnoughEntropy	-- For instantiating new generators (or reseeding)
+  deriving (Eq, Ord, Show)
 
 instance (RandomGenerator g) => RandomGen (OldRandomClass g) where
 	next (ORC g) =
@@ -26,16 +35,25 @@ instance (RandomGenerator g) => RandomGen (OldRandomClass g) where
 		    Right new2 = newGen b
 		in (ORC new1, ORC new2)
 
+-- |Any 'RandomGenerator' can be used where the 'RandomGen' class is needed
+-- simply by wrapping with with the ORC constructor.  Any failures
+-- (Left results from genBytes or newGen bs | B.length bs == 512) result
+-- in a pattern match exception.  Such failures were simply assumed
+-- not possible by the RandomGen class, hence there is no non-exception
+-- way to indicate a failure.
 data OldRandomClass a = ORC a
 	deriving (Eq, Ord, Show)
-
-type Gen a g = Either GenError (a, g)
 
 -- |A class of random bit generators that allows for the possibility of failure,
 -- reseeding, providing entropy at the same time as requesting bytes
 class RandomGenerator g where
+	-- |Instantiate a new random bit generator
 	newGen :: B.ByteString -> Either GenError g
-	genSeedLen :: Tagged g Int
+
+	-- |Length of input entropy necessary to instantiate or reseed a generator
+	genSeedLength :: Tagged g Int
+
+	-- |Obtain random data using a generator
 	genBytes	:: g -> Int -> Either GenError (B.ByteString, g)
 
 	-- |'genBytesAI g i entropy' generates 'i' random bytes and use the
@@ -50,7 +68,27 @@ class RandomGenerator g where
 	-- |reseed a random number generator
 	reseed		:: g -> B.ByteString -> Either GenError g
 
--- 'genInteger g (low,high)' will generate an integer between [low, high] inclusivly.
+-- | This class exists to provide the contraversial "split" operation that was
+-- part of 'RandomGen'.
+class SplitableGenerator g where
+	split :: g -> Either GenError (g,g)
+
+-- |Use System.Crypto.Random to obtain entropy for newGen.
+-- Only buggy RandomGenerator instances should fail.
+newGenIO :: RandomGenerator g => IO (Either GenError g)
+newGenIO = res
+  where
+  l = liftM (for genSeedLength . fromRight) res
+  fromRight (Right x) = x
+  res = liftM newGen (l >>= getEntropy)
+
+-- |Obtain a tagged value for a particular instantiated type.
+for :: Tagged a b -> a -> b
+for t _ = unTagged t
+
+-- |'genInteger g (low,high)' will generate an integer between [low, high] inclusivly.
+-- This function has degraded (theoretically unbounded, probabilitically decent) performance
+-- the closer your range size (high - low) is to 2^n+1 for large natural values of n.
 genInteger :: RandomGenerator g => g -> (Integer, Integer) -> Either GenError (Integer, g)
 genInteger g (low,high) 
 	| high <= low = Left RangeInvalid
@@ -75,7 +113,7 @@ base2Log i
 	| i >= setBit 0 16 = 17 + base2Log (i `shiftR` 17)
 	| i >= setBit 0 8  = 9  + base2Log (i `shiftR` 9)
 	| i >= setBit 0 0  = 1  + base2Log (i `shiftR` 1)
-	| otherwise       = 0
+	| otherwise        = 0
 
 bs2i :: B.ByteString -> Integer
 bs2i bs = B.foldl' (\i b -> (i `shiftL` 8) + fromIntegral b) 0 bs
