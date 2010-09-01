@@ -58,6 +58,6 @@ benchmarkBlockCipher k name =
 				 , bench "dec" (whnf (unEcb' k) ps)] :: Benchmark
 	in benchs
 
--- |Benchmark an RNG by requesting 128MB of random data
-benchmarkRNG :: (Int -> IO B.ByteString) -> String -> Benchmark
-benchmarkRNG rng name = bench name (whnfIO (liftM B.unpack (rng (2^27))))
+-- |Benchmark an RNG by requesting 256K of random data
+benchmarkRNG :: (Int -> IO L.ByteString) -> String -> Benchmark
+benchmarkRNG rng name = bench name (nfIO $ liftM (map B.head . L.toChunks ) (rng (2^18)))
