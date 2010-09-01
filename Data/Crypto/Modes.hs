@@ -25,7 +25,7 @@ import qualified Data.Serialize.Put as SP
 import qualified Data.Serialize.Get as SG
 import Data.Bits (xor)
 import Data.Crypto.Classes
-import System.Random (RandomGen, next)
+import Data.Crypto.Random
 
 -- Initilization Vectors for key 'k' (IV k) are used
 -- for various modes and guarrenteed to be blockSize
@@ -242,20 +242,17 @@ unfoldK f i =
 			let (as, iF) = unfoldK f i'
 			in (a:as, iF)
 
-genByteString :: (RandomGen g) => g -> Int -> (B.ByteString, g)
-genByteString g bytes =
-	let (ws, (g', _)) = unfoldK go (g,bytes)
-	in (B.pack ws, g')
-  where
-  go (_,0) = Nothing
-  go (j,c) = let (n,j') = next j in Just (fromIntegral n, (j', c-1))
-
-getIV :: (BlockCipher k, RandomGen g) => g -> (IV k, g)
+getIV :: (BlockCipher k, RandomGenerator g) => g -> Either GenError (IV k, g)
 getIV g =
 	let bytes = ivBlockSizeBytes iv
-	    (bs,g') = genByteString g bytes
-	    iv = IV bs
-	in (iv, g')
+	    gen = genBytes g bytes
+	    fromRight (Right x) = x
+	    iv  = IV (fst  . fromRight $ gen)
+	in case gen of
+		Left err -> Left err
+		Right (bs,g')
+			| B.length bs == bytes	-> Right (iv, g')
+			| otherwise		-> Left (GenErrorOther "Generator failed to provide requested number of bytes")
 
 ivBlockSizeBytes :: BlockCipher k => IV k -> Int
 ivBlockSizeBytes iv = (blockSize `for` (keyForIV iv)) `div` 8
