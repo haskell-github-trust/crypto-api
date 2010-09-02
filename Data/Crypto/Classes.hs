@@ -109,7 +109,7 @@ class (Binary k, Serialize k) => BlockCipher k where
   keyLength	:: k -> BitLength			-- ^ keyLength may inspect its argument to return the length
 
 class (Binary p, Serialize p) => AsymCipher p where
-  generateKeypair :: RandomGenerator g => g -> BitLength -> Maybe ((p,p),g)
+  buildKeyPair :: RandomGenerator g => g -> BitLength -> Maybe ((p,p),g)
   encryptAsym     :: p -> B.ByteString -> B.ByteString
   decryptAsym     :: p -> B.ByteString -> B.ByteString
   asymKeyLength   :: p -> BitLength
