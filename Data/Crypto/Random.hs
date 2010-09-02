@@ -95,7 +95,8 @@ for t _ = unTagged t
 -- the closer your range size (high - low) is to 2^n+1 for large natural values of n.
 genInteger :: RandomGenerator g => g -> (Integer, Integer) -> Either GenError (Integer, g)
 genInteger g (low,high) 
-	| high <= low = Left RangeInvalid
+	| high < low = genInteger  g (high,low)
+	| high == low = Right (high, g)
 	| otherwise = 
     let range = high - low
         nrBytes = base2Log range
@@ -103,12 +104,10 @@ genInteger g (low,high)
     in case offset of
         Left err -> Left err
         Right (bs,g') -> 
-            case decode bs of
-	       Left str -> Left (GenErrorOther str)
-               Right v  -> if nrBytes > fromIntegral (maxBound :: Int)
-                             then Left RequestedTooManyBytes -- Or we could use 'range invalid'
-                             else let res = low + v
-				   in if res > high then genInteger g' (low, high) else Right (res, g')
+	    if nrBytes > fromIntegral (maxBound :: Int)
+		then Left RangeInvalid
+		else let res = low + (bs2i bs)
+		     in if res > high then genInteger g' (low, high) else Right (res, g')
 
 base2Log :: Integer -> Integer
 base2Log i
