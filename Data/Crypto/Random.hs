@@ -99,7 +99,8 @@ genInteger g (low,high)
 	| high == low = Right (high, g)
 	| otherwise = 
     let range = high - low
-        nrBytes = base2Log range
+        nrBits = base2Log range
+	nrBytes = (nrBits + 7) `div` 8
         offset = genBytes g (fromIntegral nrBytes)
     in case offset of
         Left err -> Left err
@@ -111,10 +112,10 @@ genInteger g (low,high)
 
 base2Log :: Integer -> Integer
 base2Log i
-	| i >= setBit 0 64 = 65 + base2Log (i `shiftR` 65)
-	| i >= setBit 0 32 = 33 + base2Log (i `shiftR` 33)
-	| i >= setBit 0 16 = 17 + base2Log (i `shiftR` 17)
-	| i >= setBit 0 8  = 9  + base2Log (i `shiftR` 9)
+	| i >= setBit 0 64 = 64 + base2Log (i `shiftR` 64)
+	| i >= setBit 0 32 = 32 + base2Log (i `shiftR` 32)
+	| i >= setBit 0 16 = 16 + base2Log (i `shiftR` 16)
+	| i >= setBit 0 8  = 8  + base2Log (i `shiftR` 8)
 	| i >= setBit 0 0  = 1  + base2Log (i `shiftR` 1)
 	| otherwise        = 0
 
