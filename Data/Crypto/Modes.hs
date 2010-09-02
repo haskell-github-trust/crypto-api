@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
 module Data.Crypto.Modes
 	( ecb, unEcb
 	, cbc, unCbc
@@ -9,6 +9,7 @@ module Data.Crypto.Modes
 	, cfb', unCfb'
 	, ofb', unOfb'
 	, IV
+	, getIV, getIVIO
 	-- , gmc
 	-- , xts
 	-- , ccm
@@ -26,6 +27,7 @@ import qualified Data.Serialize.Get as SG
 import Data.Bits (xor)
 import Data.Crypto.Classes
 import Data.Crypto.Random
+import System.Crypto.Random (getEntropy)
 
 -- Initilization Vectors for key 'k' (IV k) are used
 -- for various modes and guarrenteed to be blockSize
@@ -253,6 +255,13 @@ getIV g =
 		Right (bs,g')
 			| B.length bs == bytes	-> Right (iv, g')
 			| otherwise		-> Left (GenErrorOther "Generator failed to provide requested number of bytes")
+
+getIVIO :: (BlockCipher k) => IO (IV k)
+getIVIO = do
+	let bytes = ivBlockSizeBytes p
+	    p = undefined
+	bs <- getEntropy bytes
+	return (IV bs `asTypeOf` p)
 
 ivBlockSizeBytes :: BlockCipher k => IV k -> Int
 ivBlockSizeBytes iv = (blockSize `for` (keyForIV iv)) `div` 8
