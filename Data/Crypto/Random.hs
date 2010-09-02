@@ -1,9 +1,10 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
 module Data.Crypto.Random
 	( OldRandomClass (..)
 	, RandomGenerator(..)
 	, genInteger
 	, GenError (..)
+	, newGenIO
 	) where
 
 import System.Crypto.Random (getEntropy)
@@ -63,7 +64,9 @@ class RandomGenerator g where
 		let res = genBytes g len
 		in case res of
 			Left err -> Left err
-			Right (bs,g') -> Right (zwp' entropy bs, g')
+			Right (bs,g') ->
+				let entropy' = B.append entropy (B.replicate (len - B.length entropy) 0)
+				in Right (zwp' entropy' bs, g')
 
 	-- |reseed a random number generator
 	reseed		:: g -> B.ByteString -> Either GenError g
@@ -76,11 +79,12 @@ class SplitableGenerator g where
 -- |Use System.Crypto.Random to obtain entropy for newGen.
 -- Only buggy RandomGenerator instances should fail.
 newGenIO :: RandomGenerator g => IO (Either GenError g)
-newGenIO = res
-  where
-  l = liftM (for genSeedLength . fromRight) res
-  fromRight (Right x) = x
-  res = liftM newGen (l >>= getEntropy)
+newGenIO = do
+	let r = Right undefined
+	    l = genSeedLength `for` (fromRight r)
+	    fromRight (Right x) = x
+	res <- liftM newGen (getEntropy l)
+	return (res `asTypeOf` r)
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
