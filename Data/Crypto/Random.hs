@@ -57,10 +57,11 @@ class RandomGenerator g where
 	-- |Obtain random data using a generator
 	genBytes	:: g -> Int -> Either GenError (B.ByteString, g)
 
-	-- |'genBytesAI g i entropy' generates 'i' random bytes and use the
-	-- additional input 'entropy' in the generation of the requested data.
-	genBytesAI	:: g -> Int -> B.ByteString -> Either GenError (B.ByteString, g)
-	genBytesAI g len entropy =
+	-- |'genBytesWithEntropy g i entropy' generates 'i' random bytes and use the
+	-- additional input 'entropy' in the generation of the requested data to
+	-- increase the confidence our generated data is a secure random stream.
+	genBytesWithEntropy	:: g -> Int -> B.ByteString -> Either GenError (B.ByteString, g)
+	genBytesWithEntropy g len entropy =
 		let res = genBytes g len
 		in case res of
 			Left err -> Left err
