@@ -1,8 +1,8 @@
-module Data.Crypto.HMAC where
+module Crypto.HMAC where
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
-import Data.Crypto.Classes
+import Crypto.Classes
 import Data.Serialize (encode)
 import qualified Data.Binary as Bin
 import Data.Bits (xor)

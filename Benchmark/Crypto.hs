@@ -23,8 +23,8 @@ module Benchmark.Crypto
 	, benchmarkRNG
 	) where
 
-import Data.Crypto.Classes
-import Data.Crypto.Modes (ecb', unEcb')
+import Crypto.Classes
+import Crypto.Modes (ecb', unEcb')
 import qualified Data.Serialize as Ser
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L

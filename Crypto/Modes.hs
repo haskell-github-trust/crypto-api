@@ -1,5 +1,5 @@
 {-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
-module Data.Crypto.Modes
+module Crypto.Modes
 	( ecb, unEcb
 	, cbc, unCbc
 	, cfb, unCfb
@@ -25,8 +25,8 @@ import qualified Data.Binary.Get as BG
 import qualified Data.Serialize.Put as SP
 import qualified Data.Serialize.Get as SG
 import Data.Bits (xor)
-import Data.Crypto.Classes
-import Data.Crypto.Random
+import Crypto.Classes
+import Crypto.Random
 import System.Crypto.Random (getEntropy)
 
 -- Initilization Vectors for key 'k' (IV k) are used
@@ -244,7 +244,7 @@ unfoldK f i =
 			let (as, iF) = unfoldK f i'
 			in (a:as, iF)
 
-getIV :: (BlockCipher k, RandomGenerator g) => g -> Either GenError (IV k, g)
+getIV :: (BlockCipher k, CryptoRandomGen g) => g -> Either GenError (IV k, g)
 getIV g =
 	let bytes = ivBlockSizeBytes iv
 	    gen = genBytes g bytes

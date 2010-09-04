@@ -37,8 +37,8 @@ module Test.Crypto
 
 import Test.QuickCheck
 import Test.ParseNistKATs
-import Data.Crypto.Classes
-import Data.Crypto.Modes
+import Crypto.Classes
+import Crypto.Modes
 import qualified Data.ByteString.Lazy.Char8 as LC
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B

@@ -1,14 +1,15 @@
 {-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
-module Data.Crypto.Random
-	( OldRandomClass (..)
-	, RandomGenerator(..)
+module Crypto.Random
+	( AsRandomGen (..)
+	, CryptoRandomGen(..)
 	, genInteger
 	, GenError (..)
 	, newGenIO
 	) where
 
 import System.Crypto.Random (getEntropy)
-import System.Random (RandomGen(..))
+import System.Random (RandomGen(next))
+import qualified System.Random as R
 import Control.Monad (liftM)
 import Data.Serialize
 import qualified Data.ByteString as B
@@ -24,8 +25,8 @@ data GenError =			-- Expected use:
 	| NotEnoughEntropy	-- For instantiating new generators (or reseeding)
   deriving (Eq, Ord, Show)
 
-instance (RandomGenerator g) => RandomGen (OldRandomClass g) where
-	next (ORC g) =
+instance (SplitableGenerator g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
+	next (AsRG g) =
 		let (Right (bs, g')) = genBytes g (sizeOf res)
 		    Right res = decode bs
 		in (res, ORC g')
@@ -36,18 +37,18 @@ instance (RandomGenerator g) => RandomGen (OldRandomClass g) where
 		    Right new2 = newGen b
 		in (ORC new1, ORC new2)
 
--- |Any 'RandomGenerator' can be used where the 'RandomGen' class is needed
--- simply by wrapping with with the ORC constructor.  Any failures
--- (Left results from genBytes or newGen bs | B.length bs == 512) result
+-- |Any 'CryptoRandomGen' can be used where the 'RandomGen' class is needed
+-- simply by wrapping with with the AsRG constructor.  Any failures
+-- (Left results from genBytes or newGen) result
 -- in a pattern match exception.  Such failures were simply assumed
 -- not possible by the RandomGen class, hence there is no non-exception
 -- way to indicate a failure.
-data OldRandomClass a = ORC a
+data AsRandomGen a = AsRG a
 	deriving (Eq, Ord, Show)
 
 -- |A class of random bit generators that allows for the possibility of failure,
 -- reseeding, providing entropy at the same time as requesting bytes
-class RandomGenerator g where
+class CryptoRandomGen g where
 	-- |Instantiate a new random bit generator
 	newGen :: B.ByteString -> Either GenError g
 
@@ -78,8 +79,8 @@ class SplitableGenerator g where
 	split :: g -> Either GenError (g,g)
 
 -- |Use System.Crypto.Random to obtain entropy for newGen.
--- Only buggy RandomGenerator instances should fail.
-newGenIO :: RandomGenerator g => IO (Either GenError g)
+-- Only buggy CryptoRandomGen instances should fail.
+newGenIO :: CryptoRandomGen g => IO (Either GenError g)
 newGenIO = do
 	let r = Right undefined
 	    l = genSeedLength `for` (fromRight r)
@@ -94,7 +95,7 @@ for t _ = unTagged t
 -- |'genInteger g (low,high)' will generate an integer between [low, high] inclusivly.
 -- This function has degraded (theoretically unbounded, probabilitically decent) performance
 -- the closer your range size (high - low) is to 2^n+1 for large natural values of n.
-genInteger :: RandomGenerator g => g -> (Integer, Integer) -> Either GenError (Integer, g)
+genInteger :: CryptoRandomGen g => g -> (Integer, Integer) -> Either GenError (Integer, g)
 genInteger g (low,high) 
 	| high < low = genInteger  g (high,low)
 	| high == low = Right (high, g)

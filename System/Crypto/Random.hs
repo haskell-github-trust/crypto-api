@@ -11,7 +11,7 @@ import System.IO (openFile, hClose, IOMode(..), Handle)
 import Control.Monad (liftM)
 import Data.ByteString as B
 import Data.ByteString.Lazy as L
-import Data.Crypto.Types
+import Crypto.Types
 
 #if defined(_WIN32)
 {- C example for windows rng - taken from a blog, can't recall which one but thank you!

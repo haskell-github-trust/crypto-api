@@ -1,4 +1,4 @@
-module Data.Crypto.Types where
+module Crypto.Types where
 
 import Data.ByteString as B
 import Data.ByteString.Lazy as L

@@ -1,5 +1,5 @@
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
-module Data.Crypto.Classes
+module Crypto.Classes
 	( Hash(..)
 	, BlockCipher(..)
 	, StreamCipher(..)
@@ -19,8 +19,8 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Internal as I
 import Data.List (foldl')
 import Data.Tagged
-import Data.Crypto.Types
-import Data.Crypto.Random
+import Crypto.Types
+import Crypto.Random
 
 -- |The Hash class is intended as the generic interface
 -- targeted by maintainers of Haskell digest implementations.
@@ -109,7 +109,7 @@ class (Binary k, Serialize k) => BlockCipher k where
   keyLength	:: k -> BitLength			-- ^ keyLength may inspect its argument to return the length
 
 class (Binary p, Serialize p) => AsymCipher p where
-  buildKeyPair :: RandomGenerator g => g -> BitLength -> Maybe ((p,p),g)
+  buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p,p),g)
   encryptAsym     :: p -> B.ByteString -> B.ByteString
   decryptAsym     :: p -> B.ByteString -> B.ByteString
   asymKeyLength   :: p -> BitLength
