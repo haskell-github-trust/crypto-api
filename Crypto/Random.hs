@@ -25,7 +25,7 @@ data GenError =			-- Expected use:
 	| NotEnoughEntropy	-- For instantiating new generators (or reseeding)
   deriving (Eq, Ord, Show)
 
-instance (SplitableGenerator g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
+instance (SplittableGen g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
 	next (AsRG g) =
 		let (Right (bs, g')) = genBytes g (sizeOf res)
 		    Right res = decode bs
@@ -72,7 +72,7 @@ class CryptoRandomGen g where
 
 -- | This class exists to provide the contraversial "split" operation that was
 -- part of 'RandomGen'.
-class SplitableGenerator g where
+class SplittableGen g where
 	split :: g -> Either GenError (g,g)
 
 -- |Use System.Crypto.Random to obtain entropy for newGen.
