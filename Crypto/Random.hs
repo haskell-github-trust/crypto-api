@@ -1,4 +1,16 @@
 {-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
+{-| This module is for instantiating cryptographically strong determinitic random bit generators (DRBGs, aka PRNGs)
+ For the simple use case of using the system random number generator ('System.Crypto.Random') to seed the DRBG:
+
+    g <- newGenIO
+
+ Users needing to provide their own entropy can call 'newGen' directly
+  
+    entropy <- getEntropy nrBytes
+    let generator = newGen entropy
+
+-}
+
 module Crypto.Random
 	( AsRandomGen (..)
 	, CryptoRandomGen(..)
@@ -18,12 +30,13 @@ import Data.Tagged
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
 
-data GenError =			-- Expected use:
-	  GenErrorOther String	-- Misc
-	| RequestedTooManyBytes	-- Requested more bytes than a single pass can generate (ex: genBytes g i | i > 2^(2^32))
-	| RangeInvalid		-- When using genInteger g (l,h), l >= h.
-	| NeedReseed		-- Some generators cease operation after too high a count without a reseed (ex: NIST SP 800-90)
-	| NotEnoughEntropy	-- For instantiating new generators (or reseeding)
+-- |many generators have these error conditions in common
+data GenError =
+	  GenErrorOther String	-- ^ Misc
+	| RequestedTooManyBytes	-- ^ Requested more bytes than a single pass can generate (ex: genBytes g i | i > 2^(2^32))
+	| RangeInvalid		-- ^ When using genInteger g (l,h) and logBase 2 (h - l) > (maxBound :: Int).
+	| NeedReseed		-- ^ Some generators cease operation after too high a count without a reseed (ex: NIST SP 800-90)
+	| NotEnoughEntropy	-- ^ For instantiating new generators (or reseeding)
   deriving (Eq, Ord, Show)
 
 instance (SplittableGen g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
@@ -51,15 +64,15 @@ class CryptoRandomGen g where
 	newGen :: B.ByteString -> Either GenError g
 
 	-- |Length of input entropy necessary to instantiate or reseed a generator
-	genSeedLength :: Tagged g Int
+	genSeedLength :: Tagged g ByteLength
 
 	-- |Obtain random data using a generator
-	genBytes	:: g -> Int -> Either GenError (B.ByteString, g)
+	genBytes	:: g -> ByteLength -> Either GenError (B.ByteString, g)
 
 	-- |'genBytesWithEntropy g i entropy' generates 'i' random bytes and use the
 	-- additional input 'entropy' in the generation of the requested data to
 	-- increase the confidence our generated data is a secure random stream.
-	genBytesWithEntropy	:: g -> Int -> B.ByteString -> Either GenError (B.ByteString, g)
+	genBytesWithEntropy	:: g -> ByteLength -> B.ByteString -> Either GenError (B.ByteString, g)
 	genBytesWithEntropy g len entropy =
 		let res = genBytes g len
 		in case res of
