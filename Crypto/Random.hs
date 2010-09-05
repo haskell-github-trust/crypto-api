@@ -20,6 +20,7 @@ module Crypto.Random
 	) where
 
 import System.Crypto.Random (getEntropy)
+import Crypto.Types
 import System.Random (RandomGen(next))
 import qualified System.Random as R
 import Control.Monad (liftM)
@@ -90,14 +91,18 @@ class SplittableGen g where
 	split :: g -> Either GenError (g,g)
 
 -- |Use System.Crypto.Random to obtain entropy for newGen.
--- Only buggy CryptoRandomGen instances should fail.
-newGenIO :: CryptoRandomGen g => IO (Either GenError g)
+-- Only buggy CryptoRandomGen instances should fail, but
+-- if they are so buggy as to never
+-- successfully instantiate when given 'genSeedLength'
+-- entropy then this could result in an infinite loop.
+newGenIO :: CryptoRandomGen g => IO g
 newGenIO = do
-	let r = Right undefined
-	    l = genSeedLength `for` (fromRight r)
-	    fromRight (Right x) = x
+	let r = undefined
+	    l = genSeedLength `for` r
 	res <- liftM newGen (getEntropy l)
-	return (res `asTypeOf` r)
+	case res of
+		Left _ -> newGenIO
+		Right g -> return (g `asTypeOf` r)
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
