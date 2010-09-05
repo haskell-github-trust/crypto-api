@@ -45,9 +45,7 @@ instance (SplittableGen g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
 		let (Right (bs, g')) = genBytes g (sizeOf res)
 		    Right res = decode bs
 		in (res, AsRG g')
-	split (AsRG g) =
-		let Right (g1,g2) = split g
-		in (AsRG g1, AsRG g2)
+	split (AsRG g) = split g
 
 -- |Any 'CryptoRandomGen' can be used where the 'RandomGen' class is needed
 -- simply by wrapping with with the AsRG constructor.  Any failures
@@ -88,7 +86,7 @@ class CryptoRandomGen g where
 -- | This class exists to provide the contraversial "split" operation that was
 -- part of 'RandomGen'.
 class SplittableGen g where
-	split :: g -> Either GenError (g,g)
+	split :: g -> (g,g)
 
 -- |Use System.Crypto.Random to obtain entropy for newGen.
 -- Only buggy CryptoRandomGen instances should fail, but
