@@ -15,7 +15,8 @@ import Data.Serialize
 import qualified Data.ByteString as B
 import Foreign.Storable (sizeOf)
 import Data.Tagged
-import Data.Bits (xor, setBit, shiftR, shiftL)
+import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
+import Data.List (foldl')
 
 data GenError =			-- Expected use:
 	  GenErrorOther String	-- Misc
@@ -93,21 +94,24 @@ for t _ = unTagged t
 -- This function has degraded (theoretically unbounded, probabilitically decent) performance
 -- the closer your range size (high - low) is to 2^n+1 for large natural values of n.
 genInteger :: CryptoRandomGen g => g -> (Integer, Integer) -> Either GenError (Integer, g)
-genInteger g (low,high) 
+genInteger g (low,high)
 	| high < low = genInteger  g (high,low)
 	| high == low = Right (high, g)
-	| otherwise = 
-    let range = high - low
-        nrBits = base2Log range
-	nrBytes = (nrBits + 7) `div` 8
-        offset = genBytes g (fromIntegral nrBytes)
-    in case offset of
+	| otherwise = go g
+  where
+  mask   = foldl' setBit 0 [0 .. fromIntegral nrBits - 1]
+  nrBits = base2Log range
+  range  = high - low
+  nrBytes = (nrBits + 7) `div` 8
+  go gen =
+	let offset = genBytes gen (fromIntegral nrBytes)
+	in case offset of
         Left err -> Left err
         Right (bs,g') -> 
 	    if nrBytes > fromIntegral (maxBound :: Int)
 		then Left RangeInvalid
-		else let res = low + (bs2i bs)
-		     in if res > high then genInteger g' (low, high) else Right (res, g')
+		else let res = low + (bs2i bs .&. mask)
+		     in if res > high then go g' else Right (res, g')
 
 base2Log :: Integer -> Integer
 base2Log i
