@@ -45,7 +45,7 @@ instance (SplittableGen g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
 		let (Right (bs, g')) = genBytes g (sizeOf res)
 		    Right res = decode bs
 		in (res, AsRG g')
-	split (AsRG g) = split g
+	split (AsRG g) = let (a,b) = split g in (AsRG a, AsRG b)
 
 -- |Any 'CryptoRandomGen' can be used where the 'RandomGen' class is needed
 -- simply by wrapping with with the AsRG constructor.  Any failures
