@@ -13,7 +13,7 @@ description:    A generic interface for cryptographic operations,
                 Maintainers of hash and cipher implementations are
                 encouraged to add instances for the classes defined
                 in Crypto.Classes.  Crypto users are similarly
-                encoraged to use the interfaces defined in the Classes
+                encouraged to use the interfaces defined in the Classes
                 module.
 
                 Any concepts or functions of general use to more than

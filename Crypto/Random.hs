@@ -8,14 +8,12 @@
  This module is for instantiating cryptographically strong determinitic random bit generators (DRBGs, aka PRNGs)
  For the simple use case of using the system random number generator ('System.Crypto.Random') to seed the DRBG:
 
-@
-    g <- newGenIO
+@   g <- newGenIO
 @
 
  Users needing to provide their own entropy can call 'newGen' directly
  
-@ 
-    entropy <- getEntropy nrBytes
+@    entropy <- getEntropy nrBytes
     let generator = newGen entropy
 @
 
@@ -84,7 +82,11 @@ class CryptoRandomGen g where
 	-- additional input @entropy@ in the generation of the requested data to
 	-- increase the confidence our generated data is a secure random stream.
 	--
-	-- Default: @genBytesWithEntropy g bytes entropy = entropy `xor` genBytes g bytes@
+	-- Default:
+	-- 
+	-- @
+	--     genBytesWithEntropy g bytes entropy = xor entropy (genBytes g bytes)
+	-- @
 	genBytesWithEntropy	:: g -> ByteLength -> B.ByteString -> Either GenError (B.ByteString, g)
 	genBytesWithEntropy g len entropy =
 		let res = genBytes g len
@@ -103,7 +105,7 @@ class CryptoRandomGen g where
 class SplittableGen g where
 	split :: g -> (g,g)
 
--- |Use "System.Crypto.Random" to obtain entropy for newGen.
+-- |Use "System.Crypto.Random" to obtain entropy for `newGen`.
 newGenIO :: CryptoRandomGen g => IO g
 newGenIO = do
 	let r = undefined

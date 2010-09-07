@@ -1,22 +1,24 @@
 {-# LANGUAGE OverloadedStrings, ExistentialQuantification, ViewPatterns #-}
-{-|
- Maintainer: Thomas.DuBuisson@gmail.com
- Stability: beta
- Portability: portable 
+{- |
+  Maintainer: Thomas.DuBuisson@gmail.com
+  Stability: beta
+  Portability: portable 
+
 
   Basic tests for some common cryptographic algorithms
-  
-   Most user only need to run the {make,run}Tests functions:
-  
->        runTests (makeMD5Tests (undefined :: MD5Digest))
-  
+  Most user only need to run the {make,run}Tests functions:
+
+@        runTests (makeMD5Tests (undefined :: MD5Digest))
+@
+ 
    or
   
->        runTests =<< makeAESTests (undefined :: AESKey)
-  
+@       runTests =<< makeAESTests (undefined :: AESKey)
+@
+ 
    TODO: More KATs are needed - particularly ones for non-AES, SHA, or MD5
    algorithms.
- -}
+-}
 module Test.Crypto
 	(
 	-- * Test Infrastructure
