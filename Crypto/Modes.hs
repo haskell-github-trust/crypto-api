@@ -1,4 +1,8 @@
 {-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
+{-| Generic mode implementations useable by any correct BlockCipher instance 
+ 
+  Be aware there are no tests for CFB mode yet.  See "Test.Crypto".
+-}
 module Crypto.Modes
 	( ecb, unEcb
 	, cbc, unCbc
@@ -29,9 +33,8 @@ import Crypto.Classes
 import Crypto.Random
 import System.Crypto.Random (getEntropy)
 
--- Initilization Vectors for key 'k' (IV k) are used
--- for various modes and guarrenteed to be blockSize
--- bits long.
+-- |Initilization Vectors for BlockCipher implementations (IV k) are used
+-- for various modes and guarrenteed to be blockSize bits long.
 data IV k = IV { initializationVector :: B.ByteString } deriving (Eq, Ord, Show)
 
 -- gather a specified number of bytes from the list of bytestrings
@@ -244,6 +247,7 @@ unfoldK f i =
 			let (as, iF) = unfoldK f i'
 			in (a:as, iF)
 
+-- |Obtain an `IV` using the provided CryptoRandomGenerator.
 getIV :: (BlockCipher k, CryptoRandomGen g) => g -> Either GenError (IV k, g)
 getIV g =
 	let bytes = ivBlockSizeBytes iv
@@ -256,6 +260,7 @@ getIV g =
 			| B.length bs == bytes	-> Right (iv, g')
 			| otherwise		-> Left (GenErrorOther "Generator failed to provide requested number of bytes")
 
+-- |Obtain an `IV` using the system entropy (see "System.Crypto.Random")
 getIVIO :: (BlockCipher k) => IO (IV k)
 getIVIO = do
 	let bytes = ivBlockSizeBytes p

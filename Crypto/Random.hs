@@ -2,12 +2,16 @@
 {-| This module is for instantiating cryptographically strong determinitic random bit generators (DRBGs, aka PRNGs)
  For the simple use case of using the system random number generator ('System.Crypto.Random') to seed the DRBG:
 
+@
     g <- newGenIO
+@
 
  Users needing to provide their own entropy can call 'newGen' directly
-  
+ 
+@ 
     entropy <- getEntropy nrBytes
     let generator = newGen entropy
+@
 
 -}
 
@@ -35,7 +39,7 @@ import Data.List (foldl')
 data GenError =
 	  GenErrorOther String	-- ^ Misc
 	| RequestedTooManyBytes	-- ^ Requested more bytes than a single pass can generate (ex: genBytes g i | i > 2^(2^32))
-	| RangeInvalid		-- ^ When using genInteger g (l,h) and logBase 2 (h - l) > (maxBound :: Int).
+	| RangeInvalid		-- ^ When using @genInteger g (l,h)@ and @logBase 2 (h - l) > (maxBound :: Int)@.
 	| NeedReseed		-- ^ Some generators cease operation after too high a count without a reseed (ex: NIST SP 800-90)
 	| NotEnoughEntropy	-- ^ For instantiating new generators (or reseeding)
   deriving (Eq, Ord, Show)
@@ -47,17 +51,19 @@ instance (SplittableGen g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
 		in (res, AsRG g')
 	split (AsRG g) = let (a,b) = split g in (AsRG a, AsRG b)
 
--- |Any 'CryptoRandomGen' can be used where the 'RandomGen' class is needed
--- simply by wrapping with with the AsRG constructor.  Any failures
+-- |Any `CryptoRandomGen` can be used where the `RandomGen` class is needed
+-- simply by wrapping with with the `AsRG` constructor.  Any failures
 -- (Left results from genBytes or newGen) result
 -- in a pattern match exception.  Such failures were simply assumed
--- not possible by the RandomGen class, hence there is no non-exception
+-- not possible by the `RandomGen` class, hence there is no non-exception
 -- way to indicate a failure.
 data AsRandomGen a = AsRG a
 	deriving (Eq, Ord, Show)
 
 -- |A class of random bit generators that allows for the possibility of failure,
 -- reseeding, providing entropy at the same time as requesting bytes
+--
+-- Minimum complete definition: `newGen`, `genSeedLength`, `genBytes`, `reseed`.
 class CryptoRandomGen g where
 	-- |Instantiate a new random bit generator
 	newGen :: B.ByteString -> Either GenError g
@@ -68,9 +74,11 @@ class CryptoRandomGen g where
 	-- |Obtain random data using a generator
 	genBytes	:: g -> ByteLength -> Either GenError (B.ByteString, g)
 
-	-- |'genBytesWithEntropy g i entropy' generates 'i' random bytes and use the
-	-- additional input 'entropy' in the generation of the requested data to
+	-- |@genBytesWithEntropy g i entropy@ generates @i@ random bytes and use the
+	-- additional input @entropy@ in the generation of the requested data to
 	-- increase the confidence our generated data is a secure random stream.
+	--
+	-- Default: @genBytesWithEntropy g bytes entropy = entropy `xor` genBytes g bytes@
 	genBytesWithEntropy	:: g -> ByteLength -> B.ByteString -> Either GenError (B.ByteString, g)
 	genBytesWithEntropy g len entropy =
 		let res = genBytes g len
@@ -80,19 +88,16 @@ class CryptoRandomGen g where
 				let entropy' = B.append entropy (B.replicate (len - B.length entropy) 0)
 				in Right (zwp' entropy' bs, g')
 
-	-- |reseed a random number generator
+	-- |reseed the generator
 	reseed		:: g -> B.ByteString -> Either GenError g
 
 -- | This class exists to provide the contraversial "split" operation that was
--- part of 'RandomGen'.
+-- part of 'RandomGen'.  When combined with a CryptoRandomGen instance this provides
+-- a method to lift CryptoGenRandom into the RandomGen class (via the `AsRnadomGen` wrapper)
 class SplittableGen g where
 	split :: g -> (g,g)
 
--- |Use System.Crypto.Random to obtain entropy for newGen.
--- Only buggy CryptoRandomGen instances should fail, but
--- if they are so buggy as to never
--- successfully instantiate when given 'genSeedLength'
--- entropy then this could result in an infinite loop.
+-- |Use "System.Crypto.Random" to obtain entropy for newGen.
 newGenIO :: CryptoRandomGen g => IO g
 newGenIO = do
 	let r = undefined
@@ -106,9 +111,10 @@ newGenIO = do
 for :: Tagged a b -> a -> b
 for t _ = unTagged t
 
--- |'genInteger g (low,high)' will generate an integer between [low, high] inclusivly.
+-- |@genInteger g (low,high)@ will generate an integer between [low, high] inclusively, swapping the pair if high < low.
+--
 -- This function has degraded (theoretically unbounded, probabilitically decent) performance
--- the closer your range size (high - low) is to 2^n+1 for large natural values of n.
+-- the closer your range size (high - low) is to 2^n (from the top).
 genInteger :: CryptoRandomGen g => g -> (Integer, Integer) -> Either GenError (Integer, g)
 genInteger g (low,high)
 	| high < low = genInteger  g (high,low)

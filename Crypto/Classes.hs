@@ -35,7 +35,7 @@ class (Binary d, Serialize d, Eq d, Ord d)
   blockLength	:: Tagged d BitLength	      -- ^ The amount of data operated on in each round of the digest computation
   initialCtx	:: ctx			      -- ^ An initial context, provided with the first call to 'updateCtx'
   updateCtx	:: ctx -> B.ByteString -> ctx -- ^ Used to update a context, repeatedly called until all data is exhausted
-                                              --   must operate correctly for imputs of n*blockLength bytes for n `elem` [0..]
+                                              --   must operate correctly for imputs of @n*blockLength@ bytes for @n `elem` [0..]@
   finalize	:: ctx -> B.ByteString -> d   -- ^ Finializing a context, plus any message data less than the block size, into a digest
 
 -- |Hash a lazy ByteString, creating a digest
@@ -86,11 +86,11 @@ makeBlocks msg len = go (L.toChunks msg)
 		[] -> ([], x)
 		(a:as) -> go (B.append x a : as)
 
--- |Obtain a tagged value for a particular instantiated type.
+-- |Obtain a tagged value for a given type
 for :: Tagged a b -> a -> b
 for t _ = unTagged t
 
--- Same as `for`
+-- |Infix `for` operator
 (.::.) :: Tagged a b -> a -> b
 (.::.) = for
 
@@ -100,26 +100,35 @@ for t _ = unTagged t
 -- such as 'cbc', and other functions from Data.Crypto.Modes, provide a useful API
 -- for comsumers of cipher implementations.
 --
--- Any instantiated implementation must handle unaligned data
+-- Instances must handle unaligned data
 class (Binary k, Serialize k) => BlockCipher k where
   blockSize	:: Tagged k BitLength			-- ^ The size of a single block; the smallest unit on which the cipher operates.
-  encryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ encrypt data of size n*blockLength where n `elem` [0..]  (ecb encryption)
-  decryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ decrypt data of size n*blockLength where n `elem` [0..]  (ecb decryption)
+  encryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ encrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb encryption)
+  decryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ decrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb decryption)
   buildKey	:: B.ByteString -> Maybe k		-- ^ smart constructor for keys from a bytestring.
   keyLength	:: k -> BitLength			-- ^ keyLength may inspect its argument to return the length
 
 class (Binary p, Serialize p) => AsymCipher p where
-  buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p,p),g)
-  encryptAsym     :: p -> B.ByteString -> B.ByteString
-  decryptAsym     :: p -> B.ByteString -> B.ByteString
+  buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p,p),g) -- ^ build a public/private key pair using the provided generator
+  encryptAsym     :: p -> B.ByteString -> B.ByteString	-- ^ Asymetric encryption
+  decryptAsym     :: p -> B.ByteString -> B.ByteString  -- ^ Asymetric decryption
   asymKeyLength   :: p -> BitLength
 
+-- | `signUsing d k msg` Returns a signature (not a message + signature) for `msg`
+-- by hashing into a digest asTypeOf `d` and encrypting using the asymetric key `k`.
+--
+-- Expect a "Signature" class to appear in a future crypto-api
+-- (this function might become depricated pending discussion)
 signUsing :: (Hash c d, AsymCipher p) => d -> p -> L.ByteString -> B.ByteString
 signUsing d p = encryptAsym p . Data.Serialize.encode . hashFunc d
 
+-- | Like `signUsing` but for strict ByteStrings.
 signUsing' :: (Hash c d, AsymCipher p) => d -> p -> B.ByteString -> B.ByteString
 signUsing' d p = encryptAsym p . Data.Serialize.encode . hashFunc' d
 
+-- | A stream cipher class.  Instance are expected to work on messages as small as one byte
+-- The length of the resulting cipher text should be equal
+-- to the length of the input message.
 class (Binary k, Serialize k) => StreamCipher k iv | k -> iv where
   buildStreamKey	:: B.ByteString -> Maybe k
   encryptStream		:: k -> iv -> B.ByteString -> (B.ByteString, iv)

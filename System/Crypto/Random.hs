@@ -1,4 +1,8 @@
 {-# LANGUAGE CPP #-}
+{-| Obtain entropy from system sources.  This module is rather untested on Windows (or testers never provided feedback),
+ though testing was requested from the community - please e-mail the maintainer with test results.
+-}
+
 module System.Crypto.Random 
 	( getEntropy
 	, CryptHandle
@@ -60,32 +64,37 @@ getEntropy n = do
 	cryptReleaseCtx h
 	return bs'
 
+-- |Open a handle from which random data can be read
 openHandle :: IO CryptHandle
 openHandle = liftM CH cryptAcquireCtx
 
+-- |Close the `CryptHandle`
 closeHandle (CH h) = cryptReleaseCtx h
 
+-- |Read from `CryptHandle`
 hGetEntropy :: CryptHandle -> Int -> IO B.ByteString 
 hGetEntropy (CH h) = cryptGenRandom h
 
 #else
+-- |Handle for manual resource mangement
 newtype CryptHandle = CH Handle
 
-
+-- |Open a `CryptHandle`
 openHandle :: IO CryptHandle
 openHandle = liftM CH (openFile "/dev/urandom" ReadMode)
 
+-- |Close the `CryptHandle`
 closeHandle :: CryptHandle -> IO ()
 closeHandle (CH h) = hClose h
 
+-- |Read random data from a `CryptHandle`
 hGetEntropy :: CryptHandle -> Int -> IO B.ByteString 
 hGetEntropy (CH h) = B.hGet h
 
 -- |Inefficiently get a specific number of bytes of cryptographically
 -- secure random data using the system-specific facilities.
 --
--- This function will return zero bytes
--- on platforms without a secure RNG!
+-- Use '/dev/urandom' on *nix and CryptAPI when on Windows.
 getEntropy :: ByteLength -> IO B.ByteString
 getEntropy = getEnt "/dev/urandom"
 
