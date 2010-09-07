@@ -2,7 +2,7 @@ name:           crypto-api
 version:        0.0.0.1
 license:        BSD3
 license-file:   LICENSE
-copyright:      Thomas DuBuisson <thomas.dubuisosn@gmail.com>
+copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>
 author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>, Dominic Steinitz
 maintainer:     Thomas DuBuisson <thomas.dubuisson@gmail.com>
 description:    A generic interface for cryptographic operations,
