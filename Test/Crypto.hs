@@ -64,9 +64,6 @@ import System.Directory (getDirectoryContents, doesFileExist)
 import System.FilePath (takeFileName, combine, dropExtension, (</>))
 import Paths_crypto_api
 
-instance Arbitrary Word8 where
-    arbitrary = (arbitrary :: Gen Int) >>= return . fromIntegral
-
 instance Arbitrary B.ByteString where
     arbitrary = do
         len <- choose (0,4096) :: Gen Int
