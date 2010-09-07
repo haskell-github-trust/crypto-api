@@ -29,7 +29,7 @@ Data-Files: Test/KAT_AES/*.txt
 extra-source-files:
         Test/KAT_AES/*.txt
 
-flag alg-tests
+flag tests
   description: Include Test.Crypto module for testing hash and cipher instances
   default: False
 
@@ -48,7 +48,7 @@ Library
   ghc-options:   -O2
   hs-source-dirs:
   exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Data.LargeWord, Crypto.Modes, System.Crypto.Random, Crypto.Random
-  if flag(alg-tests)
+  if flag(tests)
     exposed-modules: Test.Crypto, Test.ParseNistKATs
     build-depends: QuickCheck >= 2.3 && < 2.4, parsec >= 3.1 && < 3.2, directory >= 1.0.1.0 && < 1.1
     other-modules: Paths_crypto_api
