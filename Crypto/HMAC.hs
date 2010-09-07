@@ -1,4 +1,8 @@
-module Crypto.HMAC where
+module Crypto.HMAC
+	( hmac
+	, hmac'
+	, MacKey(..)
+	) where
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
@@ -7,9 +11,12 @@ import Data.Serialize (encode)
 import qualified Data.Binary as Bin
 import Data.Bits (xor)
 
--- |Message authentication code calculation for lazy bytestrings
-hmac :: (Hash c d) => B.ByteString -> L.ByteString -> d
-hmac k msg = res
+newtype MacKey = MacKey B.ByteString deriving (Eq, Ord, Show)
+
+-- |Message authentication code calculation for lazy bytestrings.
+-- @hmac k msg@ will compute an authentication code for @msg@ using key @k@
+hmac :: (Hash c d) => MacKey -> L.ByteString -> d
+hmac (MacKey k) msg = res
   where
   res = f . L.append ko . Bin.encode  . f . L.append ki $ msg
   f = hash
@@ -23,6 +30,6 @@ hmac k msg = res
   ki = fc $ B.map (`xor` 0x36) k'
   fc = L.fromChunks . \s -> [s]
 
--- |Message authentication code calculation for strict bytestrings
-hmac' :: (Hash c d) => B.ByteString -> B.ByteString -> d
+-- | @hmac k msg@ will compute an authentication code for @msg@ using key @k@
+hmac' :: (Hash c d) => MacKey -> B.ByteString -> d
 hmac' k = hmac k . L.fromChunks . return
