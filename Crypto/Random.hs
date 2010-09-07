@@ -1,5 +1,11 @@
 {-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
-{-| This module is for instantiating cryptographically strong determinitic random bit generators (DRBGs, aka PRNGs)
+{-|
+ Maintainer: Thomas.DuBuisson@gmail.com
+ Stability: beta
+ Portability: portable 
+
+
+ This module is for instantiating cryptographically strong determinitic random bit generators (DRBGs, aka PRNGs)
  For the simple use case of using the system random number generator ('System.Crypto.Random') to seed the DRBG:
 
 @

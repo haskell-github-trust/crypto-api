@@ -1,3 +1,9 @@
+{-|
+ Maintainer: Thomas.DuBuisson@gmail.com
+ Stability: beta
+ Portability: portable 
+-}
+
 module Crypto.HMAC
 	( hmac
 	, hmac'

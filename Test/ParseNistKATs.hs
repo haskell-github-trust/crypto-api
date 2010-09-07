@@ -1,4 +1,10 @@
--- |NIST KAT files are composed of properties, such as:
+-- |
+-- Maintainer: Thomas.DuBuisson@gmail.com
+-- Stability: beta
+-- Portability: portable 
+--
+--
+-- NIST KAT files are composed of properties, such as:
 --
 -- >	[SHA-1]
 -- >	[PredictionResistance = True]

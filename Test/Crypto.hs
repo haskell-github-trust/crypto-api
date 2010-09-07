@@ -1,5 +1,10 @@
 {-# LANGUAGE OverloadedStrings, ExistentialQuantification, ViewPatterns #-}
-{-| Basic tests for some common cryptographic algorithms
+{-|
+ Maintainer: Thomas.DuBuisson@gmail.com
+ Stability: beta
+ Portability: portable 
+
+  Basic tests for some common cryptographic algorithms
   
    Most user only need to run the {make,run}Tests functions:
   

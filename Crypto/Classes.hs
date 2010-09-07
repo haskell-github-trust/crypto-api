@@ -1,4 +1,17 @@
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
+{-|
+ Maintainer: Thomas.DuBuisson@gmail.com
+ Stability: beta
+ Portability: portable 
+
+This is the heart of the crypto-api package.  By making (or having) 
+an instance of Hash, AsymCipher, BlockCipher or StreamCipher you provide (or obtain)
+access to any infrastructure built on these primitives include block cipher modes
+of operation, hashing, hmac, signing, etc.  These classes allow users to build
+routines that are agnostic to the algorithm used so changing algorithms is as simple
+as changing a type signature.
+-}
+
 module Crypto.Classes
 	( Hash(..)
 	, BlockCipher(..)

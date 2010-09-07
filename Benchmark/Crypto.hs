@@ -1,6 +1,11 @@
-{-| Criterion benchmarks for hash and block ciphers.
+{- |
+ Maintainer: Thomas.DuBuisson@gmail.com
+ Stability: beta
+ Portability: portable 
 
-   Example hash benchmark:
+
+ Criterion benchmarks for hash and block ciphers.
+ Example hash benchmark:
 
 >	import Data.Digest.Pure.MD5
 >	import Benchmark.Crypto

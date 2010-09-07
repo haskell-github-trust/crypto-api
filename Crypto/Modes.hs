@@ -1,5 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
-{-| Generic mode implementations useable by any correct BlockCipher instance 
+{-|
+ Maintainer: Thomas.DuBuisson@gmail.com
+ Stability: beta
+ Portability: portable 
+
+ Generic mode implementations useable by any correct BlockCipher instance 
  
   Be aware there are no tests for CFB mode yet.  See "Test.Crypto".
 -}
