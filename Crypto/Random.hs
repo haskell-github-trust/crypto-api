@@ -48,6 +48,12 @@ data GenError =
 	| NotEnoughEntropy	-- ^ For instantiating new generators (or reseeding)
   deriving (Eq, Ord, Show)
 
+instance Monad (Either GenError) where
+        return = Right
+        fail   = Left . GenErrorOther
+        (Left x) >>= _  = Left x
+        (Right x) >>= f = f x
+
 instance (SplittableGen g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
 	next (AsRG g) =
 		let (Right (bs, g')) = genBytes g (sizeOf res)
