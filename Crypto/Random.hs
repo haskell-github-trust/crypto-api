@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
+{-# LANGUAGE ScopedTypeVariables, MonoLocalBinds, FlexibleInstances #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -22,6 +22,7 @@
 module Crypto.Random
 	( AsRandomGen (..)
 	, CryptoRandomGen(..)
+	, SplittableGen(..)
 	, genInteger
 	, GenError (..)
 	, newGenIO
