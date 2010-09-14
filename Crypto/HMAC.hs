@@ -14,7 +14,6 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 import Crypto.Classes
 import Data.Serialize (encode)
-import qualified Data.Binary as Bin
 import Data.Bits (xor)
 
 newtype MacKey = MacKey B.ByteString deriving (Eq, Ord, Show)
@@ -24,15 +23,15 @@ newtype MacKey = MacKey B.ByteString deriving (Eq, Ord, Show)
 hmac :: (Hash c d) => MacKey -> L.ByteString -> d
 hmac (MacKey k) msg = res
   where
-  res = f . L.append ko . Bin.encode  . f . L.append ki $ msg
-  f = hash
+  res = hash' . B.append ko . encode  . f . L.append ki $ msg
+  f = hashFunc res
   keylen = B.length k
   blen = blockLength .::. res `div` 8
   k' = case compare keylen blen of
          GT -> encode . f . fc $ k
          EQ -> k
          LT -> B.append k (B.replicate (blen - keylen) 0x00)
-  ko = fc $ B.map (`xor` 0x5c) k'
+  ko = B.map (`xor` 0x5c) k'
   ki = fc $ B.map (`xor` 0x36) k'
   fc = L.fromChunks . \s -> [s]
 

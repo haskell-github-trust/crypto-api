@@ -40,7 +40,6 @@ flag benchmarks
 Library
   Build-Depends: base == 4.*,
                  bytestring >= 0.9 && < 0.10,
-                 binary >= 0.4.0 && <0.6.0,
                  cereal >= 0.2 && < 0.4,
                  tagged == 0.1.*,
                  random >= 1 && < 2,

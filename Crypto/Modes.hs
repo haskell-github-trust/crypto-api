@@ -28,9 +28,6 @@ module Crypto.Modes
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 import Data.Serialize
-import qualified Data.Binary as Bin
-import qualified Data.Binary.Put as BP
-import qualified Data.Binary.Get as BG
 import qualified Data.Serialize.Put as SP
 import qualified Data.Serialize.Get as SG
 import Data.Bits (xor)
@@ -285,13 +282,6 @@ instance (BlockCipher k) => Serialize (IV k) where
 		iv <- SG.getByteString bytes
 		return (IV iv)
 	put (IV iv) = SP.putByteString iv
-
-instance BlockCipher k => Bin.Binary (IV k) where
-	get = do
-		let bytes = blockSize .::. (undefined :: k) `div` 8
-		iv <- BG.getByteString bytes
-		return (IV iv)
-	put (IV iv) = BP.putByteString iv
 
 -- TODO: GCM, GMAC
 -- Consider the AES-only modes of XTS, CCM

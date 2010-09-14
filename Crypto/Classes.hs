@@ -25,7 +25,6 @@ module Crypto.Classes
 	, hashFunc'
 	) where
 
-import Data.Binary
 import Data.Serialize
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
@@ -42,7 +41,7 @@ import Crypto.Random
 -- for comsumers of hash implementations.
 --
 -- Any instantiated implementation must handle unaligned data
-class (Binary d, Serialize d, Eq d, Ord d)
+class (Serialize d, Eq d, Ord d)
     => Hash ctx d | d -> ctx, ctx -> d where
   outputLength	:: Tagged d BitLength	      -- ^ The size of the digest when encoded
   blockLength	:: Tagged d BitLength	      -- ^ The amount of data operated on in each round of the digest computation
@@ -114,14 +113,14 @@ for t _ = unTagged t
 -- for comsumers of cipher implementations.
 --
 -- Instances must handle unaligned data
-class (Binary k, Serialize k) => BlockCipher k where
+class ( Serialize k) => BlockCipher k where
   blockSize	:: Tagged k BitLength			-- ^ The size of a single block; the smallest unit on which the cipher operates.
   encryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ encrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb encryption)
   decryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ decrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb decryption)
   buildKey	:: B.ByteString -> Maybe k		-- ^ smart constructor for keys from a bytestring.
   keyLength	:: k -> BitLength			-- ^ keyLength may inspect its argument to return the length
 
-class (Binary p, Serialize p) => AsymCipher p where
+class (Serialize p) => AsymCipher p where
   buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p,p),g) -- ^ build a public/private key pair using the provided generator
   encryptAsym     :: p -> B.ByteString -> B.ByteString	-- ^ Asymetric encryption
   decryptAsym     :: p -> B.ByteString -> B.ByteString  -- ^ Asymetric decryption
@@ -142,7 +141,7 @@ signUsing' d p = encryptAsym p . Data.Serialize.encode . hashFunc' d
 -- | A stream cipher class.  Instance are expected to work on messages as small as one byte
 -- The length of the resulting cipher text should be equal
 -- to the length of the input message.
-class (Binary k, Serialize k) => StreamCipher k iv | k -> iv where
+class (Serialize k) => StreamCipher k iv | k -> iv where
   buildStreamKey	:: B.ByteString -> Maybe k
   encryptStream		:: k -> iv -> B.ByteString -> (B.ByteString, iv)
   decryptStream 	:: k -> iv -> B.ByteString -> (B.ByteString, iv)
