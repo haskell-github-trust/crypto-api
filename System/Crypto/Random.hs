@@ -22,7 +22,7 @@ import Data.ByteString as B
 import Data.ByteString.Lazy as L
 import Crypto.Types
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined (mingw32_HOST_OS) || defined(cygwin32_HOST_OS)
 {- C example for windows rng - taken from a blog, can't recall which one but thank you!
         #include <Windows.h>
         #include <Wincrypt.h>
