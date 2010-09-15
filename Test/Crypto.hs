@@ -47,7 +47,6 @@ import qualified Data.ByteString.Lazy.Char8 as LC
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import Control.Monad (forM)
-import qualified Data.Binary as Bin
 import qualified Data.Serialize as Ser
 import Numeric (readHex)
 

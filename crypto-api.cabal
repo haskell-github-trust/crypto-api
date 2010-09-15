@@ -54,7 +54,7 @@ Library
   exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Data.LargeWord, Crypto.Modes, System.Crypto.Random, Crypto.Random
   if flag(tests)
     exposed-modules: Test.Crypto, Test.AES, Test.SHA, Test.HMAC, Test.ParseNistKATs
-    build-depends: QuickCheck >= 2.3 && < 2.4, directory >= 1.0.1.0 && < 1.1, binary
+    build-depends: QuickCheck >= 2.3 && < 2.4, directory >= 1.0.1.0 && < 1.1
     other-modules: Paths_crypto_api
   if flag(benchmarks)
     exposed-modules: Benchmark.Crypto
