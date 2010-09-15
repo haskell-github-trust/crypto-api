@@ -28,7 +28,7 @@ hmac (MacKey k) msg = res
   keylen = B.length k
   blen = blockLength .::. res `div` 8
   k' = case compare keylen blen of
-         GT -> encode . f . fc $ k
+         GT -> B.append (encode . f . fc $ k) (B.replicate (blen - (outputLength .::. res `div` 8) ) 0x00)
          EQ -> k
          LT -> B.append k (B.replicate (blen - keylen) 0x00)
   ko = B.map (`xor` 0x5c) k'
