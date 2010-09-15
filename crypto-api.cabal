@@ -64,4 +64,4 @@ Library
 
 source-repository head
     type:     darcs
-    location: http://projects.haskell.org/packages/crypto-api
+    location: http://code.haskell.org/crypto-api
