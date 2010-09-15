@@ -33,14 +33,14 @@
 -- the second element is a list of tests.  Each test is itself a list of records (key/value pairs).
 -- Properties apply to all tests contained in the second element of the tuple.
 module Test.ParseNistKATs
-	( parseCategory, parseProperty
+	( parseCategories --, parseCategory, parseProperty
 	, Properties, Record, NistTest, TypedTest, TestCategory
-	, module Text.Parsec
+	, -- module Text.Parsec
 	) where
 
-import Text.Parsec
-import Text.Parsec.ByteString
-
+import Data.Char (isSpace)
+import Data.Maybe (listToMaybe)
+import Control.Arrow (second)
 
 type Properties = [(String, String)]
 type Record = (String, String)
@@ -49,63 +49,32 @@ type TypedTest = (String, [NistTest])
 
 type TestCategory = (Properties, [NistTest])
 
--- |parse a NIST KAT file
-parseCategory :: Parser (Properties, [NistTest])
-parseCategory = do
-	optional skipComments
-        ps <- many1 parseProperty
-	many space
-        rsA <- many parseRecord
-        let rs = chunk ((== "COUNT") . fst) rsA
-        return (ps, rs)
+parseCategories :: String -> String -> [(Properties, [NistTest])]
+parseCategories delim file =
+	getCategories delim . elimWhite . elimComments . lines $ file
+
+elimComments = filter ((/= Just '#') . listToMaybe)
+elimWhite = map (filter (/= '\r')) . filter (notNull . filter (not . isSpace))
+getCategories :: String -> [String] -> [(Properties, [NistTest])]
+getCategories _ [] = []
+getCategories delim ls =
+	let (tt, rest) = getCategory delim ls
+	in tt : getCategories delim rest
+getCategory delim ls =
+	let (props,rest1) = break ((/= Just '[') . listToMaybe) ls
+	    (tests,rest2) = break ((== Just '[') . listToMaybe) rest1
+	in ((map parseProp props, parseTests delim tests), rest2)
+parseProp = second (drop 1) . break (== '=') . filter (`notElem` "[]")
+parseTests :: String -> [String] -> [NistTest]
+parseTests delim = filter notNull . chunk ((== delim) . fst) . map parseRecord
+parseRecord = second (drop 1) . break (== '=') . filter (not . isSpace)
+notNull = not . null
+
+chunk :: (a -> Bool) -> [a] -> [[a]]
+chunk f xs = snd (go xs)
   where
-  chunk f lst = let (a,b) = chunkAt f lst in filter (not . null) (a : b)
-  chunkAt :: (a -> Bool) -> [a] -> ([a], [[a]])
-  chunkAt _ [] = ([], [])
-  chunkAt f (a:as) = 
-	if f a
-		then let (curr, other) = (chunkAt f as)
-		     in ([], (a:curr) : other)
-		 else let (curr,other) = chunkAt f as in (a:curr , other)
-
-skipComments = many $ do
-	optional (many space)
-	skipComment
-	optional (many space)
-
-skipComment = do
-	char '#'
-	manyTill anyChar newline
-	return ()
-
-parseProperty :: Parser (String, String)
-parseProperty = do
-        char '['
-        t1 <- token
-	many space
-        m <- optionMaybe (char '=')
-        res <- case m of
-                Nothing  -> return (t1, "")
-                Just _ -> do
-                        many space
-                        t2 <- token
-                        return (t1, t2)
-	optional (many space)
-	return res
-  where
-  token = manyTill anyChar (oneOf [']', ' ', '\t'])
-
--- |parse a property or record (count) of a NIST KAT file
-parseRecord :: Parser Record
-parseRecord = do
-	many space
-        t1 <- token
-        many space
-        char '='
-        many (oneOf [' ', '\t', '\r'])
-        t2 <- token
-        many space
-        return (t1, t2)
-  where
-  token = many alphaNum -- manyTill anyChar ((space >> return ()) <|> eof)
-
+  go [] = ([],[])
+  go (a:as) = if f a
+		then let (t,ts) = go as in ([], (a:t):ts)
+		else let (t, ts) = go as
+		     in (a:t, ts)

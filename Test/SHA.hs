@@ -10,7 +10,6 @@ module Test.SHA
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 import Data.Maybe (maybeToList)
-import Data.Either (rights)
 import Data.List (isPrefixOf)
 import Data.Serialize (encode)
 import Crypto.Classes
@@ -19,8 +18,6 @@ import Test.Crypto
 import Test.ParseNistKATs
 import System.Directory (getDirectoryContents, doesFileExist)
 import System.FilePath (takeFileName, combine, (</>))
-import Text.Parsec
-import Text.Parsec.ByteString
 import Paths_crypto_api
 
 makeSHA1Tests :: Hash c d => d -> IO [Test]
@@ -44,12 +41,12 @@ getTests d prefix = do
 	filesAndDirs <- getDirectoryContents dataDir
 	files <- filterM doesFileExist (map (combine dataDir) filesAndDirs)
 	let interestingFiles = filter ((prefix `isPrefixOf`) . takeFileName) files
-	recEs <- mapM (parseFromFile (parseCategory "Len")) interestingFiles -- A list of pairs :: (property, [NistTest])
-	let nistTests = concatMap snd (rights recEs) :: [NistTest]
+	recEs <- mapM (liftM (parseCategories "Len") . readFile) interestingFiles
+	let nistTests = concatMap snd (concat recEs) :: [NistTest]
 	    katPairs = concatMap (maybeToList . hashNistTestToPairs) nistTests
 	    strict = encode . hashFunc' d
 	    lazy   = encode . hashFunc d
-	    name i = "Nist" ++ prefix ++ (show i)
+	    name i = "Nist" ++ prefix ++ "-" ++ (show i)
 	    chunkify bs = if B.length bs == 0 then [] else let (a,b) = B.splitAt 37 bs in a : chunkify b
 	    toLazy = L.fromChunks . chunkify
 	    tests = [TK (strict msg == md && lazy (toLazy msg) == md) (name cnt) | (msg,md) <- katPairs | cnt <- [1..]]

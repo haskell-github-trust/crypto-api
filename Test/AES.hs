@@ -4,7 +4,6 @@ module Test.AES
 	) where
 
 import Data.Maybe (fromJust)
-import Data.Either (rights)
 import Data.Maybe (maybeToList)
 import qualified Data.ByteString as B
 import Crypto.Classes
@@ -15,8 +14,6 @@ import Control.Monad (forM, liftM, filterM)
 import Test.ParseNistKATs
 import System.Directory (getDirectoryContents, doesFileExist)
 import System.FilePath (takeFileName, combine, dropExtension, (</>))
-import Text.Parsec
-import Text.Parsec.ByteString
 import Paths_crypto_api
 
 -- |Based on NIST KATs, build a list  of Tests for the instantiated AES algorithm.
@@ -30,8 +27,8 @@ getAES_KATs k = do
         dataDir <- getDataFileName ("Test" </> "KAT_AES")
         filesAndDirs <- getDirectoryContents dataDir
         files <- filterM doesFileExist (map (combine dataDir) filesAndDirs)
-        recEs <- mapM (parseFromFile (parseCategory "COUNT")) files
-        let recs = map snd (rights recEs)
+        recEs <- mapM (liftM (parseCategories "COUNT") . readFile) files :: IO [[(Properties, [NistTest])]]
+        let recs = map snd (concat recEs)
             fName = map takeFileName files
             testTypes = map getTestSig fName :: [String]
             tts = zip testTypes recs :: [TypedTest]
