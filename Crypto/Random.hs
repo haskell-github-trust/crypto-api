@@ -20,9 +20,7 @@
 -}
 
 module Crypto.Random
-	( AsRandomGen (..)
-	, CryptoRandomGen(..)
-	, SplittableGen(..)
+	( CryptoRandomGen(..)
 	, genInteger
 	, GenError (..)
 	, newGenIO
@@ -30,12 +28,8 @@ module Crypto.Random
 
 import System.Crypto.Random (getEntropy)
 import Crypto.Types
-import System.Random (RandomGen(next))
-import qualified System.Random as R
 import Control.Monad (liftM)
-import Data.Serialize
 import qualified Data.ByteString as B
-import Foreign.Storable (sizeOf)
 import Data.Tagged
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
@@ -54,22 +48,6 @@ instance Monad (Either GenError) where
         fail   = Left . GenErrorOther
         (Left x) >>= _  = Left x
         (Right x) >>= f = f x
-
-instance (SplittableGen g, CryptoRandomGen g) => RandomGen (AsRandomGen g) where
-	next (AsRG g) =
-		let (Right (bs, g')) = genBytes g (sizeOf res)
-		    Right res = decode bs
-		in (res, AsRG g')
-	split (AsRG g) = let (a,b) = split g in (AsRG a, AsRG b)
-
--- |Any `CryptoRandomGen` can be used where the `RandomGen` class is needed
--- simply by wrapping with with the `AsRG` constructor.  Any failures
--- (Left results from genBytes or newGen) result
--- in a pattern match exception.  Such failures were simply assumed
--- not possible by the `RandomGen` class, hence there is no non-exception
--- way to indicate a failure.
-data AsRandomGen a = AsRG a
-	deriving (Eq, Ord, Show)
 
 -- |A class of random bit generators that allows for the possibility of failure,
 -- reseeding, providing entropy at the same time as requesting bytes
@@ -105,12 +83,6 @@ class CryptoRandomGen g where
 
 	-- |reseed the generator
 	reseed		:: g -> B.ByteString -> Either GenError g
-
--- | This class exists to provide the contraversial "split" operation that was
--- part of 'RandomGen'.  When combined with a CryptoRandomGen instance this provides
--- a method to lift CryptoGenRandom into the RandomGen class (via the `AsRnadomGen` wrapper)
-class SplittableGen g where
-	split :: g -> (g,g)
 
 -- |Use "System.Crypto.Random" to obtain entropy for `newGen`.
 newGenIO :: CryptoRandomGen g => IO g
