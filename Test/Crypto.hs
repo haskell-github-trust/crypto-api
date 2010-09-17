@@ -43,6 +43,7 @@ import Test.QuickCheck
 import Test.ParseNistKATs
 import Crypto.Classes
 import Crypto.Modes
+import Crypto.Padding
 import qualified Data.ByteString.Lazy.Char8 as LC
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
@@ -124,9 +125,60 @@ makeHashPropTests d =
 	, T (prop_OutputLengthIsByteAligned d) "OuputLengthIsByteAligned"
 	]
 
--- |FIXME make some generic blockcipher tests
+-- |some generic blockcipher tests
+
+goodKey k bs =
+	case (buildKey bs `asTypeOf` Just k) of
+		Nothing -> False
+		Just _  -> True
+
+bKey k bs = let Just k' = (buildKey bs `asTypeOf` Just k) in k'
+
+bIV :: BlockCipher k => k -> B.ByteString -> Either String (IV k)
+bIV k bs = Ser.decode bs
+
+isRight (Right _) = True
+isRight (Left _)  = False
+
+comparePadded :: BlockCipher k => k -> (k -> B.ByteString -> B.ByteString) -> (k -> B.ByteString -> B.ByteString) -> B.ByteString -> Bool
+comparePadded k enc dec msg = unpadESP (dec k (enc k (padESPBlockSize k msg))) == Just msg
+
+prop_ECBEncDecID :: BlockCipher k => k -> B.ByteString -> B.ByteString -> Property
+prop_ECBEncDecID k kBS msg = goodKey k kBS ==>
+	let key = bKey k kBS
+	in comparePadded key ecb' unEcb' msg
+
+prop_CBCEncDecID :: BlockCipher k => k -> B.ByteString -> B.ByteString -> B.ByteString -> Property
+prop_CBCEncDecID k kBS ivBS msg = goodKey k kBS && isRight (bIV k ivBS) ==>
+	let key = bKey k kBS
+	    Right iv  = bIV k ivBS
+	    msg' = padESPBlockSize key msg
+	    (ct,iv2) = cbc' key iv msg'
+	in unCbc' key iv ct == (msg', iv2)
+
+prop_CFBEncDecID :: BlockCipher k => k -> B.ByteString -> B.ByteString -> B.ByteString -> Property
+prop_CFBEncDecID k kBS ivBS msg =  goodKey k kBS && isRight (bIV k ivBS) ==>
+        let key = bKey k kBS
+            Right iv  = bIV k ivBS
+            msg' = padESPBlockSize key msg
+            (ct,iv2) = cfb' key iv msg'
+	in unCfb' key iv ct == (msg', iv2)
+
+prop_OFBEncDecID ::  BlockCipher k => k -> B.ByteString -> B.ByteString -> B.ByteString -> Property
+prop_OFBEncDecID k kBS ivBS msg =  goodKey k kBS && isRight (bIV k ivBS) ==>
+        let key = bKey k kBS
+            Right iv  = bIV k ivBS
+            msg' = padESPBlockSize key msg
+            (ct,iv2) = ofb' key iv msg'
+        in unOfb' key iv ct == (msg', iv2)
+
 makeBlockCipherPropTests :: BlockCipher k => k -> [Test]
-makeBlockCipherPropTests _ = []
+makeBlockCipherPropTests k =
+	[ T (prop_ECBEncDecID k) "ECBEncDecID"
+	, T (prop_CBCEncDecID k) "CBCEncDecID"
+	, T (prop_CFBEncDecID k) "CFBEncDecID"
+	, T (prop_OFBEncDecID k) "CFBEncDecID"
+	]
 
 data KAT i o = K i (i -> o) o String
 
