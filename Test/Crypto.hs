@@ -148,7 +148,7 @@ toD d str = (fromRight . Ser.decode . hexStringToBS $ str) `asTypeOf` d
 -- Strings of odd length will cause an exception as will non-hex characters such as '0x'.
 hexStringToBS :: String -> B.ByteString
 hexStringToBS [] = B.empty
-hexStringToBS (_:[]) = error "Not an even number of hex characters in alledged 'digest'"
+hexStringToBS (_:[]) = error "Not an even number of hex characters in input to hexStringToBS!"
 hexStringToBS (a:b:xs) = B.cons (rHex (a:b:[])) (hexStringToBS xs)
   where
   rHex = fst . head . readHex
