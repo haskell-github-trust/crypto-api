@@ -15,6 +15,7 @@ as changing a type signature.
 module Crypto.Classes
 	( Hash(..)
 	, BlockCipher(..)
+	, blockSizeBytes
 	, StreamCipher(..)
 	, AsymCipher(..)
 	, for
@@ -119,6 +120,9 @@ class ( Serialize k) => BlockCipher k where
   decryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ decrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb decryption)
   buildKey	:: B.ByteString -> Maybe k		-- ^ smart constructor for keys from a bytestring.
   keyLength	:: k -> BitLength			-- ^ keyLength may inspect its argument to return the length
+
+blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
+blockSizeBytes = fmap (`div` 8) blockSize
 
 class (Serialize p) => AsymCipher p where
   buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p,p),g) -- ^ build a public/private key pair using the provided generator
