@@ -3,18 +3,18 @@ module Test.AES
 	( makeAESTests
 	) where
 
-import Data.Maybe (fromJust)
-import Data.Maybe (maybeToList)
-import qualified Data.ByteString as B
+import Control.Monad (forM, liftM, filterM)
 import Crypto.Classes
 import Crypto.Modes
+import qualified Data.ByteString as B
 import qualified Data.Serialize as Ser
-import Test.Crypto
-import Control.Monad (forM, liftM, filterM)
-import Test.ParseNistKATs
+import Data.List (isInfixOf)
+import Data.Maybe (fromJust, maybeToList)
+import Paths_crypto_api
 import System.Directory (getDirectoryContents, doesFileExist)
 import System.FilePath (takeFileName, combine, dropExtension, (</>))
-import Paths_crypto_api
+import Test.Crypto
+import Test.ParseNistKATs
 
 -- |Based on NIST KATs, build a list  of Tests for the instantiated AES algorithm.
 makeAESTests :: BlockCipher k => k -> IO [Test]
@@ -37,7 +37,11 @@ getAES_KATs k = do
   where
   -- Obtain the type of AES test, such as "ECBe" or "CBCd"
   getTestSig :: FilePath -> String
-  getTestSig f = take 3 f ++ [last (dropExtension f)]
+  getTestSig f =
+	let sig = take 3 f ++ [last (dropExtension f)]
+	in if "CFB" `isInfixOf` sig && not ("CFB128" `isInfixOf` f)
+		then "THIS IS NOT A SUPPORTED CIPHER"
+		else sig
 
 -- convert the NIST KATs to a list of KAT data types.
 nistTestsToKAT_AES :: BlockCipher k => k -> TypedTest -> String -> [Test]
@@ -92,6 +96,8 @@ funcAndBool x = (sigToF x, isEnc x)
   sigToF "CBCd" = Just unCbc'
   sigToF "OFBe" = Just ofb'
   sigToF "OFBd" = Just unOfb'
+  sigToF "CFBe" = Just cfb'
+  sigToF "CFBd" = Just unCfb'
   sigToF _ = Nothing
 
 
