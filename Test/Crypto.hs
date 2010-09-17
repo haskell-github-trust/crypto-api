@@ -50,6 +50,7 @@ import qualified Data.ByteString as B
 import Control.Monad (forM)
 import qualified Data.Serialize as Ser
 import Numeric (readHex)
+import Control.Arrow (first,second)
 
 instance Arbitrary B.ByteString where
     arbitrary = do
@@ -172,12 +173,67 @@ prop_OFBEncDecID k kBS ivBS msg =  goodKey k kBS && isRight (bIV k ivBS) ==>
             (ct,iv2) = ofb' key iv msg'
         in unOfb' key iv ct == (msg', iv2)
 
+takeBlockSize :: BlockCipher k => k -> L.ByteString -> L.ByteString
+takeBlockSize k bs = L.take (len - (len `rem` bLen)) bs
+  where
+  len = L.length bs
+  bLen = fromIntegral $ blockSizeBytes `for` k
+
+l2b = B.concat . L.toChunks
+
+prop_OFBStrictLazyEq :: BlockCipher k => k -> B.ByteString -> B.ByteString -> L.ByteString -> Property
+prop_OFBStrictLazyEq k kBS ivBS msg = goodKey k kBS && isRight (bIV k ivBS) ==>
+	let key = bKey k kBS
+	    Right iv = bIV k ivBS
+	    msg' = takeBlockSize k msg
+	    ctStrict = ofb' key iv (l2b msg')
+	    ctLazy   = ofb  key iv msg'
+	    ptStrict = unOfb' key iv (l2b msg')
+	    ptLazy   = unOfb key iv msg'
+	in ctStrict == first l2b ctLazy && ptStrict == first l2b ptLazy
+
+prop_CBCStrictLazyEq :: BlockCipher k => k -> B.ByteString -> B.ByteString -> L.ByteString -> Property
+prop_CBCStrictLazyEq k kBS ivBS msg = goodKey k kBS && isRight (bIV k ivBS) ==>
+	let key = bKey k kBS
+	    Right iv = bIV k ivBS
+	    msg' = takeBlockSize k msg
+	    ctStrict = cbc' key iv (l2b msg')
+	    ctLazy   = cbc  key iv msg'
+	    ptStrict = unCbc' key iv (l2b msg')
+	    ptLazy   = unCbc key iv msg'
+	in ctStrict == first l2b ctLazy && ptStrict == first l2b ptLazy
+
+prop_CFBStrictLazyEq :: BlockCipher k => k -> B.ByteString -> B.ByteString -> L.ByteString -> Property
+prop_CFBStrictLazyEq k kBS ivBS msg = goodKey k kBS && isRight (bIV k ivBS) ==>
+	let key = bKey k kBS
+	    Right iv = bIV k ivBS
+	    msg' = takeBlockSize k msg
+	    ctStrict = ofb' key iv (l2b msg')
+	    ctLazy   = ofb  key iv msg'
+	    ptStrict = unCfb' key iv (l2b msg')
+	    ptLazy   = unCfb key iv msg'
+	in ctStrict == first l2b ctLazy && ptStrict == first l2b ptLazy
+
+prop_ECBStrictLazyEq :: BlockCipher k => k -> B.ByteString -> L.ByteString -> Property
+prop_ECBStrictLazyEq k kBS msg = goodKey k kBS ==>
+	let key = bKey k kBS
+	    msg' = takeBlockSize k msg
+	    ctStrict = ecb' key (l2b msg')
+	    ctLazy   = ecb  key msg'
+	    ptStrict = unEcb' key (l2b msg')
+	    ptLazy   = unEcb key msg'
+	in ctStrict == l2b ctLazy && ptStrict == l2b ptLazy
+
 makeBlockCipherPropTests :: BlockCipher k => k -> [Test]
 makeBlockCipherPropTests k =
 	[ T (prop_ECBEncDecID k) "ECBEncDecID"
 	, T (prop_CBCEncDecID k) "CBCEncDecID"
 	, T (prop_CFBEncDecID k) "CFBEncDecID"
 	, T (prop_OFBEncDecID k) "CFBEncDecID"
+	, T (prop_ECBStrictLazyEq k) "ECBStrictLazyEq"
+	, T (prop_CBCStrictLazyEq k) "CBCStrictLazyEq"
+	, T (prop_CFBStrictLazyEq k) "CFBStrictLazyEq"
+	, T (prop_OFBStrictLazyEq k) "OFBStrictLazyEq"
 	]
 
 data KAT i o = K i (i -> o) o String
