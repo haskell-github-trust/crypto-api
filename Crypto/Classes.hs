@@ -18,6 +18,7 @@ module Crypto.Classes
 	, blockSizeBytes
 	, StreamCipher(..)
 	, AsymCipher(..)
+	, Signing(..)
 	, for
 	, (.::.)
 	, hash
@@ -124,6 +125,7 @@ class ( Serialize k) => BlockCipher k where
 blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
 blockSizeBytes = fmap (`div` 8) blockSize
 
+-- |Asymetric ciphers (common ones being RSA or EC based)
 class (Serialize p) => AsymCipher p where
   buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p,p),g) -- ^ build a public/private key pair using the provided generator
   encryptAsym     :: p -> B.ByteString -> B.ByteString	-- ^ Asymetric encryption
@@ -150,3 +152,12 @@ class (Serialize k) => StreamCipher k iv | k -> iv where
   encryptStream		:: k -> iv -> B.ByteString -> (B.ByteString, iv)
   decryptStream 	:: k -> iv -> B.ByteString -> (B.ByteString, iv)
   streamKeyLength	:: k -> BitLength
+
+-- | A class for signing operations which inherently can not be as generic
+-- as asymetric ciphers (ex: DSA).
+class (Serialize p, Serialize v) => Signing p v | p -> v, v -> p  where
+  sign	 :: v -> L.ByteString -> B.ByteString
+  verify :: p -> L.ByteString -> B.ByteString -> Bool
+  buildSigningPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p, v), g)
+  signingKeyLength :: v -> BitLength
+  verifyingKeyLength :: p -> BitLength
