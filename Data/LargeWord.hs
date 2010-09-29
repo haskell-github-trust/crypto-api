@@ -14,7 +14,7 @@
 -----------------------------------------------------------------------------
 
 module Data.LargeWord
-   (LargeKey,Word96,Word128,Word160,Word192,Word224,Word256) where
+   (LargeWord(..),LargeKey,Word96,Word128,Word160,Word192,Word224,Word256) where
 
 import Data.Word
 import Data.Bits
