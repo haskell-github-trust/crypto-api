@@ -43,12 +43,6 @@ data GenError =
 	| NotEnoughEntropy	-- ^ For instantiating new generators (or reseeding)
   deriving (Eq, Ord, Show)
 
-instance Monad (Either GenError) where
-        return = Right
-        fail   = Left . GenErrorOther
-        (Left x) >>= _  = Left x
-        (Right x) >>= f = f x
-
 -- |A class of random bit generators that allows for the possibility of failure,
 -- reseeding, providing entropy at the same time as requesting bytes
 --
