@@ -30,14 +30,19 @@ import Crypto.Types
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 
--- |PKCS5 (aka RFC1423) padding method
+-- |PKCS5 (aka RFC1423) padding method.
 -- This method will not work properly for pad modulos > 256
 padPKCS5 :: ByteLength -> B.ByteString -> B.ByteString
 padPKCS5 len bs = runPut $ putPaddedPKCS5 len bs
 
--- |@putPaddedPKCS5 m bs@ will pad out @bs@ to a byte multiple
+-- |
+-- @
+--     putPaddedPKCS5 m bs
+-- @
+--
+-- Will pad out @bs@ to a byte multiple
 -- of @m@ and put both the bytestring and it's padding via 'Put'
--- (this saving on copying if you are already using Cereal).
+-- (this saves on copying if you are already using Cereal).
 putPaddedPKCS5 :: ByteLength -> B.ByteString -> Put
 putPaddedPKCS5 0 bs = putByteString bs >> putWord8 1
 putPaddedPKCS5 len bs = putByteString bs >> putByteString pad
@@ -47,7 +52,8 @@ putPaddedPKCS5 len bs = putByteString bs >> putByteString pad
   padLen = if r == 0 then len else r
   padValue = fromIntegral padLen
 
--- |PKCS5 (aka RFC1423) padding method
+-- |PKCS5 (aka RFC1423) padding method using the BlockCipher instance
+-- to determine the pad size.
 padBlockSize :: BlockCipher k => k -> B.ByteString -> B.ByteString
 padBlockSize k = runPut . putPaddedBlockSize k
 
@@ -78,22 +84,28 @@ unpadPKCS5 bs = if bsLen == 0 then bs else msg
   (msg,_) = B.splitAt (bsLen - pLen) bs
 
 -- | Pad a bytestring to the IPSEC esp specification
--- @padESP m payload@ is equivilent to:
+--
+-- > padESP m payload
+--
+-- is equivilent to:
 -- 
 -- @
---     --        (msg)       (padding)       (length field)
+--               (msg)       (padding)       (length field)
 --     B.concat [payload, B.pack [1,2,3,4..], B.pack [padLen]]
 -- @
 --
 -- Where:
---  the msg is any payload, including TFC.
---  the padding is <= 255
---  the length field is one byte
 --
---  Notice the result bytesting length remainder @r@ equals zero.  The lack
---  of 'next header' field means this function is not directly useable for
+-- * the msg is any payload, including TFC.
+-- 
+-- * the padding is <= 255
+-- 
+-- * the length field is one byte.
+--
+--  Notice the result bytesting length remainder `r` equals zero.  The lack
+--  of a \"next header\" field means this function is not directly useable for
 --  an IPSec implementation (copy/paste the 4 line function and add in a
---  "next header" field if you are making IPSec ESP).
+--  \"next header\" field if you are making IPSec ESP).
 padESP :: Int -> B.ByteString -> B.ByteString
 padESP i bs = runPut (putPadESP i bs)
 
