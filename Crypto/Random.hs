@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables, MonoLocalBinds, FlexibleInstances #-}
+{-# LANGUAGE ScopedTypeVariables, MonoLocalBinds, FlexibleInstances,CPP #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -43,11 +43,12 @@ data GenError =
 	| NotEnoughEntropy	-- ^ For instantiating new generators (or reseeding)
   deriving (Eq, Ord, Show)
 
+#if !MIN_VERSION_base(4,3,0)
 instance Monad (Either GenError) where
         return = Right
-        fail   = Left . GenErrorOther
         (Left x) >>= _  = Left x
         (Right x) >>= f = f x
+#endif
 
 -- |A class of random bit generators that allows for the possibility of failure,
 -- reseeding, providing entropy at the same time as requesting bytes
