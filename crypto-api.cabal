@@ -1,5 +1,5 @@
 name:           crypto-api
-version:        0.1.2.0
+version:        0.1.2.1
 license:        BSD3
 license-file:   LICENSE
 copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Dominic Steinitz (see Data.LargeWord module)
@@ -56,7 +56,7 @@ Library
   hs-source-dirs:
   exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Data.LargeWord, Crypto.Modes, System.Crypto.Random, Crypto.Random, Crypto.Padding
   if os(windows)
-    CC-Options: -DisWindows
+    cpp-options: -DisWindows
   if flag(tests)
     exposed-modules: Test.Crypto, Test.AES, Test.SHA, Test.HMAC, Test.ParseNistKATs, Test.TwoFish
     build-depends: QuickCheck >= 2.3 && < 2.4, directory >= 1.0.1.0 && < 1.1
