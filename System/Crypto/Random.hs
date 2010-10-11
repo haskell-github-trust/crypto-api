@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, ForeignFunctionInterface #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -39,6 +39,7 @@ import Crypto.Types
         CryptReleaseContext(hCryptCtx, 0);
 -}
 newtype CryptHandle = CH CInt
+
 foreign import stdcall unsafe "CryptAcquireContext"
 	c_cryptAcquireCtx :: ... -> IO CInt
 foreign import stdcall unsafe "CryptGenRandom"
