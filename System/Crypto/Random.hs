@@ -38,24 +38,47 @@ import Crypto.Types
         CryptGenRandom(hCryptCtx, 128, randomArray);
         CryptReleaseContext(hCryptCtx, 0);
 -}
-newtype CryptHandle = CH CInt
+newtype CryptHandle = CH Word32
 
-foreign import stdcall unsafe "CryptAcquireContext"
-	c_cryptAcquireCtx :: ... -> IO CInt
+-- Define the constants we need from WinCrypt.h 
+msDefProv :: String
+msDefProv = "Microsoft Base Cryptographic Provider v1.0"
+provRSAFull :: Word32
+provRSAFull = fromIntegral 1
+cryptVerifyContext :: Word32
+cryptVerifyContext = fromIntegral 0xF0000000
+
+-- Declare the required CryptoAPI imports 
+foreign import stdcall unsafe "CryptAcquireContextA"
+   c_cryptAcquireCtx :: Ptr Word32 -> CString -> CString -> Word32 -> Word32 -> IO Int32
 foreign import stdcall unsafe "CryptGenRandom"
-	c_cryptGenRandom :: CInt -> CInt -> Ptr Word8 -> IO ()
+   c_cryptGenRandom :: Word32 -> Word32 -> Ptr Word8 -> IO Int32
 foreign import stdcall unsafe "CryptReleaseContext"
-	c_cryptReleaseCtx :: CInt -> CInt -> IO ()
+   c_cryptReleaseCtx :: Word32 -> Word32 -> IO Int32
 
-cryptAcquireCtx ... = liftM CH (c_cryptAcquireCtx ...)
+cryptAcquireCtx :: IO Word32
+cryptAcquireCtx = 
+   alloca $ \handlePtr -> 
+      withCString msDefProv $ \provName -> do
+         stat <- c_cryptAcquireCtx handlePtr nullPtr provName (fromIntegral 1) (fromIntegral cryptVerifyContext)
+         if (toBool stat)
+            then peek handlePtr
+            else fail "c_cryptAcquireCtx"
 
--- FIXME check errors
-cryptGenRandom :: CryptHandle -> Int -> IO B.ByteString
-cryptGenRandom (CH h) i = B.create i (c_cryptGenRandom h (fromIntegral i))
+cryptGenRandom :: Word32 -> Int -> IO B.ByteString
+cryptGenRandom h i = 
+   B.create i $ \c_buffer -> do
+      stat <- c_cryptGenRandom (fromIntegral h) (fromIntegral i) c_buffer
+      if (toBool stat)
+         then return ()
+         else fail "c_cryptGenRandom"
 
--- FIXME check errors
-cryptReleaseCtx :: CryptHandle -> IO ()
-cryptReleaseCtx (CH h) = c_cryptReleaseCtx h 0
+cryptReleaseCtx :: Word32 -> IO ()
+cryptReleaseCtx h = do
+   stat <- c_cryptReleaseCtx h 0
+   if (toBool stat)
+      then return ()
+      else fail "c_cryptReleaseCtx"
 
 -- |Inefficiently get a specific number of bytes of cryptographically
 -- secure random data using the system-specific facilities.
