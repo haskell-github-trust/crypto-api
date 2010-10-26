@@ -38,6 +38,16 @@ import Crypto.Types
         CryptGenRandom(hCryptCtx, 128, randomArray);
         CryptReleaseContext(hCryptCtx, 0);
 -}
+
+import Data.ByteString.Internal as B
+import Data.Int (Int32)
+import Data.Word (Word32, Word8)
+import Foreign.C.String (CString, withCString)
+import Foreign.Ptr (Ptr, nullPtr)
+import Foreign.Marshal.Alloc (alloca)
+import Foreign.Marshal.Utils (toBool)
+import Foreign.Storable (peek)
+
 newtype CryptHandle = CH Word32
 
 -- Define the constants we need from WinCrypt.h 
