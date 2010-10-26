@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables, MonoLocalBinds #-}
+{-# LANGUAGE MonoLocalBinds #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -31,6 +31,7 @@ import Data.Serialize
 import qualified Data.Serialize.Put as SP
 import qualified Data.Serialize.Get as SG
 import Data.Bits (xor)
+import Data.Tagged
 import Crypto.Classes
 import Crypto.Random
 import System.Crypto.Random (getEntropy)
@@ -262,25 +263,34 @@ getIV g =
 			| B.length bs == bytes	-> Right (iv, g')
 			| otherwise		-> Left (GenErrorOther "Generator failed to provide requested number of bytes")
 
--- |Obtain an `IV` using the system entropy (see "System.Crypto.Random")
+-- | Obtain an `IV` using the system entropy (see "System.Crypto.Random")
 getIVIO :: (BlockCipher k) => IO (IV k)
 getIVIO = do
-	let bytes = ivBlockSizeBytes p
-	    p = undefined
+	let bytes = proxy blockSize p `div` 8
+	    p = Proxy
 	bs <- getEntropy bytes
-	return (IV bs `asTypeOf` p)
+	return (IV bs `asProxyTypeOf` ivProxy p)
+
+ivProxy :: Proxy k -> Proxy (IV k)
+ivProxy = reproxy
+
+deIVProxy :: Proxy (IV k) -> Proxy k
+deIVProxy = reproxy
+
+proxyOf :: a -> Proxy a
+proxyOf = const Proxy
 
 ivBlockSizeBytes :: BlockCipher k => IV k -> Int
-ivBlockSizeBytes iv = (blockSize `for` (keyForIV iv)) `div` 8
-  where
-  keyForIV :: IV k -> k
-  keyForIV _ = undefined
+ivBlockSizeBytes iv =
+	let p = deIVProxy (proxyOf iv)
+	in proxy blockSize p `div` 8
 
 instance (BlockCipher k) => Serialize (IV k) where
 	get = do
-	  	let bytes = blockSize .::. (undefined :: k) `div` 8
+		let p = Proxy
+	  	    bytes = proxy blockSize p `div` 8
 		iv <- SG.getByteString bytes
-		return (IV iv)
+		return ((IV iv) `asProxyTypeOf` ivProxy p)
 	put (IV iv) = SP.putByteString iv
 
 -- TODO: GCM, GMAC
