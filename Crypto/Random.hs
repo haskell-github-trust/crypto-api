@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables, MonoLocalBinds, FlexibleInstances,CPP #-}
+{-# LANGUAGE FlexibleInstances,CPP #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -88,12 +88,13 @@ class CryptoRandomGen g where
 -- |Use "System.Crypto.Random" to obtain entropy for `newGen`.
 newGenIO :: CryptoRandomGen g => IO g
 newGenIO = do
-	let r = undefined
-	    l = genSeedLength `for` r
-	res <- liftM newGen (getEntropy l)
+	let p = Proxy
+	    getTypedGen :: (CryptoRandomGen g) => Proxy g -> IO (Either GenError g)
+	    getTypedGen pr = liftM newGen (getEntropy $ proxy genSeedLength pr)
+	res <- getTypedGen p
 	case res of
 		Left _ -> newGenIO
-		Right g -> return (g `asTypeOf` r)
+		Right g -> return (g `asProxyTypeOf` p)
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
