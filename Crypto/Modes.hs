@@ -1,4 +1,3 @@
-{-# LANGUAGE MonoLocalBinds #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -35,6 +34,7 @@ import Data.Tagged
 import Crypto.Classes
 import Crypto.Random
 import System.Crypto.Random (getEntropy)
+import Control.Monad (liftM)
 
 -- |Initilization Vectors for BlockCipher implementations (IV k) are used
 -- for various modes and guarrenteed to be blockSize bits long.
@@ -266,10 +266,11 @@ getIV g =
 -- | Obtain an `IV` using the system entropy (see "System.Crypto.Random")
 getIVIO :: (BlockCipher k) => IO (IV k)
 getIVIO = do
-	let bytes = proxy blockSize p `div` 8
-	    p = Proxy
-	bs <- getEntropy bytes
-	return (IV bs `asProxyTypeOf` ivProxy p)
+	let p = Proxy
+	    getTypedIV :: BlockCipher k => Proxy k -> IO (IV k)
+	    getTypedIV pr = liftM IV (getEntropy (proxy blockSize pr `div` 8))
+	iv <- getTypedIV p
+	return (iv `asProxyTypeOf` ivProxy p)
 
 ivProxy :: Proxy k -> Proxy (IV k)
 ivProxy = reproxy
@@ -288,9 +289,10 @@ ivBlockSizeBytes iv =
 instance (BlockCipher k) => Serialize (IV k) where
 	get = do
 		let p = Proxy
-	  	    bytes = proxy blockSize p `div` 8
-		iv <- SG.getByteString bytes
-		return ((IV iv) `asProxyTypeOf` ivProxy p)
+		    doGet :: BlockCipher k => Proxy k -> Get (IV k)
+	            doGet pr = liftM IV (SG.getByteString (proxy blockSize pr `div` 8))
+		iv <- doGet p
+		return (iv `asProxyTypeOf` ivProxy p)
 	put (IV iv) = SP.putByteString iv
 
 -- TODO: GCM, GMAC
