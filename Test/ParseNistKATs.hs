@@ -35,7 +35,6 @@
 module Test.ParseNistKATs
 	( parseCategories --, parseCategory, parseProperty
 	, Properties, Record, NistTest, TypedTest, TestCategory
-	, -- module Text.Parsec
 	) where
 
 import Data.Char (isSpace)

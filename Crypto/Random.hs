@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances,CPP #-}
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -21,7 +21,6 @@
 
 module Crypto.Random
 	( CryptoRandomGen(..)
-	, genInteger
 	, GenError (..)
 	, newGenIO
 	) where
@@ -42,13 +41,6 @@ data GenError =
 	| NeedReseed		-- ^ Some generators cease operation after too high a count without a reseed (ex: NIST SP 800-90)
 	| NotEnoughEntropy	-- ^ For instantiating new generators (or reseeding)
   deriving (Eq, Ord, Show)
-
-#if !MIN_VERSION_base(4,3,0)
-instance Monad (Either GenError) where
-        return = Right
-        (Left x) >>= _  = Left x
-        (Right x) >>= f = f x
-#endif
 
 -- |A class of random bit generators that allows for the possibility of failure,
 -- reseeding, providing entropy at the same time as requesting bytes
@@ -87,51 +79,21 @@ class CryptoRandomGen g where
 
 -- |Use "System.Crypto.Random" to obtain entropy for `newGen`.
 newGenIO :: CryptoRandomGen g => IO g
-newGenIO = do
+newGenIO = go 0
+  where
+  go 1000 = error "The generator instance requested by newGenIO never instantiates (1000 tries).  It must be broken."
+  go i = do
 	let p = Proxy
 	    getTypedGen :: (CryptoRandomGen g) => Proxy g -> IO (Either GenError g)
 	    getTypedGen pr = liftM newGen (getEntropy $ proxy genSeedLength pr)
 	res <- getTypedGen p
 	case res of
-		Left _ -> newGenIO
+		Left _ -> go (i+1)
 		Right g -> return (g `asProxyTypeOf` p)
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
 for t _ = unTagged t
-
--- |@genInteger g (low,high)@ will generate an integer between [low, high] inclusively, swapping the pair if high < low.
---
--- This function has degraded (theoretically unbounded, probabilitically decent) performance
--- the closer your range size (high - low) is to 2^n (from the top).
-genInteger :: CryptoRandomGen g => g -> (Integer, Integer) -> Either GenError (Integer, g)
-genInteger g (low,high)
-	| high < low = genInteger  g (high,low)
-	| high == low = Right (high, g)
-	| otherwise = go g
-  where
-  mask   = foldl' setBit 0 [0 .. fromIntegral nrBits - 1]
-  nrBits = base2Log range
-  range  = high - low
-  nrBytes = (nrBits + 7) `div` 8
-  go gen =
-	let offset = genBytes gen (fromIntegral nrBytes)
-	in case offset of
-        Left err -> Left err
-        Right (bs,g') -> 
-	    if nrBytes > fromIntegral (maxBound :: Int)
-		then Left RangeInvalid
-		else let res = low + (bs2i bs .&. mask)
-		     in if res > high then go g' else Right (res, g')
-
-base2Log :: Integer -> Integer
-base2Log i
-	| i >= setBit 0 64 = 64 + base2Log (i `shiftR` 64)
-	| i >= setBit 0 32 = 32 + base2Log (i `shiftR` 32)
-	| i >= setBit 0 16 = 16 + base2Log (i `shiftR` 16)
-	| i >= setBit 0 8  = 8  + base2Log (i `shiftR` 8)
-	| i >= setBit 0 0  = 1  + base2Log (i `shiftR` 1)
-	| otherwise        = 0
 
 bs2i :: B.ByteString -> Integer
 bs2i bs = B.foldl' (\i b -> (i `shiftL` 8) + fromIntegral b) 0 bs
