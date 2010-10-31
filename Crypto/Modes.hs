@@ -254,7 +254,7 @@ unfoldK f i =
 getIV :: (BlockCipher k, CryptoRandomGen g) => g -> Either GenError (IV k, g)
 getIV g =
 	let bytes = ivBlockSizeBytes iv
-	    gen = genBytes g bytes
+	    gen = genBytes bytes g
 	    fromRight (Right x) = x
 	    iv  = IV (fst  . fromRight $ gen)
 	in case gen of

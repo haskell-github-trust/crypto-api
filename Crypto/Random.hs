@@ -54,7 +54,7 @@ class CryptoRandomGen g where
 	genSeedLength :: Tagged g ByteLength
 
 	-- |Obtain random data using a generator
-	genBytes	:: g -> ByteLength -> Either GenError (B.ByteString, g)
+	genBytes	:: ByteLength -> g -> Either GenError (B.ByteString, g)
 
 	-- |@genBytesWithEntropy g i entropy@ generates @i@ random bytes and use the
 	-- additional input @entropy@ in the generation of the requested data to
@@ -65,9 +65,9 @@ class CryptoRandomGen g where
 	-- @
 	--     genBytesWithEntropy g bytes entropy = xor entropy (genBytes g bytes)
 	-- @
-	genBytesWithEntropy	:: g -> ByteLength -> B.ByteString -> Either GenError (B.ByteString, g)
-	genBytesWithEntropy g len entropy =
-		let res = genBytes g len
+	genBytesWithEntropy	:: ByteLength -> B.ByteString -> g -> Either GenError (B.ByteString, g)
+	genBytesWithEntropy len entropy g =
+		let res = genBytes len g
 		in case res of
 			Left err -> Left err
 			Right (bs,g') ->
@@ -75,7 +75,7 @@ class CryptoRandomGen g where
 				in Right (zwp' entropy' bs, g')
 
 	-- |reseed the generator
-	reseed		:: g -> B.ByteString -> Either GenError g
+	reseed		:: B.ByteString -> g -> Either GenError g
 
 -- |Use "System.Crypto.Random" to obtain entropy for `newGen`.
 newGenIO :: CryptoRandomGen g => IO g
