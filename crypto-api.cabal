@@ -53,14 +53,14 @@ Library
     build-depends: QuickCheck >= 2.3 && < 2.4, directory >= 1.0.1.0 && < 1.2
     other-modules: Paths_crypto_api
     Data-Files:
-          Test/KAT_AES/*.txt
+         Test/KAT_AES/*.txt
        , Test/KAT_SHA/*.txt
        , Test/KAT_HMAC/*.txt
        , Test/KAT_TWOFISH/*.TXT
     extra-source-files:
-          Test/KAT_AES/*.txt
-        , Test/KAT_SHA/*.txt
-        , Test/KAT_HMAC/*.txt
+         Test/KAT_AES/*.txt
+       , Test/KAT_SHA/*.txt
+       , Test/KAT_HMAC/*.txt
        , Test/KAT_TWOFISH/*.TXT
   if flag(benchmarks)
     exposed-modules: Benchmark.Crypto
