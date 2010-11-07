@@ -27,6 +27,17 @@ stability:      stable
 build-type:     Simple
 cabal-version:  >= 1.6
 tested-with:    GHC == 6.12.1
+data-files:
+         Test/KAT_AES/*.txt
+       , Test/KAT_SHA/*.txt
+       , Test/KAT_HMAC/*.txt
+       , Test/KAT_TWOFISH/*.TXT
+extra-source-files:
+         Test/KAT_AES/*.txt
+       , Test/KAT_SHA/*.txt
+       , Test/KAT_HMAC/*.txt
+       , Test/KAT_TWOFISH/*.TXT
+
 
 flag tests
   description: Include Test.Crypto module for testing hash and cipher instances
@@ -35,6 +46,7 @@ flag tests
 flag benchmarks
   description: Include benchmarking tools for cryptographic operations
   default: False
+
 
 Library
   Build-Depends: base == 4.*,
@@ -52,20 +64,9 @@ Library
     exposed-modules: Test.Crypto, Test.AES, Test.SHA, Test.HMAC, Test.ParseNistKATs, Test.TwoFish
     build-depends: QuickCheck >= 2.3 && < 2.4, directory >= 1.0.1.0 && < 1.2
     other-modules: Paths_crypto_api
-    Data-Files:
-         Test/KAT_AES/*.txt
-       , Test/KAT_SHA/*.txt
-       , Test/KAT_HMAC/*.txt
-       , Test/KAT_TWOFISH/*.TXT
-    extra-source-files:
-         Test/KAT_AES/*.txt
-       , Test/KAT_SHA/*.txt
-       , Test/KAT_HMAC/*.txt
-       , Test/KAT_TWOFISH/*.TXT
   if flag(benchmarks)
     exposed-modules: Benchmark.Crypto
-    build-depends: criterion >= 0.5
-
+    build-depends: criterion >= 0.5, deepseq
 source-repository head
     type:     darcs
     location: http://code.haskell.org/crypto-api
