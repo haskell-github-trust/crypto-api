@@ -26,16 +26,19 @@ module Benchmark.Crypto
 	( benchmarkHash
 	, benchmarkBlockCipher
 	, benchmarkRNG
+	, benchmarkCryptoRandomGen
 	) where
 
 import Crypto.Classes
 import Crypto.Modes (ecb', unEcb')
+import Crypto.Random
 import qualified Data.Serialize as Ser
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 import Data.Serialize as Ser
 import Criterion
 import Control.Monad (liftM)
+import Data.IORef
 
 -- 128KB strings
 ps = B.replicate (2^17) 0
@@ -64,5 +67,25 @@ benchmarkBlockCipher k name =
 	in benchs
 
 -- |Benchmark an RNG by requesting 256K of random data
-benchmarkRNG :: (Int -> IO L.ByteString) -> String -> Benchmark
-benchmarkRNG rng name = bench name (nfIO $ liftM (map B.head . L.toChunks ) (rng (2^18)))
+benchmarkRNG :: (Int -> IO B.ByteString) -> String -> Benchmark
+benchmarkRNG rng name = bench name (nfIO $ liftM B.head (rng (2^18)))
+
+-- | Benchmark a CryptoRandomGen by storing it in a IORef, and generating
+-- 256k per call.
+benchmarkCryptoRandomGen :: CryptoRandomGen g => g -> String -> IO Benchmark
+benchmarkCryptoRandomGen g name = do
+	g' <- useGenIO g
+	return $ bench name (nfIO $ liftM B.head (g' (2^18)))
+
+useGenIO :: CryptoRandomGen g => g -> IO (Int -> IO B.ByteString)
+useGenIO g = do
+        gRef <- newIORef g
+        return $ \i -> do
+        gen <- readIORef gRef
+        let v = genBytes i gen
+        case v of
+                Left _ -> error "blah"
+                Right (b,gen') -> do
+                        writeIORef gRef gen'
+                        return b
+
