@@ -23,15 +23,18 @@ module Crypto.Random
 	( CryptoRandomGen(..)
 	, GenError (..)
 	, newGenIO
+	, SystemRandom
 	) where
 
-import System.Crypto.Random (getEntropy)
+import System.Crypto.Random
 import Crypto.Types
 import Control.Monad (liftM)
 import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as L
 import Data.Tagged
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
+import System.IO.Unsafe(unsafeInterleaveIO)
 
 -- |many generators have these error conditions in common
 data GenError =
@@ -40,6 +43,7 @@ data GenError =
 	| RangeInvalid		-- ^ When using @genInteger g (l,h)@ and @logBase 2 (h - l) > (maxBound :: Int)@.
 	| NeedReseed		-- ^ Some generators cease operation after too high a count without a reseed (ex: NIST SP 800-90)
 	| NotEnoughEntropy	-- ^ For instantiating new generators (or reseeding)
+	| NeedsInfiniteSeed	-- ^ This generator can not be instantiated or reseeded with a finite seed (ex: 'SystemRandom')
   deriving (Eq, Ord, Show)
 
 -- |A class of random bit generators that allows for the possibility of failure,
@@ -98,19 +102,54 @@ class CryptoRandomGen g where
 	-- can result in an error (`NotEnoughEntropy`).
 	reseed		:: B.ByteString -> g -> Either GenError g
 
--- |Use "System.Crypto.Random" to obtain entropy for `newGen`.
-newGenIO :: CryptoRandomGen g => IO g
-newGenIO = go 0
-  where
-  go 1000 = error "The generator instance requested by newGenIO never instantiates (1000 tries).  It must be broken."
-  go i = do
-	let p = Proxy
-	    getTypedGen :: (CryptoRandomGen g) => Proxy g -> IO (Either GenError g)
-	    getTypedGen pr = liftM newGen (getEntropy $ proxy genSeedLength pr)
-	res <- getTypedGen p
-	case res of
-		Left _ -> go (i+1)
-		Right g -> return (g `asProxyTypeOf` p)
+	-- |By default this uses "System.Crypto.Random" to obtain entropy for `newGen`.
+	newGenIO :: CryptoRandomGen g => IO g
+	newGenIO = go 0
+	  where
+	  go 1000 = error "The generator instance requested by newGenIO never instantiates (1000 tries).  It must be broken."
+	  go i = do
+		let p = Proxy
+		    getTypedGen :: (CryptoRandomGen g) => Proxy g -> IO (Either GenError g)
+		    getTypedGen pr = liftM newGen (getEntropy $ proxy genSeedLength pr)
+		res <- getTypedGen p
+		case res of
+			Left _ -> go (i+1)
+			Right g -> return (g `asProxyTypeOf` p)
+
+-- |get a random number generator based on the standard system entropy source
+getSystemGen :: IO SystemRandom
+getSystemGen = do
+        ch <- openHandle
+        let getBS = unsafeInterleaveIO $ do
+                bs <- hGetEntropy ch ((2^15) - 16)
+                more <- getBS
+                return (bs:more)
+        liftM (SysRandom . L.fromChunks) getBS
+
+-- |Not that it is technically correct as an instance of 'CryptoRandomGen', but simply because
+-- it's a reasonable engineering choice here is a CryptoRandomGen which streams the system randoms. Take note:
+-- 
+--  * It uses the default definition of 'genByteWithEntropy'
+--
+--  * 'newGen' will always fail!
+--
+--  * 'reseed' will always fail!
+--
+--  * the handle to the system random is never closed
+data SystemRandom = SysRandom L.ByteString
+
+instance CryptoRandomGen SystemRandom where
+        newGen _ = Left NeedsInfiniteSeed
+        genSeedLength = Tagged 0
+        genBytes req (SysRandom bs) =
+                let reqI = fromIntegral req
+                    rnd = L.take reqI bs
+                    rest = L.drop reqI bs
+                in if L.length rnd == reqI
+                        then Right (B.concat $ L.toChunks rnd, SysRandom rest)
+                        else Left $ GenErrorOther "Error obtaining enough bytes from system random for given request"
+        reseed _ _ = Left NeedsInfiniteSeed
+	newGenIO = getSystemGen
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
