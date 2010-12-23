@@ -20,9 +20,12 @@
 -}
 
 module Crypto.Random
-	( CryptoRandomGen(..)
+	( -- * Basic Interface
+	  CryptoRandomGen(..)
 	, GenError (..)
-	, newGenIO
+	  -- * Helper functions and expanded interface
+	, splitGen
+	  -- * Instances
 	, SystemRandom
 	) where
 
@@ -103,7 +106,7 @@ class CryptoRandomGen g where
 	reseed		:: B.ByteString -> g -> Either GenError g
 
 	-- |By default this uses "System.Crypto.Random" to obtain entropy for `newGen`.
-	newGenIO :: CryptoRandomGen g => IO g
+	newGenIO :: IO g
 	newGenIO = go 0
 	  where
 	  go 1000 = error "The generator instance requested by newGenIO never instantiates (1000 tries).  It must be broken."
@@ -150,6 +153,19 @@ instance CryptoRandomGen SystemRandom where
                         else Left $ GenErrorOther "Error obtaining enough bytes from system random for given request"
         reseed _ _ = Left NeedsInfiniteSeed
 	newGenIO = getSystemGen
+
+-- |While the safety and wisdom of a splitting function depends on the properties of the generator being split,
+-- -- several arguments from informed people indicate such a function is safe for NIST SP 800-90 generators.
+-- -- (see libraries@haskell.org discussion ~ Sept, Oct 2010)
+splitGen :: CryptoRandomGen g => g -> Either GenError (g,g)
+splitGen g = do
+	let e = genBytes (genSeedLength `for` g) g
+	case e of
+		Left e -> Left e
+		Right (ent,g') -> 
+			case newGen ent of
+				Right new -> Right (g',new)
+				Left e -> Left e
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
