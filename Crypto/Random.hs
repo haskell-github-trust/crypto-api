@@ -154,9 +154,9 @@ instance CryptoRandomGen SystemRandom where
         reseed _ _ = Left NeedsInfiniteSeed
 	newGenIO = getSystemGen
 
--- |While the safety and wisdom of a splitting function depends on the properties of the generator being split,
--- -- several arguments from informed people indicate such a function is safe for NIST SP 800-90 generators.
--- -- (see libraries@haskell.org discussion ~ Sept, Oct 2010)
+-- | While the safety and wisdom of a splitting function depends on the properties of the generator being split,
+-- several arguments from informed people indicate such a function is safe for NIST SP 800-90 generators.
+-- (see libraries@haskell.org discussion ~ Sept, Oct 2010)
 splitGen :: CryptoRandomGen g => g -> Either GenError (g,g)
 splitGen g = do
 	let e = genBytes (genSeedLength `for` g) g
