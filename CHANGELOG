@@ -1,0 +1,4 @@
+0.3
+* add splitGen
+* move newGenIO to be part of the class interface (so GenSystemRandom can work, but with a reasonable default for real generators)
+* Documentation fixes
