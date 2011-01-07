@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, ForeignFunctionInterface #-}
+{-# LANGUAGE CPP, ForeignFunctionInterface, BangPatterns #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
