@@ -8,7 +8,12 @@
   Be aware there are no tests for CFB mode yet.  See "Test.Crypto".
 -}
 module Crypto.Modes
-	( ecb, unEcb
+	(
+	-- * Initialization Vector Type (for all ciphers for all modes that use IVs)
+	  IV
+	, getIV, getIVIO
+	-- * Blockcipher modes of operation.  Note name' (with a prime) means strict, without a prime means lazy bytestrings.
+	, ecb, unEcb
 	, cbc, unCbc
 	, cfb, unCfb
 	, ofb, unOfb
@@ -16,9 +21,9 @@ module Crypto.Modes
 	, cbc', unCbc'
 	, cfb', unCfb'
 	, ofb', unOfb'
-	, IV
-	, getIV, getIVIO
+	-- * Authentication modes
 	, cbcMac', cbcMac
+	-- * Combined modes (nothing here yet)
 	-- , gmc
 	-- , xts
 	-- , ccm
@@ -38,7 +43,9 @@ import System.Crypto.Random (getEntropy)
 import Control.Monad (liftM)
 
 -- |Initilization Vectors for BlockCipher implementations (IV k) are used
--- for various modes and guarrenteed to be blockSize bits long.
+-- for various modes and guarrenteed to be blockSize bits long.  The common
+-- ways to obtain an IV are to generate one ('getIV' or 'getIVIO') or to
+-- use one provided with the ciphertext (using the 'Serialize' instance of IV).
 data IV k = IV { initializationVector :: B.ByteString } deriving (Eq, Ord, Show)
 
 -- gather a specified number of bytes from the list of bytestrings
