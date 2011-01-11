@@ -1,3 +1,9 @@
+0.3.2
+* Add cbcMac and cbcMac' (UNTESTED!)
+
+0.3.1
+* Fix a compilation bug w/ GHC 7.0.2
+
 0.3
 * add splitGen
 * add the "SystemRandom" generator and CryptoRandomGen instance

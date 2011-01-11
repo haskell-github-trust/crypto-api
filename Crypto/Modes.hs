@@ -18,6 +18,7 @@ module Crypto.Modes
 	, ofb', unOfb'
 	, IV
 	, getIV, getIVIO
+	, cbcMac', cbcMac
 	-- , gmc
 	-- , xts
 	-- , ccm
@@ -105,6 +106,12 @@ cbc' k (IV v) plaintext =
 	let c = encryptBlock k (zwp' iv b)
 	    (cs, ivFinal) = go bs c
 	in (c:cs, ivFinal)
+
+cbcMac' :: BlockCipher k => k -> B.ByteString -> B.ByteString
+cbcMac' k pt = encode $ snd $ cbc' k (IV (B.replicate (blockSize `for` k) 0)) pt
+
+cbcMac :: BlockCipher k => k -> L.ByteString -> L.ByteString
+cbcMac k pt = L.fromChunks [encode $ snd $ cbc k (IV (B.replicate (blockSize `for` k) 0)) pt]
 
 -- |Cipher block chaining decryption for strict bytestrings
 unCbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
