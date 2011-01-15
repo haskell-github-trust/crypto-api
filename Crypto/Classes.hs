@@ -126,23 +126,11 @@ blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
 blockSizeBytes = fmap (`div` 8) blockSize
 
 -- |Asymetric ciphers (common ones being RSA or EC based)
-class (Serialize p) => AsymCipher p where
-  buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p,p),g) -- ^ build a public/private key pair using the provided generator
-  encryptAsym     :: p -> B.ByteString -> B.ByteString	-- ^ Asymetric encryption
-  decryptAsym     :: p -> B.ByteString -> B.ByteString  -- ^ Asymetric decryption
+class (Serialize p) => AsymCipher p v where
+  buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p,v),g) -- ^ build a public/private key pair using the provided generator
+  encryptAsym     :: (CryptoRandomGen g) => g -> p -> B.ByteString -> (B.ByteString,g)	-- ^ Asymetric encryption
+  decryptAsym     :: v -> B.ByteString -> B.ByteString  -- ^ Asymetric decryption
   asymKeyLength   :: p -> BitLength
-
--- | `signUsing d k msg` Returns a signature (not a message + signature) for `msg`
--- by hashing into a digest asTypeOf `d` and encrypting using the asymetric key `k`.
---
--- Expect a "Signature" class to appear in a future crypto-api
--- (this function might become depricated pending discussion)
-signUsing :: (Hash c d, AsymCipher p) => d -> p -> L.ByteString -> B.ByteString
-signUsing d p = encryptAsym p . Data.Serialize.encode . hashFunc d
-
--- | Like `signUsing` but for strict ByteStrings.
-signUsing' :: (Hash c d, AsymCipher p) => d -> p -> B.ByteString -> B.ByteString
-signUsing' d p = encryptAsym p . Data.Serialize.encode . hashFunc' d
 
 -- | A stream cipher class.  Instance are expected to work on messages as small as one byte
 -- The length of the resulting cipher text should be equal
@@ -156,7 +144,7 @@ class (Serialize k) => StreamCipher k iv | k -> iv where
 -- | A class for signing operations which inherently can not be as generic
 -- as asymetric ciphers (ex: DSA).
 class (Serialize p, Serialize v) => Signing p v | p -> v, v -> p  where
-  sign	 :: v -> L.ByteString -> B.ByteString
+  sign	 :: CryptoRandomGen g => g -> v -> L.ByteString -> (B.ByteString, g)
   verify :: p -> L.ByteString -> B.ByteString -> Bool
   buildSigningPair :: CryptoRandomGen g => g -> BitLength -> Maybe ((p, v), g)
   signingKeyLength :: v -> BitLength

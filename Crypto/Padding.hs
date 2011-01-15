@@ -74,7 +74,7 @@ unpadPKCS5safe bs
   pLen = fromIntegral padLen
   (msg,pad) = B.splitAt (bsLen - pLen) bs
 
--- unpad a strict bytestring without checking the pad bytes and length any more than necessary.
+-- |unpad a strict bytestring without checking the pad bytes and length any more than necessary.
 unpadPKCS5 :: B.ByteString -> B.ByteString
 unpadPKCS5 bs = if bsLen == 0 then bs else msg
   where
