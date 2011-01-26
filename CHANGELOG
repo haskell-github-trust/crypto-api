@@ -1,6 +1,7 @@
-0.3.2
+0.4
 * Add cbcMac and cbcMac' (UNTESTED!)
 * Fix the ASymCipher and Signing classes to use CryptoRandomGen as appropriate
+* Bump the tagged build dep
 
 0.3.1
 * Fix a compilation bug w/ GHC 7.0.2
