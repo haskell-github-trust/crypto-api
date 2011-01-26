@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances, CPP #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -38,6 +38,10 @@ import Data.Tagged
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
 import System.IO.Unsafe(unsafeInterleaveIO)
+
+#if MIN_VERSION_tagged(0,2,0)
+import Data.Proxy
+#endif
 
 -- |many generators have these error conditions in common
 data GenError =

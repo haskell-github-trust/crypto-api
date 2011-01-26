@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -41,6 +42,10 @@ import Crypto.Classes
 import Crypto.Random
 import System.Crypto.Random (getEntropy)
 import Control.Monad (liftM)
+#if MIN_VERSION_tagged(0,2,0)
+import Data.Proxy
+#endif
+
 
 -- |Initilization Vectors for BlockCipher implementations (IV k) are used
 -- for various modes and guarrenteed to be blockSize bits long.  The common
