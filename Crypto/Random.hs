@@ -152,7 +152,7 @@ instance CryptoRandomGen SystemRandom where
                         then Right (B.concat $ L.toChunks rnd, SysRandom rest)
                         else Left $ GenErrorOther "Error obtaining enough bytes from system random for given request"
         reseed _ _ = Left NeedsInfiniteSeed
-	newGenIO = getSystemGen
+        newGenIO = getSystemGen
 
 -- | While the safety and wisdom of a splitting function depends on the properties of the generator being split,
 -- several arguments from informed people indicate such a function is safe for NIST SP 800-90 generators.
