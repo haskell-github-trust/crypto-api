@@ -3,8 +3,8 @@
 -- Module      :  Data.LargeWord
 -- Copyright   :  (c) Dominic Steinitz 2004
 -- License     :  BSD
--- 
--- Maintainer  :  dominic.steinitz@blueyonder.co.uk
+--
+-- Maintainer  :  dominic@steinitz.org
 -- Stability   :  experimental
 -- Portability :  portable
 --
@@ -14,7 +14,16 @@
 -----------------------------------------------------------------------------
 
 module Data.LargeWord
-   (LargeWord(..),LargeKey,Word96,Word128,Word160,Word192,Word224,Word256) where
+  ( LargeKey
+  , Word96
+  , Word128
+  , Word160
+  , Word192
+  , Word224
+  , Word256
+  , loHalf
+  , hiHalf
+  ) where
 
 import Data.Word
 import Data.Bits
@@ -61,6 +70,11 @@ instance LargeWord Word64 where
 
 data LargeKey a b = LargeKey a b
    deriving (Eq, Ord)
+
+{-# INLINE loHalf #-}
+loHalf (LargeKey a b) = a
+{-# INLINE hiHalf #-}
+hiHalf (LargeKey a b) = b
 
 instance (Ord a, Bits a, LargeWord a, Bits b, LargeWord b) =>
    LargeWord (LargeKey a b) where
