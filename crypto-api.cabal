@@ -2,8 +2,8 @@ name:           crypto-api
 version:        0.4.1
 license:        BSD3
 license-file:   LICENSE
-copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Dominic Steinitz (see Data.LargeWord module)
-author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>, Dominic Steinitz
+copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>
+author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>
 maintainer:     Thomas DuBuisson <thomas.dubuisson@gmail.com>
 description:    A generic interface for cryptographic operations,
                 platform independent quality RNG, property tests
@@ -52,10 +52,10 @@ Library
   Build-Depends: base == 4.*,
                  bytestring >= 0.9 && < 0.10,
                  cereal >= 0.2 && < 0.4,
-                 tagged >= 0.1 && < 0.3
+                 tagged == 0.1.*
   ghc-options:   -O2
   hs-source-dirs:
-  exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Data.LargeWord, Crypto.Modes, System.Crypto.Random, Crypto.Random, Crypto.Padding
+  exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, System.Crypto.Random, Crypto.Random, Crypto.Padding
   if os(windows)
     cpp-options: -DisWindows
     extra-libraries: advapi32
