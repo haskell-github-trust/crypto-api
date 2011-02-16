@@ -1,3 +1,9 @@
+0.5.1
+* Added filepath build-dep for tests flag
+
+0.5
+* Removed Data.LargeWord (it has its own package)
+
 0.4.1
 * Fixed compilation error with tagged 0.2
 

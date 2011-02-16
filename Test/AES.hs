@@ -17,6 +17,11 @@ import Test.Crypto
 import Test.ParseNistKATs
 
 -- |Based on NIST KATs, build a list  of Tests for the instantiated AES algorithm.
+-- e.g. @runTests $ makeAESTests (undefined :: AES128)@
+--
+-- This is just a hack-job, if the BlockCipher instance doesn't toss keys
+-- of incorrect length then you'll get this test running, say, AES128 being tested
+-- with the first 128 bits of AES192 and AES256 tests.
 makeAESTests :: BlockCipher k => k -> IO [Test]
 makeAESTests k = do
         kats <- getAES_KATs k
@@ -73,7 +78,8 @@ testToKatBasic t f enc ek name = do
         ct <- lookup "CIPHERTEXT" t
         pt <- lookup "PLAINTEXT" t
         k  <- lookup "KEY" t
-        let realKey = (fromJust . buildKey . hexStringToBS $ k) `asTypeOf` ek
+	rK <- (buildKey . hexStringToBS $ k)
+	let realKey = rK `asTypeOf` ek
             ctBS = hexStringToBS ct
             ptBS = hexStringToBS pt
 	    nm   = name ++ "-" ++ cnt

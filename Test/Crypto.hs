@@ -128,12 +128,20 @@ makeHashPropTests d =
 
 -- |some generic blockcipher tests
 
+goodKey :: BlockCipher k => k -> B.ByteString -> Bool
 goodKey k bs =
-	case (buildKey bs `asTypeOf` Just k) of
+	case (getKey k bs `asTypeOf` Just k) of
 		Nothing -> False
 		Just _  -> True
 
-bKey k bs = let Just k' = (buildKey bs `asTypeOf` Just k) in k'
+bKey k bs = let Just k' = (getKey k bs `asTypeOf` Just k) in k'
+
+-- Pad out (or trim) material to correct length (for testing only!)
+getKey :: BlockCipher k => k -> B.ByteString -> Maybe k
+getKey k bs =
+	let l  = (keyLength `for` k) `div` 8
+	    b' = B.take l (B.concat $ replicate l (B.append bs (B.singleton 0)))
+	in buildKey b'
 
 bIV :: BlockCipher k => k -> B.ByteString -> Either String (IV k)
 bIV k bs = Ser.decode bs

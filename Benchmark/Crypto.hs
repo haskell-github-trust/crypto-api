@@ -60,6 +60,7 @@ op :: Ser.Serialize d => (a -> d) -> a -> Pure
 op f str = whnf (B.unpack . Ser.encode . f) str
 
 -- |Benchmark a block cipher by calling the 'ecb'' and 'unEcb'' functions
+-- on 128KB strings
 benchmarkBlockCipher :: BlockCipher k => k -> String -> Benchmark
 benchmarkBlockCipher k name =
 	let benchs = bgroup name [ bench "enc" (whnf (ecb' k) ps)

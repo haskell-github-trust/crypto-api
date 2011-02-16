@@ -38,6 +38,7 @@ import Data.Tagged
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
 import System.IO.Unsafe(unsafeInterleaveIO)
+import qualified Foreign.ForeignPtr as FP
 
 #if MIN_VERSION_tagged(0,2,0)
 import Data.Proxy
@@ -147,7 +148,7 @@ data SystemRandom = SysRandom L.ByteString
 
 instance CryptoRandomGen SystemRandom where
         newGen _ = Left NeedsInfiniteSeed
-        genSeedLength = Tagged 0
+        genSeedLength = Tagged maxBound
         genBytes req (SysRandom bs) =
                 let reqI = fromIntegral req
                     rnd = L.take reqI bs
@@ -158,7 +159,7 @@ instance CryptoRandomGen SystemRandom where
         reseed _ _ = Left NeedsInfiniteSeed
         newGenIO = getSystemGen
 
--- | While the safety and wisdom of a splitting function depends on the properties of the generator being split,
+-- |While the safety and wisdom of a splitting function depends on the properties of the generator being split,
 -- several arguments from informed people indicate such a function is safe for NIST SP 800-90 generators.
 -- (see libraries@haskell.org discussion ~ Sept, Oct 2010)
 splitGen :: CryptoRandomGen g => g -> Either GenError (g,g)

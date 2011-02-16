@@ -32,6 +32,7 @@ import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Internal as I
 import Data.List (foldl')
+import Data.Word (Word64)
 import Data.Tagged
 import Crypto.Types
 import Crypto.Random
@@ -120,7 +121,7 @@ class ( Serialize k) => BlockCipher k where
   encryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ encrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb encryption)
   decryptBlock	:: k -> B.ByteString -> B.ByteString	-- ^ decrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb decryption)
   buildKey	:: B.ByteString -> Maybe k		-- ^ smart constructor for keys from a bytestring.
-  keyLength	:: k -> BitLength			-- ^ keyLength may inspect its argument to return the length
+  keyLength	:: Tagged k BitLength			-- ^ length of the cryptographic key
 
 blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
 blockSizeBytes = fmap (`div` 8) blockSize
