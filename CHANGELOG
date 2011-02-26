@@ -1,3 +1,9 @@
+0.5.3
+* Add reasonably performing cnt' mode of operation (good for BlockCipher based RNGs)
+
+0.5.2
+* Fix Test.AES
+
 0.5.1
 * Added filepath build-dep for tests flag
 

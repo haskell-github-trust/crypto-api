@@ -48,12 +48,7 @@ import Control.Monad (liftM, forM_)
 -- For CTR mode only:
 import Data.Word
 import Data.LargeWord
-import Foreign.Storable
-import Foreign.Ptr (castPtr, Ptr)
 import qualified Data.ByteString.Internal as BI
-import qualified Foreign.ForeignPtr as FP
-import System.IO.Unsafe (unsafePerformIO)
-import Data.ByteString.Unsafe (unsafeIndex, unsafeUseAsCString)
 
 #if MIN_VERSION_tagged(0,2,0)
 import Data.Proxy
@@ -299,53 +294,33 @@ cnt' k (Ctr cVal) pt =
 	    blkSz  = blockSizeBytes `for` k
 	    ptBlks = (len + (blkSz - 1)) `div` blkSz
 	    req = blkSz * ptBlks
-	    ctrs = unsafePerformIO $ do
-		buf <- FP.mallocForeignPtrBytes req
-		FP.withForeignPtr buf $ \ptr -> do
-	  	  case blkSz of
-		    32 -> genBytesCtr (undefined :: Word256) ptr req cVal
-		    16 -> genBytesCtr (undefined :: Word128) ptr req cVal
-		    8  -> genBytesCtr (undefined :: Word64) ptr req cVal
-		    _  -> genBytesCtrGeneric blkSz ptr req cVal
-	          return (BI.fromForeignPtr (FP.castForeignPtr buf) 0 req)
---	    ctrs = runPut $ forM_ (map (+fromIntegral cVal) [0..fromIntegral ptBlks-1]) (\i -> putWord64be 0 >> putWord64be i)
+	    ctrs = genCtrBS blkSz ptBlks
 	    ct = encryptBlock k ctrs
 	in (zwp' ct pt,  Ctr (cVal + fromIntegral ptBlks))
+  where
+  cVal' :: Num a => a
+  cVal' = fromIntegral cVal
+  genCtrBS :: Int -> Int -> B.ByteString
+  genCtrBS 32 ptBlks =
+	runPut $ mapM_ put (eqInc (cVal' :: Word256) (cVal' + (fromIntegral $ ptBlks-1)))
+  genCtrBS 24 ptBlks =
+	runPut $ mapM_ put (eqInc (cVal' :: Word192) (cVal' + (fromIntegral $ ptBlks-1)))
+  genCtrBS 16 ptBlks =
+	runPut $ mapM_ put (eqInc (cVal' :: Word128) (cVal' + (fromIntegral $ ptBlks-1)))
+  genCtrBS 8 ptBlks =
+	runPut $ mapM_ put (eqInc (cVal' ::  Word64) (cVal' + (fromIntegral $ ptBlks-1)))
+  genCtrBS blkSz ptBlks = B.concat [i2bs (blkSz*8) (cVal + fromIntegral i) | i <- [0..ptBlks-1]]
 {-# INLINEABLE cnt' #-}
 
-genBytesCtr :: (Storable w, Num w) => w -> Ptr x -> Int -> Integer -> IO ()
-genBytesCtr wordUndef p req counter = do
-  let nrW = (req + sizeOf wordUndef - 1) `div` (sizeOf wordUndef)
-      ptr = castPtr p
-      c = fromIntegral counter
-  forM_ [0..nrW-1] $ \i ->
-        pokeElemOff ptr i (c + fromIntegral i `asTypeOf` wordUndef)
-{-# INLINE genBytesCtr #-}
-
-genBytesCtrGeneric :: Int -> Ptr x -> Int -> Integer -> IO ()
-genBytesCtrGeneric blkSz ptr req counter = do
-        let nrB  = (req + blkSz - 1) `div` blkSz
-            (fptr,_,_) = BI.toForeignPtr (B.concat [i2bs (blkSz*8) (counter + fromIntegral i) | i <- [0..nrB-1]])
-        FP.withForeignPtr fptr $ \ptr' -> BI.memcpy (castPtr ptr) ptr' (fromIntegral $ nrB * blkSz)
-{-# INLINE genBytesCtrGeneric #-}
+eqInc :: Integral a => a -> a -> [a]
+eqInc a b
+	| a == b = [b]
+	| otherwise = a : eqInc (a+1) b
+{-# INLINE eqInc #-}
 
 unCnt' :: BlockCipher k => k -> Ctr k -> B.ByteString -> (B.ByteString, Ctr k)
 unCnt' = cnt'
 {-# INLINEABLE unCnt' #-}
-
--- |Ctr, nrBlocks, blkSzBits
-incCnt :: Ctr k -> Int -> Int -> [B.ByteString]
-incCnt c i blkSz 
-    | blkSz `rem` 64 == 0 = [runPut $ mapM_ (c2bsE blkSz) [c'+1,c'+2.. c'+fromIntegral i]]
-    | otherwise = map (c2bs blkSz) [c'+1, c'+2.. c'+fromIntegral i]
-  where
-  c' = unCtr c
-  c2bs :: Int -> Integer -> B.ByteString
-  c2bs l i = B.unfoldr (\l' -> if l' < 0 then Nothing else Just (fromIntegral (i `shiftR` l'), l' - 8)) (l-8)
-  c2bsE :: Int -> Integer -> Put
-  c2bsE l i | l == 0 = return ()
-            | otherwise = SP.putWord64be (fromIntegral i) >> c2bsE (l-64) (i `shiftR` 64)
-{-# INLINE incCnt #-}
 
 -- |Output feedback mode for strict bytestrings
 unOfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
@@ -420,6 +395,21 @@ instance (BlockCipher k) => Serialize (Ctr k) where
 		    doPut :: BlockCipher k => Proxy k -> Ctr k -> Put
 		    doPut pr c = SP.putByteString (i2bs (proxy blockSizeBytes pr) (unCtr c))
 		doPut p (c `asProxyTypeOf` ctrProxy p)
+
+instance (Serialize a, Serialize b) =>
+         Serialize (LargeKey a b) where
+	get = do
+		let p = Proxy
+		    getLH :: (Serialize l, Serialize h) => Proxy (LargeKey l h) -> (Get l, Get h)
+		    getLH _ = (get,get)
+		    (gL,gH) = getLH p
+		l <- gL
+		h <- gH
+		return (LargeKey l h `asProxyTypeOf` p)
+	put lk =
+		let l = loHalf lk
+		    h = hiHalf lk
+		in put l >> put h
 
 -- TODO: GCM, GMAC
 -- Consider the AES-only modes of XTS, CCM
