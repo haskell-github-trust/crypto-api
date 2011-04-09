@@ -13,18 +13,26 @@ as changing a type signature.
 -}
 
 module Crypto.Classes
-	( Hash(..)
-	, BlockCipher(..)
-	, blockSizeBytes
-	, StreamCipher(..)
-	, AsymCipher(..)
-	, Signing(..)
-	, for
-	, (.::.)
+	( 
+	-- * Hash class and helper functions
+	  Hash(..)
 	, hash
 	, hash'
 	, hashFunc
 	, hashFunc'
+	-- * Cipher classes and helper functions
+	, BlockCipher(..)
+	, blockSizeBytes
+	, buildKeyIO
+	, StreamCipher(..)
+	, buildStreamKeyIO
+	, AsymCipher(..)
+	, buildKeyPairIO
+	, Signing(..)
+	, buildSigningKeyPairIO
+	-- * Misc helper functions
+	, for
+	, (.::.)
 	) where
 
 import Data.Serialize
@@ -36,6 +44,7 @@ import Data.Word (Word64)
 import Data.Tagged
 import Crypto.Types
 import Crypto.Random
+import System.Crypto.Random
 
 -- |The Hash class is intended as the generic interface
 -- targeted by maintainers of Haskell digest implementations.
@@ -126,6 +135,20 @@ class ( Serialize k) => BlockCipher k where
 blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
 blockSizeBytes = fmap (`div` 8) blockSize
 
+buildKeyIO :: (BlockCipher k) -> IO k
+buildKeyIO = go 0
+  where
+  go 1000 = error "Tried 1000 times to generate a key from the system entropy.\
+                  \  No keys were returned! Perhaps the system entropy is broken\
+                  \ or perhaps the BlockCipher instance being used has a non-flat\
+                  \ keyspace."
+  go i = do
+	let bs = keyLength
+	kd <- getEntropy ((7 + untag bs) `div` 8)
+	case buildKey kd of
+		Nothing -> go (i+1)
+		Just k  -> return $ k `asTaggedTypeOf` bs
+
 -- |Asymetric ciphers (common ones being RSA or EC based)
 class (Serialize p, Serialize v) => AsymCipher p v where
   buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Either GenError ((p,v),g) -- ^ build a public/private key pair using the provided generator
@@ -133,6 +156,13 @@ class (Serialize p, Serialize v) => AsymCipher p v where
   decryptAsym      :: v -> B.ByteString -> Maybe B.ByteString  -- ^ Asymetric decryption
   publicKeyLength  :: p -> BitLength
   privateKeyLength :: v -> BitLength
+
+buildKeyPairIO :: AsymCipher p v => BitLength -> IO (Either GenError (p,v))
+buildKeyPairIO bl = do
+	g <- newGenIO :: IO SystemRandom
+	case buildKeyPair g bl of
+		Left err -> return (Left err)
+		Right (k,_) -> return (Right k)
 
 -- | A stream cipher class.  Instance are expected to work on messages as small as one byte
 -- The length of the resulting cipher text should be equal
@@ -143,6 +173,20 @@ class (Serialize k) => StreamCipher k iv | k -> iv where
   decryptStream 	:: k -> iv -> B.ByteString -> (B.ByteString, iv)
   streamKeyLength	:: k -> BitLength
 
+buildStreamKeyIO :: StreamCipher k iv => IO k
+buildStreamKeyIO = go 0
+  where
+  go 1000 = error "Tried 1000 times to generate a stream key from the system entropy.\
+                  \  No keys were returned! Perhaps the system entropy is broken\
+                  \ or perhaps the BlockCipher instance being used has a non-flat\
+                  \ keyspace."
+  go i = do
+	let bs = streamKeyLength
+	kd <- getEntropy ((7 + untag bs) `div` 8)
+	case buildStreamKey kd of
+		Nothing -> go (i+1)
+		Just k -> return $ k `asTaggedTypeOf` bs
+
 -- | A class for signing operations which inherently can not be as generic
 -- as asymetric ciphers (ex: DSA).
 class (Serialize p, Serialize v) => Signing p v | p -> v, v -> p  where
@@ -151,3 +195,10 @@ class (Serialize p, Serialize v) => Signing p v | p -> v, v -> p  where
   buildSigningPair :: CryptoRandomGen g => g -> BitLength -> Either GenError ((p, v), g)
   signingKeyLength :: v -> BitLength
   verifyingKeyLength :: p -> BitLength
+
+buildSigningPairIO :: (Signing p v) => BitLength -> IO (Either GenError (p,v))
+buildSigningPairIO bl = do
+	g <- newGenIO :: IO SystemRandom
+	case buildSigningPair g bl of
+		Left err -> return $ Left err
+		Right (k,_) -> return $ Right k
