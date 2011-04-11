@@ -135,7 +135,7 @@ class ( Serialize k) => BlockCipher k where
 blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
 blockSizeBytes = fmap (`div` 8) blockSize
 
-buildKeyIO :: (BlockCipher k) -> IO k
+buildKeyIO :: (BlockCipher k) => IO k
 buildKeyIO = go 0
   where
   go 1000 = error "Tried 1000 times to generate a key from the system entropy.\
@@ -171,7 +171,7 @@ class (Serialize k) => StreamCipher k iv | k -> iv where
   buildStreamKey	:: B.ByteString -> Maybe k
   encryptStream		:: k -> iv -> B.ByteString -> (B.ByteString, iv)
   decryptStream 	:: k -> iv -> B.ByteString -> (B.ByteString, iv)
-  streamKeyLength	:: k -> BitLength
+  streamKeyLength	:: Tagged k BitLength
 
 buildStreamKeyIO :: StreamCipher k iv => IO k
 buildStreamKeyIO = go 0
@@ -181,11 +181,11 @@ buildStreamKeyIO = go 0
                   \ or perhaps the BlockCipher instance being used has a non-flat\
                   \ keyspace."
   go i = do
-	let bs = streamKeyLength
-	kd <- getEntropy ((7 + untag bs) `div` 8)
+	let k = streamKeyLength
+	kd <- getEntropy ((untag k + 7) `div` 8)
 	case buildStreamKey kd of
 		Nothing -> go (i+1)
-		Just k -> return $ k `asTaggedTypeOf` bs
+		Just k' -> return $ k' `asTaggedTypeOf` k
 
 -- | A class for signing operations which inherently can not be as generic
 -- as asymetric ciphers (ex: DSA).
@@ -196,8 +196,8 @@ class (Serialize p, Serialize v) => Signing p v | p -> v, v -> p  where
   signingKeyLength :: v -> BitLength
   verifyingKeyLength :: p -> BitLength
 
-buildSigningPairIO :: (Signing p v) => BitLength -> IO (Either GenError (p,v))
-buildSigningPairIO bl = do
+buildSigningKeyPairIO :: (Signing p v) => BitLength -> IO (Either GenError (p,v))
+buildSigningKeyPairIO bl = do
 	g <- newGenIO :: IO SystemRandom
 	case buildSigningPair g bl of
 		Left err -> return $ Left err

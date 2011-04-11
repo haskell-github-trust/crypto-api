@@ -2,8 +2,8 @@ name:           crypto-api
 version:        0.5.3
 license:        BSD3
 license-file:   LICENSE
-copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>
-author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>
+copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike) (see AUTHORS)
+author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike)
 maintainer:     Thomas DuBuisson <thomas.dubuisson@gmail.com>
 description:    A generic interface for cryptographic operations,
                 platform independent quality RNG, property tests

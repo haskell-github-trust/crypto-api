@@ -130,7 +130,7 @@ putPadESP l bs = do
   padLen = l - ((B.length bs + 1) `rem` l)
   pLen = fromIntegral padLen
 
--- | A static espPad allows reuse of a single B.pack'ed pad for all calls to padESP
+-- A static espPad allows reuse of a single B.pack'ed pad for all calls to padESP
 espPad = B.pack [1..255]
 
 -- | unpad and return the padded message (Nothing is returned if the padding is invalid)
