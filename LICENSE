@@ -28,8 +28,3 @@ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
-
-
-
-LargeWord is the work of Dominic Steinitz.  See LargeWord.hs for copyright information.
-{http://www.opensource.org/licenses/bsd-license.php}
