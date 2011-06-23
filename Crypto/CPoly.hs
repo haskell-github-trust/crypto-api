@@ -5,6 +5,7 @@ module Crypto.CPoly
 	cpoly2revlist,
 	) where
 import Data.Bits
+import Data.Array
 
 -- Based on the data from "Table of Low-Weight Binary Irreducible Polynomials" of Gadiel Seroussi 
 -- Get the CMAC polynomial applicable to each block length from 2 to 10000
@@ -36,10003 +37,3353 @@ cpoly2revlist x = cpoly2 $ cpolys $ fromIntegral (x)
 	cpoly2 (Q a b c) = map fromIntegral [0,c,b,a]
 
 cpolys :: Int -> Poly
-cpolys 2 = T 1
-cpolys 3 = T 1
-cpolys 4 = T 1
-cpolys 5 = T 2
-cpolys 6 = T 1
-cpolys 7 = T 1
-cpolys 8 = Q 4 3 1
-cpolys 9 = T 1
-cpolys 10 = T 3
-cpolys 11 = T 2
-cpolys 12 = T 3
-cpolys 13 = Q 4 3 1
-cpolys 14 = T 5
-cpolys 15 = T 1
-cpolys 16 = Q 5 3 1
-cpolys 17 = T 3
-cpolys 18 = T 3
-cpolys 19 = Q 5 2 1
-cpolys 20 = T 3
-cpolys 21 = T 2
-cpolys 22 = T 1
-cpolys 23 = T 5
-cpolys 24 = Q 4 3 1
-cpolys 25 = T 3
-cpolys 26 = Q 4 3 1
-cpolys 27 = Q 5 2 1
-cpolys 28 = T 1
-cpolys 29 = T 2
-cpolys 30 = T 1
-cpolys 31 = T 3
-cpolys 32 = Q 7 3 2
-cpolys 33 = T 10
-cpolys 34 = T 7
-cpolys 35 = T 2
-cpolys 36 = T 9
-cpolys 37 = Q 6 4 1
-cpolys 38 = Q 6 5 1
-cpolys 39 = T 4
-cpolys 40 = Q 5 4 3
-cpolys 41 = T 3
-cpolys 42 = T 7
-cpolys 43 = Q 6 4 3
-cpolys 44 = T 5
-cpolys 45 = Q 4 3 1
-cpolys 46 = T 1
-cpolys 47 = T 5
-cpolys 48 = Q 5 3 2
-cpolys 49 = T 9
-cpolys 50 = Q 4 3 2
-cpolys 51 = Q 6 3 1
-cpolys 52 = T 3
-cpolys 53 = Q 6 2 1
-cpolys 54 = T 9
-cpolys 55 = T 7
-cpolys 56 = Q 7 4 2
-cpolys 57 = T 4
-cpolys 58 = T 19
-cpolys 59 = Q 7 4 2
-cpolys 60 = T 1
-cpolys 61 = Q 5 2 1
-cpolys 62 = T 29
-cpolys 63 = T 1
-cpolys 64 = Q 4 3 1
-cpolys 65 = T 18
-cpolys 66 = T 3
-cpolys 67 = Q 5 2 1
-cpolys 68 = T 9
-cpolys 69 = Q 6 5 2
-cpolys 70 = Q 5 3 1
-cpolys 71 = T 6
-cpolys 72 = Q 10 9 3
-cpolys 73 = T 25
-cpolys 74 = T 35
-cpolys 75 = Q 6 3 1
-cpolys 76 = T 21
-cpolys 77 = Q 6 5 2
-cpolys 78 = Q 6 5 3
-cpolys 79 = T 9
-cpolys 80 = Q 9 4 2
-cpolys 81 = T 4
-cpolys 82 = Q 8 3 1
-cpolys 83 = Q 7 4 2
-cpolys 84 = T 5
-cpolys 85 = Q 8 2 1
-cpolys 86 = T 21
-cpolys 87 = T 13
-cpolys 88 = Q 7 6 2
-cpolys 89 = T 38
-cpolys 90 = T 27
-cpolys 91 = Q 8 5 1
-cpolys 92 = T 21
-cpolys 93 = T 2
-cpolys 94 = T 21
-cpolys 95 = T 11
-cpolys 96 = Q 10 9 6
-cpolys 97 = T 6
-cpolys 98 = T 11
-cpolys 99 = Q 6 3 1
-cpolys 100 = T 15
-cpolys 101 = Q 7 6 1
-cpolys 102 = T 29
-cpolys 103 = T 9
-cpolys 104 = Q 4 3 1
-cpolys 105 = T 4
-cpolys 106 = T 15
-cpolys 107 = Q 9 7 4
-cpolys 108 = T 17
-cpolys 109 = Q 5 4 2
-cpolys 110 = T 33
-cpolys 111 = T 10
-cpolys 112 = Q 5 4 3
-cpolys 113 = T 9
-cpolys 114 = Q 5 3 2
-cpolys 115 = Q 8 7 5
-cpolys 116 = Q 4 2 1
-cpolys 117 = Q 5 2 1
-cpolys 118 = T 33
-cpolys 119 = T 8
-cpolys 120 = Q 4 3 1
-cpolys 121 = T 18
-cpolys 122 = Q 6 2 1
-cpolys 123 = T 2
-cpolys 124 = T 19
-cpolys 125 = Q 7 6 5
-cpolys 126 = T 21
-cpolys 127 = T 1
-cpolys 128 = Q 7 2 1
-cpolys 129 = T 5
-cpolys 130 = T 3
-cpolys 131 = Q 8 3 2
-cpolys 132 = T 17
-cpolys 133 = Q 9 8 2
-cpolys 134 = T 57
-cpolys 135 = T 11
-cpolys 136 = Q 5 3 2
-cpolys 137 = T 21
-cpolys 138 = Q 8 7 1
-cpolys 139 = Q 8 5 3
-cpolys 140 = T 15
-cpolys 141 = Q 10 4 1
-cpolys 142 = T 21
-cpolys 143 = Q 5 3 2
-cpolys 144 = Q 7 4 2
-cpolys 145 = T 52
-cpolys 146 = T 71
-cpolys 147 = T 14
-cpolys 148 = T 27
-cpolys 149 = Q 10 9 7
-cpolys 150 = T 53
-cpolys 151 = T 3
-cpolys 152 = Q 6 3 2
-cpolys 153 = T 1
-cpolys 154 = T 15
-cpolys 155 = T 62
-cpolys 156 = T 9
-cpolys 157 = Q 6 5 2
-cpolys 158 = Q 8 6 5
-cpolys 159 = T 31
-cpolys 160 = Q 5 3 2
-cpolys 161 = T 18
-cpolys 162 = T 27
-cpolys 163 = Q 7 6 3
-cpolys 164 = Q 10 8 7
-cpolys 165 = Q 9 8 3
-cpolys 166 = T 37
-cpolys 167 = T 6
-cpolys 168 = Q 15 3 2
-cpolys 169 = T 34
-cpolys 170 = T 11
-cpolys 171 = Q 6 5 2
-cpolys 172 = T 1
-cpolys 173 = Q 8 5 2
-cpolys 174 = T 13
-cpolys 175 = T 6
-cpolys 176 = Q 11 3 2
-cpolys 177 = T 8
-cpolys 178 = T 31
-cpolys 179 = Q 4 2 1
-cpolys 180 = T 3
-cpolys 181 = Q 7 6 1
-cpolys 182 = T 81
-cpolys 183 = T 56
-cpolys 184 = Q 9 8 7
-cpolys 185 = T 24
-cpolys 186 = T 11
-cpolys 187 = Q 7 6 5
-cpolys 188 = Q 6 5 2
-cpolys 189 = Q 6 5 2
-cpolys 190 = Q 8 7 6
-cpolys 191 = T 9
-cpolys 192 = Q 7 2 1
-cpolys 193 = T 15
-cpolys 194 = T 87
-cpolys 195 = Q 8 3 2
-cpolys 196 = T 3
-cpolys 197 = Q 9 4 2
-cpolys 198 = T 9
-cpolys 199 = T 34
-cpolys 200 = Q 5 3 2
-cpolys 201 = T 14
-cpolys 202 = T 55
-cpolys 203 = Q 8 7 1
-cpolys 204 = T 27
-cpolys 205 = Q 9 5 2
-cpolys 206 = Q 10 9 5
-cpolys 207 = T 43
-cpolys 208 = Q 9 3 1
-cpolys 209 = T 6
-cpolys 210 = T 7
-cpolys 211 = Q 11 10 8
-cpolys 212 = T 105
-cpolys 213 = Q 6 5 2
-cpolys 214 = T 73
-cpolys 215 = T 23
-cpolys 216 = Q 7 3 1
-cpolys 217 = T 45
-cpolys 218 = T 11
-cpolys 219 = Q 8 4 1
-cpolys 220 = T 7
-cpolys 221 = Q 8 6 2
-cpolys 222 = Q 5 4 2
-cpolys 223 = T 33
-cpolys 224 = Q 9 8 3
-cpolys 225 = T 32
-cpolys 226 = Q 10 7 3
-cpolys 227 = Q 10 9 4
-cpolys 228 = T 113
-cpolys 229 = Q 10 4 1
-cpolys 230 = Q 8 7 6
-cpolys 231 = T 26
-cpolys 232 = Q 9 4 2
-cpolys 233 = T 74
-cpolys 234 = T 31
-cpolys 235 = Q 9 6 1
-cpolys 236 = T 5
-cpolys 237 = Q 7 4 1
-cpolys 238 = T 73
-cpolys 239 = T 36
-cpolys 240 = Q 8 5 3
-cpolys 241 = T 70
-cpolys 242 = T 95
-cpolys 243 = Q 8 5 1
-cpolys 244 = T 111
-cpolys 245 = Q 6 4 1
-cpolys 246 = Q 11 2 1
-cpolys 247 = T 82
-cpolys 248 = Q 15 14 10
-cpolys 249 = T 35
-cpolys 250 = T 103
-cpolys 251 = Q 7 4 2
-cpolys 252 = T 15
-cpolys 253 = T 46
-cpolys 254 = Q 7 2 1
-cpolys 255 = T 52
-cpolys 256 = Q 10 5 2
-cpolys 257 = T 12
-cpolys 258 = T 71
-cpolys 259 = Q 10 6 2
-cpolys 260 = T 15
-cpolys 261 = Q 7 6 4
-cpolys 262 = Q 9 8 4
-cpolys 263 = T 93
-cpolys 264 = Q 9 6 2
-cpolys 265 = T 42
-cpolys 266 = T 47
-cpolys 267 = Q 8 6 3
-cpolys 268 = T 25
-cpolys 269 = Q 7 6 1
-cpolys 270 = T 53
-cpolys 271 = T 58
-cpolys 272 = Q 9 3 2
-cpolys 273 = T 23
-cpolys 274 = T 67
-cpolys 275 = Q 11 10 9
-cpolys 276 = T 63
-cpolys 277 = Q 12 6 3
-cpolys 278 = T 5
-cpolys 279 = T 5
-cpolys 280 = Q 9 5 2
-cpolys 281 = T 93
-cpolys 282 = T 35
-cpolys 283 = Q 12 7 5
-cpolys 284 = T 53
-cpolys 285 = Q 10 7 5
-cpolys 286 = T 69
-cpolys 287 = T 71
-cpolys 288 = Q 11 10 1
-cpolys 289 = T 21
-cpolys 290 = Q 5 3 2
-cpolys 291 = Q 12 11 5
-cpolys 292 = T 37
-cpolys 293 = Q 11 6 1
-cpolys 294 = T 33
-cpolys 295 = T 48
-cpolys 296 = Q 7 3 2
-cpolys 297 = T 5
-cpolys 298 = Q 11 8 4
-cpolys 299 = Q 11 6 4
-cpolys 300 = T 5
-cpolys 301 = Q 9 5 2
-cpolys 302 = T 41
-cpolys 303 = T 1
-cpolys 304 = Q 11 2 1
-cpolys 305 = T 102
-cpolys 306 = Q 7 3 1
-cpolys 307 = Q 8 4 2
-cpolys 308 = T 15
-cpolys 309 = Q 10 6 4
-cpolys 310 = T 93
-cpolys 311 = Q 7 5 3
-cpolys 312 = Q 9 7 4
-cpolys 313 = T 79
-cpolys 314 = T 15
-cpolys 315 = Q 10 9 1
-cpolys 316 = T 63
-cpolys 317 = Q 7 4 2
-cpolys 318 = T 45
-cpolys 319 = T 36
-cpolys 320 = Q 4 3 1
-cpolys 321 = T 31
-cpolys 322 = T 67
-cpolys 323 = Q 10 3 1
-cpolys 324 = T 51
-cpolys 325 = Q 10 5 2
-cpolys 326 = Q 10 3 1
-cpolys 327 = T 34
-cpolys 328 = Q 8 3 1
-cpolys 329 = T 50
-cpolys 330 = T 99
-cpolys 331 = Q 10 6 2
-cpolys 332 = T 89
-cpolys 333 = T 2
-cpolys 334 = Q 5 2 1
-cpolys 335 = Q 10 7 2
-cpolys 336 = Q 7 4 1
-cpolys 337 = T 55
-cpolys 338 = Q 4 3 1
-cpolys 339 = Q 16 10 7
-cpolys 340 = T 45
-cpolys 341 = Q 10 8 6
-cpolys 342 = T 125
-cpolys 343 = T 75
-cpolys 344 = Q 7 2 1
-cpolys 345 = T 22
-cpolys 346 = T 63
-cpolys 347 = Q 11 10 3
-cpolys 348 = T 103
-cpolys 349 = Q 6 5 2
-cpolys 350 = T 53
-cpolys 351 = T 34
-cpolys 352 = Q 13 11 6
-cpolys 353 = T 69
-cpolys 354 = T 99
-cpolys 355 = Q 6 5 1
-cpolys 356 = Q 10 9 7
-cpolys 357 = Q 11 10 2
-cpolys 358 = T 57
-cpolys 359 = T 68
-cpolys 360 = Q 5 3 2
-cpolys 361 = Q 7 4 1
-cpolys 362 = T 63
-cpolys 363 = Q 8 5 3
-cpolys 364 = T 9
-cpolys 365 = Q 9 6 5
-cpolys 366 = T 29
-cpolys 367 = T 21
-cpolys 368 = Q 7 3 2
-cpolys 369 = T 91
-cpolys 370 = T 139
-cpolys 371 = Q 8 3 2
-cpolys 372 = T 111
-cpolys 373 = Q 8 7 2
-cpolys 374 = Q 8 6 5
-cpolys 375 = T 16
-cpolys 376 = Q 8 7 5
-cpolys 377 = T 41
-cpolys 378 = T 43
-cpolys 379 = Q 10 8 5
-cpolys 380 = T 47
-cpolys 381 = Q 5 2 1
-cpolys 382 = T 81
-cpolys 383 = T 90
-cpolys 384 = Q 12 3 2
-cpolys 385 = T 6
-cpolys 386 = T 83
-cpolys 387 = Q 8 7 1
-cpolys 388 = T 159
-cpolys 389 = Q 10 9 5
-cpolys 390 = T 9
-cpolys 391 = T 28
-cpolys 392 = Q 13 10 6
-cpolys 393 = T 7
-cpolys 394 = T 135
-cpolys 395 = Q 11 6 5
-cpolys 396 = T 25
-cpolys 397 = Q 12 7 6
-cpolys 398 = Q 7 6 2
-cpolys 399 = T 26
-cpolys 400 = Q 5 3 2
-cpolys 401 = T 152
-cpolys 402 = T 171
-cpolys 403 = Q 9 8 5
-cpolys 404 = T 65
-cpolys 405 = Q 13 8 2
-cpolys 406 = T 141
-cpolys 407 = T 71
-cpolys 408 = Q 5 3 2
-cpolys 409 = T 87
-cpolys 410 = Q 10 4 3
-cpolys 411 = Q 12 10 3
-cpolys 412 = T 147
-cpolys 413 = Q 10 7 6
-cpolys 414 = T 13
-cpolys 415 = T 102
-cpolys 416 = Q 9 5 2
-cpolys 417 = T 107
-cpolys 418 = T 199
-cpolys 419 = Q 15 5 4
-cpolys 420 = T 7
-cpolys 421 = Q 5 4 2
-cpolys 422 = T 149
-cpolys 423 = T 25
-cpolys 424 = Q 9 7 2
-cpolys 425 = T 12
-cpolys 426 = T 63
-cpolys 427 = Q 11 6 5
-cpolys 428 = T 105
-cpolys 429 = Q 10 8 7
-cpolys 430 = Q 14 6 1
-cpolys 431 = T 120
-cpolys 432 = Q 13 4 3
-cpolys 433 = T 33
-cpolys 434 = Q 12 11 5
-cpolys 435 = Q 12 9 5
-cpolys 436 = T 165
-cpolys 437 = Q 6 2 1
-cpolys 438 = T 65
-cpolys 439 = T 49
-cpolys 440 = Q 4 3 1
-cpolys 441 = T 7
-cpolys 442 = Q 7 5 2
-cpolys 443 = Q 10 6 1
-cpolys 444 = T 81
-cpolys 445 = Q 7 6 4
-cpolys 446 = T 105
-cpolys 447 = T 73
-cpolys 448 = Q 11 6 4
-cpolys 449 = T 134
-cpolys 450 = T 47
-cpolys 451 = Q 16 10 1
-cpolys 452 = Q 6 5 4
-cpolys 453 = Q 15 6 4
-cpolys 454 = Q 8 6 1
-cpolys 455 = T 38
-cpolys 456 = Q 18 9 6
-cpolys 457 = T 16
-cpolys 458 = T 203
-cpolys 459 = Q 12 5 2
-cpolys 460 = T 19
-cpolys 461 = Q 7 6 1
-cpolys 462 = T 73
-cpolys 463 = T 93
-cpolys 464 = Q 19 18 13
-cpolys 465 = T 31
-cpolys 466 = Q 14 11 6
-cpolys 467 = Q 11 6 1
-cpolys 468 = T 27
-cpolys 469 = Q 9 5 2
-cpolys 470 = T 9
-cpolys 471 = T 1
-cpolys 472 = Q 11 3 2
-cpolys 473 = T 200
-cpolys 474 = T 191
-cpolys 475 = Q 9 8 4
-cpolys 476 = T 9
-cpolys 477 = Q 16 15 7
-cpolys 478 = T 121
-cpolys 479 = T 104
-cpolys 480 = Q 15 9 6
-cpolys 481 = T 138
-cpolys 482 = Q 9 6 5
-cpolys 483 = Q 9 6 4
-cpolys 484 = T 105
-cpolys 485 = Q 17 16 6
-cpolys 486 = T 81
-cpolys 487 = T 94
-cpolys 488 = Q 4 3 1
-cpolys 489 = T 83
-cpolys 490 = T 219
-cpolys 491 = Q 11 6 3
-cpolys 492 = T 7
-cpolys 493 = Q 10 5 3
-cpolys 494 = T 17
-cpolys 495 = T 76
-cpolys 496 = Q 16 5 2
-cpolys 497 = T 78
-cpolys 498 = T 155
-cpolys 499 = Q 11 6 5
-cpolys 500 = T 27
-cpolys 501 = Q 5 4 2
-cpolys 502 = Q 8 5 4
-cpolys 503 = T 3
-cpolys 504 = Q 15 14 6
-cpolys 505 = T 156
-cpolys 506 = T 23
-cpolys 507 = Q 13 6 3
-cpolys 508 = T 9
-cpolys 509 = Q 8 7 3
-cpolys 510 = T 69
-cpolys 511 = T 10
-cpolys 512 = Q 8 5 2
-cpolys 513 = T 26
-cpolys 514 = T 67
-cpolys 515 = Q 14 7 4
-cpolys 516 = T 21
-cpolys 517 = Q 12 10 2
-cpolys 518 = T 33
-cpolys 519 = T 79
-cpolys 520 = Q 15 11 2
-cpolys 521 = T 32
-cpolys 522 = T 39
-cpolys 523 = Q 13 6 2
-cpolys 524 = T 167
-cpolys 525 = Q 6 4 1
-cpolys 526 = T 97
-cpolys 527 = T 47
-cpolys 528 = Q 11 6 2
-cpolys 529 = T 42
-cpolys 530 = Q 10 7 3
-cpolys 531 = Q 10 5 4
-cpolys 532 = T 1
-cpolys 533 = Q 4 3 2
-cpolys 534 = T 161
-cpolys 535 = Q 8 6 2
-cpolys 536 = Q 7 5 3
-cpolys 537 = T 94
-cpolys 538 = T 195
-cpolys 539 = Q 10 5 4
-cpolys 540 = T 9
-cpolys 541 = Q 13 10 4
-cpolys 542 = Q 8 6 1
-cpolys 543 = T 16
-cpolys 544 = Q 8 3 1
-cpolys 545 = T 122
-cpolys 546 = Q 8 2 1
-cpolys 547 = Q 13 7 4
-cpolys 548 = Q 10 5 3
-cpolys 549 = Q 16 4 3
-cpolys 550 = T 193
-cpolys 551 = T 135
-cpolys 552 = Q 19 16 9
-cpolys 553 = T 39
-cpolys 554 = Q 10 8 7
-cpolys 555 = Q 10 9 4
-cpolys 556 = T 153
-cpolys 557 = Q 7 6 5
-cpolys 558 = T 73
-cpolys 559 = T 34
-cpolys 560 = Q 11 9 6
-cpolys 561 = T 71
-cpolys 562 = Q 11 4 2
-cpolys 563 = Q 14 7 3
-cpolys 564 = T 163
-cpolys 565 = Q 11 6 1
-cpolys 566 = T 153
-cpolys 567 = T 28
-cpolys 568 = Q 15 7 6
-cpolys 569 = T 77
-cpolys 570 = T 67
-cpolys 571 = Q 10 5 2
-cpolys 572 = Q 12 8 1
-cpolys 573 = Q 10 6 4
-cpolys 574 = T 13
-cpolys 575 = T 146
-cpolys 576 = Q 13 4 3
-cpolys 577 = T 25
-cpolys 578 = Q 23 22 16
-cpolys 579 = Q 12 9 7
-cpolys 580 = T 237
-cpolys 581 = Q 13 7 6
-cpolys 582 = T 85
-cpolys 583 = T 130
-cpolys 584 = Q 14 13 3
-cpolys 585 = T 88
-cpolys 586 = Q 7 5 2
-cpolys 587 = Q 11 6 1
-cpolys 588 = T 35
-cpolys 589 = Q 10 4 3
-cpolys 590 = T 93
-cpolys 591 = Q 9 6 4
-cpolys 592 = Q 13 6 3
-cpolys 593 = T 86
-cpolys 594 = T 19
-cpolys 595 = Q 9 2 1
-cpolys 596 = T 273
-cpolys 597 = Q 14 12 9
-cpolys 598 = Q 7 6 1
-cpolys 599 = T 30
-cpolys 600 = Q 9 5 2
-cpolys 601 = T 201
-cpolys 602 = T 215
-cpolys 603 = Q 6 4 3
-cpolys 604 = T 105
-cpolys 605 = Q 10 7 5
-cpolys 606 = T 165
-cpolys 607 = T 105
-cpolys 608 = Q 19 13 6
-cpolys 609 = T 31
-cpolys 610 = T 127
-cpolys 611 = Q 10 4 2
-cpolys 612 = T 81
-cpolys 613 = Q 19 10 4
-cpolys 614 = T 45
-cpolys 615 = T 211
-cpolys 616 = Q 19 10 3
-cpolys 617 = T 200
-cpolys 618 = T 295
-cpolys 619 = Q 9 8 5
-cpolys 620 = T 9
-cpolys 621 = Q 12 6 5
-cpolys 622 = T 297
-cpolys 623 = T 68
-cpolys 624 = Q 11 6 5
-cpolys 625 = T 133
-cpolys 626 = T 251
-cpolys 627 = Q 13 8 4
-cpolys 628 = T 223
-cpolys 629 = Q 6 5 2
-cpolys 630 = Q 7 4 2
-cpolys 631 = T 307
-cpolys 632 = Q 9 2 1
-cpolys 633 = T 101
-cpolys 634 = T 39
-cpolys 635 = Q 14 10 4
-cpolys 636 = T 217
-cpolys 637 = Q 14 9 1
-cpolys 638 = Q 6 5 1
-cpolys 639 = T 16
-cpolys 640 = Q 14 3 2
-cpolys 641 = T 11
-cpolys 642 = T 119
-cpolys 643 = Q 11 3 2
-cpolys 644 = Q 11 6 5
-cpolys 645 = Q 11 8 4
-cpolys 646 = T 249
-cpolys 647 = T 5
-cpolys 648 = Q 13 3 1
-cpolys 649 = T 37
-cpolys 650 = T 3
-cpolys 651 = T 14
-cpolys 652 = T 93
-cpolys 653 = Q 10 8 7
-cpolys 654 = T 33
-cpolys 655 = T 88
-cpolys 656 = Q 7 5 4
-cpolys 657 = T 38
-cpolys 658 = T 55
-cpolys 659 = Q 15 4 2
-cpolys 660 = T 11
-cpolys 661 = Q 12 11 4
-cpolys 662 = T 21
-cpolys 663 = T 107
-cpolys 664 = Q 11 9 8
-cpolys 665 = T 33
-cpolys 666 = Q 10 7 2
-cpolys 667 = Q 18 7 3
-cpolys 668 = T 147
-cpolys 669 = Q 5 4 2
-cpolys 670 = T 153
-cpolys 671 = T 15
-cpolys 672 = Q 11 6 5
-cpolys 673 = T 28
-cpolys 674 = Q 11 7 4
-cpolys 675 = Q 6 3 1
-cpolys 676 = T 31
-cpolys 677 = Q 8 4 3
-cpolys 678 = Q 15 5 3
-cpolys 679 = T 66
-cpolys 680 = Q 23 16 9
-cpolys 681 = Q 11 9 3
-cpolys 682 = T 171
-cpolys 683 = Q 11 6 1
-cpolys 684 = T 209
-cpolys 685 = Q 4 3 1
-cpolys 686 = T 197
-cpolys 687 = T 13
-cpolys 688 = Q 19 14 6
-cpolys 689 = T 14
-cpolys 690 = T 79
-cpolys 691 = Q 13 6 2
-cpolys 692 = T 299
-cpolys 693 = Q 15 8 2
-cpolys 694 = T 169
-cpolys 695 = T 177
-cpolys 696 = Q 23 10 2
-cpolys 697 = T 267
-cpolys 698 = T 215
-cpolys 699 = Q 15 10 1
-cpolys 700 = T 75
-cpolys 701 = Q 16 4 2
-cpolys 702 = T 37
-cpolys 703 = Q 12 7 1
-cpolys 704 = Q 8 3 2
-cpolys 705 = T 17
-cpolys 706 = Q 12 11 8
-cpolys 707 = Q 15 8 5
-cpolys 708 = T 15
-cpolys 709 = Q 4 3 1
-cpolys 710 = Q 13 12 4
-cpolys 711 = T 92
-cpolys 712 = Q 5 4 3
-cpolys 713 = T 41
-cpolys 714 = T 23
-cpolys 715 = Q 7 4 1
-cpolys 716 = T 183
-cpolys 717 = Q 16 7 1
-cpolys 718 = T 165
-cpolys 719 = T 150
-cpolys 720 = Q 9 6 4
-cpolys 721 = T 9
-cpolys 722 = T 231
-cpolys 723 = Q 16 10 4
-cpolys 724 = T 207
-cpolys 725 = Q 9 6 5
-cpolys 726 = T 5
-cpolys 727 = T 180
-cpolys 728 = Q 4 3 2
-cpolys 729 = T 58
-cpolys 730 = T 147
-cpolys 731 = Q 8 6 2
-cpolys 732 = T 343
-cpolys 733 = Q 8 7 2
-cpolys 734 = Q 11 6 1
-cpolys 735 = T 44
-cpolys 736 = Q 13 8 6
-cpolys 737 = T 5
-cpolys 738 = T 347
-cpolys 739 = Q 18 16 8
-cpolys 740 = T 135
-cpolys 741 = Q 9 8 3
-cpolys 742 = T 85
-cpolys 743 = T 90
-cpolys 744 = Q 13 11 1
-cpolys 745 = T 258
-cpolys 746 = T 351
-cpolys 747 = Q 10 6 4
-cpolys 748 = T 19
-cpolys 749 = Q 7 6 1
-cpolys 750 = T 309
-cpolys 751 = T 18
-cpolys 752 = Q 13 10 3
-cpolys 753 = T 158
-cpolys 754 = T 19
-cpolys 755 = Q 12 10 1
-cpolys 756 = T 45
-cpolys 757 = Q 7 6 1
-cpolys 758 = T 233
-cpolys 759 = T 98
-cpolys 760 = Q 11 6 5
-cpolys 761 = T 3
-cpolys 762 = T 83
-cpolys 763 = Q 16 14 9
-cpolys 764 = Q 6 5 3
-cpolys 765 = Q 9 7 4
-cpolys 766 = Q 22 19 9
-cpolys 767 = T 168
-cpolys 768 = Q 19 17 4
-cpolys 769 = T 120
-cpolys 770 = Q 14 5 2
-cpolys 771 = Q 17 15 6
-cpolys 772 = T 7
-cpolys 773 = Q 10 8 6
-cpolys 774 = T 185
-cpolys 775 = T 93
-cpolys 776 = Q 15 14 7
-cpolys 777 = T 29
-cpolys 778 = T 375
-cpolys 779 = Q 10 8 3
-cpolys 780 = T 13
-cpolys 781 = Q 17 16 2
-cpolys 782 = T 329
-cpolys 783 = T 68
-cpolys 784 = Q 13 9 6
-cpolys 785 = T 92
-cpolys 786 = Q 12 10 3
-cpolys 787 = Q 7 6 3
-cpolys 788 = Q 17 10 3
-cpolys 789 = Q 5 2 1
-cpolys 790 = Q 9 6 1
-cpolys 791 = T 30
-cpolys 792 = Q 9 7 3
-cpolys 793 = T 253
-cpolys 794 = T 143
-cpolys 795 = Q 7 4 1
-cpolys 796 = Q 9 4 1
-cpolys 797 = Q 12 10 4
-cpolys 798 = T 53
-cpolys 799 = T 25
-cpolys 800 = Q 9 7 1
-cpolys 801 = T 217
-cpolys 802 = Q 15 13 9
-cpolys 803 = Q 14 9 2
-cpolys 804 = T 75
-cpolys 805 = Q 8 7 2
-cpolys 806 = T 21
-cpolys 807 = T 7
-cpolys 808 = Q 14 3 2
-cpolys 809 = T 15
-cpolys 810 = T 159
-cpolys 811 = Q 12 10 8
-cpolys 812 = T 29
-cpolys 813 = Q 10 3 1
-cpolys 814 = T 21
-cpolys 815 = T 333
-cpolys 816 = Q 11 8 2
-cpolys 817 = T 52
-cpolys 818 = T 119
-cpolys 819 = Q 16 9 7
-cpolys 820 = T 123
-cpolys 821 = Q 15 11 2
-cpolys 822 = T 17
-cpolys 823 = T 9
-cpolys 824 = Q 11 6 4
-cpolys 825 = T 38
-cpolys 826 = T 255
-cpolys 827 = Q 12 10 7
-cpolys 828 = T 189
-cpolys 829 = Q 4 3 1
-cpolys 830 = Q 17 10 7
-cpolys 831 = T 49
-cpolys 832 = Q 13 5 2
-cpolys 833 = T 149
-cpolys 834 = T 15
-cpolys 835 = Q 14 7 5
-cpolys 836 = Q 10 9 2
-cpolys 837 = Q 8 6 5
-cpolys 838 = T 61
-cpolys 839 = T 54
-cpolys 840 = Q 11 5 1
-cpolys 841 = T 144
-cpolys 842 = T 47
-cpolys 843 = Q 11 10 7
-cpolys 844 = T 105
-cpolys 845 = T 2
-cpolys 846 = T 105
-cpolys 847 = T 136
-cpolys 848 = Q 11 4 1
-cpolys 849 = T 253
-cpolys 850 = T 111
-cpolys 851 = Q 13 10 5
-cpolys 852 = T 159
-cpolys 853 = Q 10 7 1
-cpolys 854 = Q 7 5 3
-cpolys 855 = T 29
-cpolys 856 = Q 19 10 3
-cpolys 857 = T 119
-cpolys 858 = T 207
-cpolys 859 = Q 17 15 4
-cpolys 860 = T 35
-cpolys 861 = T 14
-cpolys 862 = T 349
-cpolys 863 = Q 6 3 2
-cpolys 864 = Q 21 10 6
-cpolys 865 = T 1
-cpolys 866 = T 75
-cpolys 867 = Q 9 5 2
-cpolys 868 = T 145
-cpolys 869 = Q 11 7 6
-cpolys 870 = T 301
-cpolys 871 = T 378
-cpolys 872 = Q 13 3 1
-cpolys 873 = T 352
-cpolys 874 = Q 12 7 4
-cpolys 875 = Q 12 8 1
-cpolys 876 = T 149
-cpolys 877 = Q 6 5 4
-cpolys 878 = Q 12 9 8
-cpolys 879 = T 11
-cpolys 880 = Q 15 7 5
-cpolys 881 = T 78
-cpolys 882 = T 99
-cpolys 883 = Q 17 16 12
-cpolys 884 = T 173
-cpolys 885 = Q 8 7 1
-cpolys 886 = Q 13 9 8
-cpolys 887 = T 147
-cpolys 888 = Q 19 18 10
-cpolys 889 = T 127
-cpolys 890 = T 183
-cpolys 891 = Q 12 4 1
-cpolys 892 = T 31
-cpolys 893 = Q 11 8 6
-cpolys 894 = T 173
-cpolys 895 = T 12
-cpolys 896 = Q 7 5 3
-cpolys 897 = T 113
-cpolys 898 = T 207
-cpolys 899 = Q 18 15 5
-cpolys 900 = T 1
-cpolys 901 = Q 13 7 6
-cpolys 902 = T 21
-cpolys 903 = T 35
-cpolys 904 = Q 12 7 2
-cpolys 905 = T 117
-cpolys 906 = T 123
-cpolys 907 = Q 12 10 2
-cpolys 908 = T 143
-cpolys 909 = Q 14 4 1
-cpolys 910 = Q 15 9 7
-cpolys 911 = T 204
-cpolys 912 = Q 7 5 1
-cpolys 913 = T 91
-cpolys 914 = Q 4 2 1
-cpolys 915 = Q 8 6 3
-cpolys 916 = T 183
-cpolys 917 = Q 12 10 7
-cpolys 918 = T 77
-cpolys 919 = T 36
-cpolys 920 = Q 14 9 6
-cpolys 921 = T 221
-cpolys 922 = Q 7 6 5
-cpolys 923 = Q 16 14 13
-cpolys 924 = T 31
-cpolys 925 = Q 16 15 7
-cpolys 926 = T 365
-cpolys 927 = T 403
-cpolys 928 = Q 10 3 2
-cpolys 929 = Q 11 4 3
-cpolys 930 = T 31
-cpolys 931 = Q 10 9 4
-cpolys 932 = T 177
-cpolys 933 = Q 16 6 1
-cpolys 934 = Q 22 6 5
-cpolys 935 = T 417
-cpolys 936 = Q 15 13 12
-cpolys 937 = T 217
-cpolys 938 = T 207
-cpolys 939 = Q 7 5 4
-cpolys 940 = Q 10 7 1
-cpolys 941 = Q 11 6 1
-cpolys 942 = T 45
-cpolys 943 = T 24
-cpolys 944 = Q 12 11 9
-cpolys 945 = T 77
-cpolys 946 = Q 21 20 13
-cpolys 947 = Q 9 6 5
-cpolys 948 = T 189
-cpolys 949 = Q 8 3 2
-cpolys 950 = Q 13 12 10
-cpolys 951 = T 260
-cpolys 952 = Q 16 9 7
-cpolys 953 = T 168
-cpolys 954 = T 131
-cpolys 955 = Q 7 6 3
-cpolys 956 = T 305
-cpolys 957 = Q 10 9 6
-cpolys 958 = Q 13 9 4
-cpolys 959 = T 143
-cpolys 960 = Q 12 9 3
-cpolys 961 = T 18
-cpolys 962 = Q 15 8 5
-cpolys 963 = Q 20 9 6
-cpolys 964 = T 103
-cpolys 965 = Q 15 4 2
-cpolys 966 = T 201
-cpolys 967 = T 36
-cpolys 968 = Q 9 5 2
-cpolys 969 = T 31
-cpolys 970 = Q 11 7 2
-cpolys 971 = Q 6 2 1
-cpolys 972 = T 7
-cpolys 973 = Q 13 6 4
-cpolys 974 = Q 9 8 7
-cpolys 975 = T 19
-cpolys 976 = Q 17 10 6
-cpolys 977 = T 15
-cpolys 978 = Q 9 3 1
-cpolys 979 = T 178
-cpolys 980 = Q 8 7 6
-cpolys 981 = Q 12 6 5
-cpolys 982 = T 177
-cpolys 983 = T 230
-cpolys 984 = Q 24 9 3
-cpolys 985 = T 222
-cpolys 986 = T 3
-cpolys 987 = Q 16 13 12
-cpolys 988 = T 121
-cpolys 989 = Q 10 4 2
-cpolys 990 = T 161
-cpolys 991 = T 39
-cpolys 992 = Q 17 15 13
-cpolys 993 = T 62
-cpolys 994 = T 223
-cpolys 995 = Q 15 12 2
-cpolys 996 = T 65
-cpolys 997 = Q 12 6 3
-cpolys 998 = T 101
-cpolys 999 = T 59
-cpolys 1000 = Q 5 4 3
-cpolys 1001 = T 17
-cpolys 1002 = Q 5 3 2
-cpolys 1003 = Q 13 8 3
-cpolys 1004 = Q 10 9 7
-cpolys 1005 = Q 12 8 2
-cpolys 1006 = Q 5 4 3
-cpolys 1007 = T 75
-cpolys 1008 = Q 19 17 8
-cpolys 1009 = T 55
-cpolys 1010 = T 99
-cpolys 1011 = Q 10 7 4
-cpolys 1012 = T 115
-cpolys 1013 = Q 9 8 6
-cpolys 1014 = T 385
-cpolys 1015 = T 186
-cpolys 1016 = Q 15 6 3
-cpolys 1017 = Q 9 4 1
-cpolys 1018 = Q 12 10 5
-cpolys 1019 = Q 10 8 1
-cpolys 1020 = T 135
-cpolys 1021 = Q 5 2 1
-cpolys 1022 = T 317
-cpolys 1023 = T 7
-cpolys 1024 = Q 19 6 1
-cpolys 1025 = T 294
-cpolys 1026 = T 35
-cpolys 1027 = Q 13 12 6
-cpolys 1028 = T 119
-cpolys 1029 = T 98
-cpolys 1030 = T 93
-cpolys 1031 = T 68
-cpolys 1032 = Q 21 15 3
-cpolys 1033 = T 108
-cpolys 1034 = T 75
-cpolys 1035 = Q 12 6 5
-cpolys 1036 = T 411
-cpolys 1037 = Q 12 7 2
-cpolys 1038 = Q 13 7 2
-cpolys 1039 = T 21
-cpolys 1040 = Q 15 10 8
-cpolys 1041 = T 412
-cpolys 1042 = T 439
-cpolys 1043 = Q 10 7 6
-cpolys 1044 = T 41
-cpolys 1045 = Q 13 9 6
-cpolys 1046 = Q 8 5 2
-cpolys 1047 = T 10
-cpolys 1048 = Q 15 7 2
-cpolys 1049 = T 141
-cpolys 1050 = T 159
-cpolys 1051 = Q 13 12 10
-cpolys 1052 = T 291
-cpolys 1053 = Q 10 9 1
-cpolys 1054 = T 105
-cpolys 1055 = T 24
-cpolys 1056 = Q 11 2 1
-cpolys 1057 = T 198
-cpolys 1058 = T 27
-cpolys 1059 = Q 6 3 1
-cpolys 1060 = T 439
-cpolys 1061 = Q 10 3 1
-cpolys 1062 = T 49
-cpolys 1063 = T 168
-cpolys 1064 = Q 13 11 9
-cpolys 1065 = T 463
-cpolys 1066 = Q 10 9 3
-cpolys 1067 = Q 13 9 8
-cpolys 1068 = Q 15 8 3
-cpolys 1069 = Q 18 16 8
-cpolys 1070 = Q 15 14 11
-cpolys 1071 = T 7
-cpolys 1072 = Q 19 9 8
-cpolys 1073 = Q 12 6 3
-cpolys 1074 = Q 7 4 3
-cpolys 1075 = Q 15 14 5
-cpolys 1076 = Q 8 6 3
-cpolys 1077 = Q 10 9 7
-cpolys 1078 = T 361
-cpolys 1079 = T 230
-cpolys 1080 = Q 15 9 6
-cpolys 1081 = T 24
-cpolys 1082 = T 407
-cpolys 1083 = Q 16 7 2
-cpolys 1084 = T 189
-cpolys 1085 = T 62
-cpolys 1086 = T 189
-cpolys 1087 = T 112
-cpolys 1088 = Q 22 21 10
-cpolys 1089 = T 91
-cpolys 1090 = T 79
-cpolys 1091 = Q 12 10 5
-cpolys 1092 = T 23
-cpolys 1093 = Q 7 6 1
-cpolys 1094 = T 57
-cpolys 1095 = T 139
-cpolys 1096 = Q 24 15 6
-cpolys 1097 = T 14
-cpolys 1098 = T 83
-cpolys 1099 = Q 16 9 1
-cpolys 1100 = T 35
-cpolys 1101 = Q 9 7 4
-cpolys 1102 = T 117
-cpolys 1103 = T 65
-cpolys 1104 = Q 21 9 6
-cpolys 1105 = T 21
-cpolys 1106 = T 195
-cpolys 1107 = Q 23 11 10
-cpolys 1108 = T 327
-cpolys 1109 = Q 17 14 3
-cpolys 1110 = T 417
-cpolys 1111 = T 13
-cpolys 1112 = Q 15 8 6
-cpolys 1113 = T 107
-cpolys 1114 = Q 19 10 6
-cpolys 1115 = Q 18 15 3
-cpolys 1116 = T 59
-cpolys 1117 = Q 12 10 4
-cpolys 1118 = Q 9 7 5
-cpolys 1119 = T 283
-cpolys 1120 = Q 13 9 6
-cpolys 1121 = T 62
-cpolys 1122 = T 427
-cpolys 1123 = Q 14 7 3
-cpolys 1124 = Q 8 7 4
-cpolys 1125 = Q 15 8 3
-cpolys 1126 = T 105
-cpolys 1127 = T 27
-cpolys 1128 = Q 7 3 1
-cpolys 1129 = T 103
-cpolys 1130 = T 551
-cpolys 1131 = Q 10 6 1
-cpolys 1132 = Q 6 4 1
-cpolys 1133 = Q 11 6 4
-cpolys 1134 = T 129
-cpolys 1135 = T 9
-cpolys 1136 = Q 9 4 2
-cpolys 1137 = T 277
-cpolys 1138 = T 31
-cpolys 1139 = Q 13 12 5
-cpolys 1140 = T 141
-cpolys 1141 = Q 12 7 3
-cpolys 1142 = T 357
-cpolys 1143 = Q 7 2 1
-cpolys 1144 = Q 11 9 7
-cpolys 1145 = T 227
-cpolys 1146 = T 131
-cpolys 1147 = Q 7 6 3
-cpolys 1148 = T 23
-cpolys 1149 = Q 20 17 3
-cpolys 1150 = Q 13 4 1
-cpolys 1151 = T 90
-cpolys 1152 = Q 15 3 2
-cpolys 1153 = T 241
-cpolys 1154 = T 75
-cpolys 1155 = Q 13 6 1
-cpolys 1156 = T 307
-cpolys 1157 = Q 8 7 3
-cpolys 1158 = T 245
-cpolys 1159 = T 66
-cpolys 1160 = Q 15 11 2
-cpolys 1161 = T 365
-cpolys 1162 = Q 18 16 11
-cpolys 1163 = Q 11 10 1
-cpolys 1164 = T 19
-cpolys 1165 = Q 8 6 1
-cpolys 1166 = T 189
-cpolys 1167 = T 133
-cpolys 1168 = Q 12 7 2
-cpolys 1169 = T 114
-cpolys 1170 = T 27
-cpolys 1171 = Q 6 5 1
-cpolys 1172 = Q 15 5 2
-cpolys 1173 = Q 17 14 5
-cpolys 1174 = T 133
-cpolys 1175 = T 476
-cpolys 1176 = Q 11 9 3
-cpolys 1177 = T 16
-cpolys 1178 = T 375
-cpolys 1179 = Q 15 8 6
-cpolys 1180 = T 25
-cpolys 1181 = Q 17 11 6
-cpolys 1182 = T 77
-cpolys 1183 = T 87
-cpolys 1184 = Q 5 3 2
-cpolys 1185 = T 134
-cpolys 1186 = T 171
-cpolys 1187 = Q 13 8 4
-cpolys 1188 = T 75
-cpolys 1189 = Q 8 3 1
-cpolys 1190 = T 233
-cpolys 1191 = T 196
-cpolys 1192 = Q 9 8 7
-cpolys 1193 = T 173
-cpolys 1194 = Q 15 14 12
-cpolys 1195 = Q 13 6 5
-cpolys 1196 = T 281
-cpolys 1197 = Q 9 8 2
-cpolys 1198 = T 405
-cpolys 1199 = T 114
-cpolys 1200 = Q 15 9 6
-cpolys 1201 = T 171
-cpolys 1202 = T 287
-cpolys 1203 = Q 8 4 2
-cpolys 1204 = T 43
-cpolys 1205 = Q 4 2 1
-cpolys 1206 = T 513
-cpolys 1207 = T 273
-cpolys 1208 = Q 11 10 6
-cpolys 1209 = T 118
-cpolys 1210 = T 243
-cpolys 1211 = Q 14 7 1
-cpolys 1212 = T 203
-cpolys 1213 = Q 9 5 2
-cpolys 1214 = T 257
-cpolys 1215 = T 302
-cpolys 1216 = Q 27 25 9
-cpolys 1217 = T 393
-cpolys 1218 = T 91
-cpolys 1219 = Q 12 10 6
-cpolys 1220 = T 413
-cpolys 1221 = Q 15 14 9
-cpolys 1222 = Q 18 16 1
-cpolys 1223 = T 255
-cpolys 1224 = Q 12 9 7
-cpolys 1225 = T 234
-cpolys 1226 = T 167
-cpolys 1227 = Q 16 13 10
-cpolys 1228 = T 27
-cpolys 1229 = Q 15 6 2
-cpolys 1230 = T 433
-cpolys 1231 = T 105
-cpolys 1232 = Q 25 10 2
-cpolys 1233 = T 151
-cpolys 1234 = T 427
-cpolys 1235 = Q 13 9 8
-cpolys 1236 = T 49
-cpolys 1237 = Q 10 6 4
-cpolys 1238 = T 153
-cpolys 1239 = T 4
-cpolys 1240 = Q 17 7 5
-cpolys 1241 = T 54
-cpolys 1242 = T 203
-cpolys 1243 = Q 16 15 1
-cpolys 1244 = Q 16 14 7
-cpolys 1245 = Q 13 6 1
-cpolys 1246 = T 25
-cpolys 1247 = T 14
-cpolys 1248 = Q 15 5 3
-cpolys 1249 = T 187
-cpolys 1250 = Q 15 13 10
-cpolys 1251 = Q 13 10 5
-cpolys 1252 = T 97
-cpolys 1253 = Q 11 10 9
-cpolys 1254 = Q 19 10 4
-cpolys 1255 = T 589
-cpolys 1256 = Q 31 30 2
-cpolys 1257 = T 289
-cpolys 1258 = Q 9 6 4
-cpolys 1259 = Q 11 8 6
-cpolys 1260 = T 21
-cpolys 1261 = Q 7 4 1
-cpolys 1262 = Q 7 4 2
-cpolys 1263 = T 77
-cpolys 1264 = Q 5 3 2
-cpolys 1265 = T 119
-cpolys 1266 = T 7
-cpolys 1267 = Q 9 5 2
-cpolys 1268 = T 345
-cpolys 1269 = Q 17 10 8
-cpolys 1270 = T 333
-cpolys 1271 = T 17
-cpolys 1272 = Q 16 9 7
-cpolys 1273 = T 168
-cpolys 1274 = Q 15 13 4
-cpolys 1275 = Q 11 10 1
-cpolys 1276 = T 217
-cpolys 1277 = Q 18 11 10
-cpolys 1278 = T 189
-cpolys 1279 = T 216
-cpolys 1280 = Q 12 7 5
-cpolys 1281 = T 229
-cpolys 1282 = T 231
-cpolys 1283 = Q 12 9 3
-cpolys 1284 = T 223
-cpolys 1285 = Q 10 9 1
-cpolys 1286 = T 153
-cpolys 1287 = T 470
-cpolys 1288 = Q 23 16 6
-cpolys 1289 = T 99
-cpolys 1290 = Q 10 4 3
-cpolys 1291 = Q 9 8 4
-cpolys 1292 = Q 12 10 1
-cpolys 1293 = Q 14 9 6
-cpolys 1294 = T 201
-cpolys 1295 = T 38
-cpolys 1296 = Q 15 14 2
-cpolys 1297 = T 198
-cpolys 1298 = T 399
-cpolys 1299 = Q 14 11 5
-cpolys 1300 = T 75
-cpolys 1301 = Q 11 10 1
-cpolys 1302 = T 77
-cpolys 1303 = Q 16 12 8
-cpolys 1304 = Q 20 17 15
-cpolys 1305 = T 326
-cpolys 1306 = T 39
-cpolys 1307 = Q 14 12 9
-cpolys 1308 = T 495
-cpolys 1309 = Q 8 3 2
-cpolys 1310 = T 333
-cpolys 1311 = T 476
-cpolys 1312 = Q 15 14 2
-cpolys 1313 = T 164
-cpolys 1314 = T 19
-cpolys 1315 = Q 12 4 2
-cpolys 1316 = Q 8 6 3
-cpolys 1317 = Q 13 12 3
-cpolys 1318 = Q 12 11 5
-cpolys 1319 = T 129
-cpolys 1320 = Q 12 9 3
-cpolys 1321 = T 52
-cpolys 1322 = Q 10 8 3
-cpolys 1323 = Q 17 16 2
-cpolys 1324 = T 337
-cpolys 1325 = Q 12 9 3
-cpolys 1326 = T 397
-cpolys 1327 = T 277
-cpolys 1328 = Q 21 11 3
-cpolys 1329 = T 73
-cpolys 1330 = Q 11 6 1
-cpolys 1331 = Q 7 5 4
-cpolys 1332 = T 95
-cpolys 1333 = Q 11 3 2
-cpolys 1334 = T 617
-cpolys 1335 = T 392
-cpolys 1336 = Q 8 3 2
-cpolys 1337 = T 75
-cpolys 1338 = T 315
-cpolys 1339 = Q 15 6 4
-cpolys 1340 = T 125
-cpolys 1341 = Q 6 5 2
-cpolys 1342 = Q 15 9 7
-cpolys 1343 = T 348
-cpolys 1344 = Q 15 6 1
-cpolys 1345 = T 553
-cpolys 1346 = Q 6 3 2
-cpolys 1347 = Q 10 9 7
-cpolys 1348 = T 553
-cpolys 1349 = Q 14 10 4
-cpolys 1350 = T 237
-cpolys 1351 = T 39
-cpolys 1352 = Q 17 14 6
-cpolys 1353 = T 371
-cpolys 1354 = T 255
-cpolys 1355 = Q 8 4 1
-cpolys 1356 = T 131
-cpolys 1357 = Q 14 6 1
-cpolys 1358 = T 117
-cpolys 1359 = T 98
-cpolys 1360 = Q 5 3 2
-cpolys 1361 = T 56
-cpolys 1362 = T 655
-cpolys 1363 = Q 9 5 2
-cpolys 1364 = T 239
-cpolys 1365 = Q 11 8 4
-cpolys 1366 = T 1
-cpolys 1367 = T 134
-cpolys 1368 = Q 15 9 5
-cpolys 1369 = T 88
-cpolys 1370 = Q 10 5 3
-cpolys 1371 = Q 10 9 4
-cpolys 1372 = T 181
-cpolys 1373 = Q 15 11 2
-cpolys 1374 = T 609
-cpolys 1375 = T 52
-cpolys 1376 = Q 19 18 10
-cpolys 1377 = T 100
-cpolys 1378 = Q 7 6 3
-cpolys 1379 = Q 15 8 2
-cpolys 1380 = T 183
-cpolys 1381 = Q 18 7 6
-cpolys 1382 = Q 10 9 2
-cpolys 1383 = T 130
-cpolys 1384 = Q 11 5 1
-cpolys 1385 = T 12
-cpolys 1386 = T 219
-cpolys 1387 = Q 13 10 7
-cpolys 1388 = T 11
-cpolys 1389 = Q 19 9 4
-cpolys 1390 = T 129
-cpolys 1391 = T 3
-cpolys 1392 = Q 17 15 5
-cpolys 1393 = T 300
-cpolys 1394 = Q 17 13 9
-cpolys 1395 = Q 14 6 5
-cpolys 1396 = T 97
-cpolys 1397 = Q 13 8 3
-cpolys 1398 = T 601
-cpolys 1399 = T 55
-cpolys 1400 = Q 8 3 1
-cpolys 1401 = T 92
-cpolys 1402 = T 127
-cpolys 1403 = Q 12 11 2
-cpolys 1404 = T 81
-cpolys 1405 = Q 15 10 8
-cpolys 1406 = Q 13 2 1
-cpolys 1407 = T 47
-cpolys 1408 = Q 14 13 6
-cpolys 1409 = T 194
-cpolys 1410 = T 383
-cpolys 1411 = Q 25 14 11
-cpolys 1412 = T 125
-cpolys 1413 = Q 20 19 16
-cpolys 1414 = T 429
-cpolys 1415 = T 282
-cpolys 1416 = Q 10 9 6
-cpolys 1417 = T 342
-cpolys 1418 = Q 5 3 2
-cpolys 1419 = Q 15 9 4
-cpolys 1420 = T 33
-cpolys 1421 = Q 9 4 2
-cpolys 1422 = T 49
-cpolys 1423 = T 15
-cpolys 1424 = Q 11 6 2
-cpolys 1425 = T 28
-cpolys 1426 = T 103
-cpolys 1427 = Q 18 17 8
-cpolys 1428 = T 27
-cpolys 1429 = Q 11 6 5
-cpolys 1430 = T 33
-cpolys 1431 = T 17
-cpolys 1432 = Q 11 10 6
-cpolys 1433 = T 387
-cpolys 1434 = T 363
-cpolys 1435 = Q 15 10 9
-cpolys 1436 = T 83
-cpolys 1437 = Q 7 6 4
-cpolys 1438 = T 357
-cpolys 1439 = Q 13 12 4
-cpolys 1440 = Q 14 13 7
-cpolys 1441 = T 322
-cpolys 1442 = T 395
-cpolys 1443 = Q 16 5 1
-cpolys 1444 = T 595
-cpolys 1445 = Q 13 10 3
-cpolys 1446 = T 421
-cpolys 1447 = T 195
-cpolys 1448 = Q 11 3 2
-cpolys 1449 = T 13
-cpolys 1450 = Q 16 12 3
-cpolys 1451 = Q 14 3 1
-cpolys 1452 = T 315
-cpolys 1453 = Q 26 10 5
-cpolys 1454 = T 297
-cpolys 1455 = T 52
-cpolys 1456 = Q 9 4 2
-cpolys 1457 = T 314
-cpolys 1458 = T 243
-cpolys 1459 = Q 16 14 9
-cpolys 1460 = T 185
-cpolys 1461 = Q 12 5 3
-cpolys 1462 = Q 13 5 2
-cpolys 1463 = T 575
-cpolys 1464 = Q 12 9 3
-cpolys 1465 = T 39
-cpolys 1466 = T 311
-cpolys 1467 = Q 13 5 2
-cpolys 1468 = T 181
-cpolys 1469 = Q 20 18 14
-cpolys 1470 = T 49
-cpolys 1471 = T 25
-cpolys 1472 = Q 11 4 1
-cpolys 1473 = T 77
-cpolys 1474 = Q 17 11 10
-cpolys 1475 = Q 15 14 8
-cpolys 1476 = T 21
-cpolys 1477 = Q 17 10 5
-cpolys 1478 = T 69
-cpolys 1479 = T 49
-cpolys 1480 = Q 11 10 2
-cpolys 1481 = T 32
-cpolys 1482 = T 411
-cpolys 1483 = Q 21 16 3
-cpolys 1484 = Q 11 7 4
-cpolys 1485 = Q 22 10 3
-cpolys 1486 = T 85
-cpolys 1487 = T 140
-cpolys 1488 = Q 9 8 6
-cpolys 1489 = T 252
-cpolys 1490 = T 279
-cpolys 1491 = Q 9 5 2
-cpolys 1492 = T 307
-cpolys 1493 = Q 17 10 4
-cpolys 1494 = Q 13 12 9
-cpolys 1495 = T 94
-cpolys 1496 = Q 13 11 4
-cpolys 1497 = T 49
-cpolys 1498 = Q 17 11 10
-cpolys 1499 = Q 16 12 5
-cpolys 1500 = T 25
-cpolys 1501 = Q 6 5 2
-cpolys 1502 = Q 12 5 1
-cpolys 1503 = T 80
-cpolys 1504 = Q 8 3 2
-cpolys 1505 = T 246
-cpolys 1506 = Q 11 5 2
-cpolys 1507 = Q 11 10 2
-cpolys 1508 = T 599
-cpolys 1509 = Q 18 12 10
-cpolys 1510 = T 189
-cpolys 1511 = T 278
-cpolys 1512 = Q 10 9 3
-cpolys 1513 = T 399
-cpolys 1514 = T 299
-cpolys 1515 = Q 13 10 6
-cpolys 1516 = T 277
-cpolys 1517 = Q 13 10 6
-cpolys 1518 = T 69
-cpolys 1519 = T 220
-cpolys 1520 = Q 13 10 3
-cpolys 1521 = T 229
-cpolys 1522 = Q 18 11 10
-cpolys 1523 = Q 16 15 1
-cpolys 1524 = T 27
-cpolys 1525 = Q 18 9 3
-cpolys 1526 = T 473
-cpolys 1527 = T 373
-cpolys 1528 = Q 18 17 7
-cpolys 1529 = T 60
-cpolys 1530 = T 207
-cpolys 1531 = Q 13 9 8
-cpolys 1532 = Q 22 20 13
-cpolys 1533 = Q 25 18 7
-cpolys 1534 = T 225
-cpolys 1535 = T 404
-cpolys 1536 = Q 21 6 2
-cpolys 1537 = T 46
-cpolys 1538 = Q 6 2 1
-cpolys 1539 = Q 17 12 6
-cpolys 1540 = T 75
-cpolys 1541 = Q 4 2 1
-cpolys 1542 = T 365
-cpolys 1543 = T 445
-cpolys 1544 = Q 11 7 1
-cpolys 1545 = T 44
-cpolys 1546 = Q 10 8 5
-cpolys 1547 = Q 12 5 2
-cpolys 1548 = T 63
-cpolys 1549 = Q 17 4 2
-cpolys 1550 = T 189
-cpolys 1551 = T 557
-cpolys 1552 = Q 19 12 2
-cpolys 1553 = T 252
-cpolys 1554 = T 99
-cpolys 1555 = Q 10 8 5
-cpolys 1556 = T 65
-cpolys 1557 = Q 14 9 3
-cpolys 1558 = T 9
-cpolys 1559 = T 119
-cpolys 1560 = Q 8 5 2
-cpolys 1561 = T 339
-cpolys 1562 = T 95
-cpolys 1563 = Q 12 9 7
-cpolys 1564 = T 7
-cpolys 1565 = Q 13 10 2
-cpolys 1566 = T 77
-cpolys 1567 = T 127
-cpolys 1568 = Q 21 10 7
-cpolys 1569 = T 319
-cpolys 1570 = T 667
-cpolys 1571 = Q 17 10 3
-cpolys 1572 = T 501
-cpolys 1573 = Q 18 12 9
-cpolys 1574 = Q 9 8 5
-cpolys 1575 = T 17
-cpolys 1576 = Q 20 9 2
-cpolys 1577 = T 341
-cpolys 1578 = T 731
-cpolys 1579 = Q 7 6 5
-cpolys 1580 = T 647
-cpolys 1581 = Q 10 4 2
-cpolys 1582 = T 121
-cpolys 1583 = T 20
-cpolys 1584 = Q 21 19 13
-cpolys 1585 = T 574
-cpolys 1586 = T 399
-cpolys 1587 = Q 15 10 7
-cpolys 1588 = T 85
-cpolys 1589 = Q 16 8 3
-cpolys 1590 = T 169
-cpolys 1591 = T 15
-cpolys 1592 = Q 12 7 5
-cpolys 1593 = T 568
-cpolys 1594 = Q 10 7 1
-cpolys 1595 = Q 18 2 1
-cpolys 1596 = T 3
-cpolys 1597 = Q 14 3 2
-cpolys 1598 = Q 13 7 3
-cpolys 1599 = T 643
-cpolys 1600 = Q 14 11 1
-cpolys 1601 = T 548
-cpolys 1602 = T 783
-cpolys 1603 = Q 14 11 1
-cpolys 1604 = T 317
-cpolys 1605 = Q 7 6 4
-cpolys 1606 = T 153
-cpolys 1607 = T 87
-cpolys 1608 = Q 15 13 1
-cpolys 1609 = T 231
-cpolys 1610 = Q 11 5 3
-cpolys 1611 = Q 18 13 7
-cpolys 1612 = T 771
-cpolys 1613 = Q 30 20 11
-cpolys 1614 = Q 15 6 3
-cpolys 1615 = T 103
-cpolys 1616 = Q 13 4 3
-cpolys 1617 = T 182
-cpolys 1618 = T 211
-cpolys 1619 = Q 17 6 1
-cpolys 1620 = T 27
-cpolys 1621 = Q 13 12 10
-cpolys 1622 = Q 15 14 10
-cpolys 1623 = T 17
-cpolys 1624 = Q 13 11 5
-cpolys 1625 = T 69
-cpolys 1626 = Q 11 5 1
-cpolys 1627 = Q 18 6 1
-cpolys 1628 = T 603
-cpolys 1629 = Q 10 4 2
-cpolys 1630 = T 741
-cpolys 1631 = T 668
-cpolys 1632 = Q 17 15 3
-cpolys 1633 = T 147
-cpolys 1634 = T 227
-cpolys 1635 = Q 15 10 9
-cpolys 1636 = T 37
-cpolys 1637 = Q 16 6 1
-cpolys 1638 = T 173
-cpolys 1639 = T 427
-cpolys 1640 = Q 7 5 1
-cpolys 1641 = T 287
-cpolys 1642 = T 231
-cpolys 1643 = Q 20 15 10
-cpolys 1644 = Q 18 9 1
-cpolys 1645 = Q 14 12 5
-cpolys 1646 = Q 16 5 1
-cpolys 1647 = T 310
-cpolys 1648 = Q 18 13 1
-cpolys 1649 = T 434
-cpolys 1650 = T 579
-cpolys 1651 = Q 18 13 8
-cpolys 1652 = T 45
-cpolys 1653 = Q 12 8 3
-cpolys 1654 = Q 16 9 5
-cpolys 1655 = T 53
-cpolys 1656 = Q 19 15 10
-cpolys 1657 = T 16
-cpolys 1658 = Q 17 6 5
-cpolys 1659 = Q 17 10 1
-cpolys 1660 = T 37
-cpolys 1661 = Q 17 10 9
-cpolys 1662 = Q 21 13 7
-cpolys 1663 = T 99
-cpolys 1664 = Q 17 9 6
-cpolys 1665 = T 176
-cpolys 1666 = T 271
-cpolys 1667 = Q 18 17 13
-cpolys 1668 = T 459
-cpolys 1669 = Q 21 17 10
-cpolys 1670 = Q 6 5 2
-cpolys 1671 = T 202
-cpolys 1672 = Q 5 4 3
-cpolys 1673 = T 90
-cpolys 1674 = T 755
-cpolys 1675 = Q 15 7 2
-cpolys 1676 = T 363
-cpolys 1677 = Q 8 4 2
-cpolys 1678 = T 129
-cpolys 1679 = T 20
-cpolys 1680 = Q 11 6 2
-cpolys 1681 = T 135
-cpolys 1682 = Q 15 8 7
-cpolys 1683 = Q 14 13 2
-cpolys 1684 = Q 10 4 3
-cpolys 1685 = Q 24 13 10
-cpolys 1686 = Q 19 14 11
-cpolys 1687 = T 31
-cpolys 1688 = Q 15 8 6
-cpolys 1689 = T 758
-cpolys 1690 = Q 16 11 5
-cpolys 1691 = Q 16 5 1
-cpolys 1692 = T 359
-cpolys 1693 = Q 23 18 17
-cpolys 1694 = T 501
-cpolys 1695 = T 29
-cpolys 1696 = Q 15 6 3
-cpolys 1697 = T 201
-cpolys 1698 = T 459
-cpolys 1699 = Q 12 10 7
-cpolys 1700 = T 225
-cpolys 1701 = Q 22 17 13
-cpolys 1702 = Q 24 22 5
-cpolys 1703 = T 161
-cpolys 1704 = Q 14 11 3
-cpolys 1705 = T 52
-cpolys 1706 = Q 19 17 6
-cpolys 1707 = Q 21 14 12
-cpolys 1708 = T 93
-cpolys 1709 = Q 13 10 3
-cpolys 1710 = T 201
-cpolys 1711 = T 178
-cpolys 1712 = Q 15 12 5
-cpolys 1713 = T 250
-cpolys 1714 = Q 7 6 4
-cpolys 1715 = Q 17 13 6
-cpolys 1716 = T 221
-cpolys 1717 = Q 13 11 8
-cpolys 1718 = Q 17 14 9
-cpolys 1719 = T 113
-cpolys 1720 = Q 17 14 10
-cpolys 1721 = T 300
-cpolys 1722 = T 39
-cpolys 1723 = Q 18 13 3
-cpolys 1724 = T 261
-cpolys 1725 = Q 15 14 8
-cpolys 1726 = T 753
-cpolys 1727 = Q 8 4 3
-cpolys 1728 = Q 11 10 5
-cpolys 1729 = T 94
-cpolys 1730 = Q 15 13 1
-cpolys 1731 = Q 10 4 2
-cpolys 1732 = Q 14 11 10
-cpolys 1733 = Q 8 6 2
-cpolys 1734 = T 461
-cpolys 1735 = T 418
-cpolys 1736 = Q 19 14 6
-cpolys 1737 = T 403
-cpolys 1738 = T 267
-cpolys 1739 = Q 10 9 2
-cpolys 1740 = T 259
-cpolys 1741 = Q 20 4 3
-cpolys 1742 = T 869
-cpolys 1743 = T 173
-cpolys 1744 = Q 19 18 2
-cpolys 1745 = T 369
-cpolys 1746 = T 255
-cpolys 1747 = Q 22 12 9
-cpolys 1748 = T 567
-cpolys 1749 = Q 20 11 7
-cpolys 1750 = T 457
-cpolys 1751 = T 482
-cpolys 1752 = Q 6 3 2
-cpolys 1753 = T 775
-cpolys 1754 = Q 19 17 6
-cpolys 1755 = Q 6 4 3
-cpolys 1756 = T 99
-cpolys 1757 = Q 15 14 8
-cpolys 1758 = Q 6 5 2
-cpolys 1759 = T 165
-cpolys 1760 = Q 8 3 2
-cpolys 1761 = Q 13 12 10
-cpolys 1762 = Q 25 21 17
-cpolys 1763 = Q 17 14 9
-cpolys 1764 = T 105
-cpolys 1765 = Q 17 15 14
-cpolys 1766 = Q 10 3 2
-cpolys 1767 = T 250
-cpolys 1768 = Q 25 6 5
-cpolys 1769 = T 327
-cpolys 1770 = T 279
-cpolys 1771 = Q 13 6 5
-cpolys 1772 = T 371
-cpolys 1773 = Q 15 9 4
-cpolys 1774 = T 117
-cpolys 1775 = T 486
-cpolys 1776 = Q 10 9 3
-cpolys 1777 = T 217
-cpolys 1778 = T 635
-cpolys 1779 = Q 30 27 17
-cpolys 1780 = T 457
-cpolys 1781 = Q 16 6 2
-cpolys 1782 = T 57
-cpolys 1783 = T 439
-cpolys 1784 = Q 23 21 6
-cpolys 1785 = T 214
-cpolys 1786 = Q 20 13 6
-cpolys 1787 = Q 20 16 1
-cpolys 1788 = T 819
-cpolys 1789 = Q 15 11 8
-cpolys 1790 = T 593
-cpolys 1791 = T 190
-cpolys 1792 = Q 17 14 3
-cpolys 1793 = T 114
-cpolys 1794 = Q 21 18 3
-cpolys 1795 = Q 10 5 2
-cpolys 1796 = Q 12 9 5
-cpolys 1797 = Q 8 6 3
-cpolys 1798 = T 69
-cpolys 1799 = T 312
-cpolys 1800 = Q 22 5 2
-cpolys 1801 = T 502
-cpolys 1802 = T 843
-cpolys 1803 = Q 15 10 3
-cpolys 1804 = T 747
-cpolys 1805 = Q 6 5 2
-cpolys 1806 = T 101
-cpolys 1807 = T 123
-cpolys 1808 = Q 19 16 9
-cpolys 1809 = T 521
-cpolys 1810 = T 171
-cpolys 1811 = Q 16 7 2
-cpolys 1812 = Q 12 6 5
-cpolys 1813 = Q 22 21 20
-cpolys 1814 = T 545
-cpolys 1815 = T 163
-cpolys 1816 = Q 23 18 1
-cpolys 1817 = T 479
-cpolys 1818 = T 495
-cpolys 1819 = Q 13 6 5
-cpolys 1820 = T 11
-cpolys 1821 = Q 17 5 2
-cpolys 1822 = Q 18 8 1
-cpolys 1823 = T 684
-cpolys 1824 = Q 7 5 1
-cpolys 1825 = T 9
-cpolys 1826 = Q 18 11 3
-cpolys 1827 = Q 22 20 13
-cpolys 1828 = T 273
-cpolys 1829 = Q 4 3 2
-cpolys 1830 = T 381
-cpolys 1831 = T 51
-cpolys 1832 = Q 18 13 7
-cpolys 1833 = T 518
-cpolys 1834 = Q 9 5 1
-cpolys 1835 = Q 14 12 3
-cpolys 1836 = T 243
-cpolys 1837 = Q 21 17 2
-cpolys 1838 = T 53
-cpolys 1839 = T 836
-cpolys 1840 = Q 21 10 2
-cpolys 1841 = T 66
-cpolys 1842 = Q 12 10 7
-cpolys 1843 = Q 13 9 8
-cpolys 1844 = T 339
-cpolys 1845 = Q 16 11 5
-cpolys 1846 = T 901
-cpolys 1847 = T 180
-cpolys 1848 = Q 16 13 3
-cpolys 1849 = T 49
-cpolys 1850 = Q 6 3 2
-cpolys 1851 = Q 15 4 1
-cpolys 1852 = Q 16 13 6
-cpolys 1853 = Q 18 15 12
-cpolys 1854 = T 885
-cpolys 1855 = T 39
-cpolys 1856 = Q 11 9 4
-cpolys 1857 = T 688
-cpolys 1858 = Q 16 15 7
-cpolys 1859 = Q 13 10 6
-cpolys 1860 = T 13
-cpolys 1861 = Q 25 23 12
-cpolys 1862 = T 149
-cpolys 1863 = T 260
-cpolys 1864 = Q 11 9 1
-cpolys 1865 = T 53
-cpolys 1866 = T 11
-cpolys 1867 = Q 12 4 2
-cpolys 1868 = Q 9 7 5
-cpolys 1869 = Q 11 8 1
-cpolys 1870 = T 121
-cpolys 1871 = T 261
-cpolys 1872 = Q 10 5 2
-cpolys 1873 = T 199
-cpolys 1874 = Q 20 4 3
-cpolys 1875 = Q 17 9 2
-cpolys 1876 = Q 13 9 4
-cpolys 1877 = Q 12 8 7
-cpolys 1878 = T 253
-cpolys 1879 = T 174
-cpolys 1880 = Q 15 4 2
-cpolys 1881 = T 370
-cpolys 1882 = Q 9 6 1
-cpolys 1883 = Q 16 10 9
-cpolys 1884 = T 669
-cpolys 1885 = Q 20 10 9
-cpolys 1886 = T 833
-cpolys 1887 = T 353
-cpolys 1888 = Q 17 13 2
-cpolys 1889 = T 29
-cpolys 1890 = T 371
-cpolys 1891 = Q 9 8 5
-cpolys 1892 = Q 8 7 1
-cpolys 1893 = Q 19 8 7
-cpolys 1894 = Q 12 11 10
-cpolys 1895 = T 873
-cpolys 1896 = Q 26 11 2
-cpolys 1897 = Q 12 9 1
-cpolys 1898 = Q 10 7 2
-cpolys 1899 = Q 13 6 1
-cpolys 1900 = T 235
-cpolys 1901 = Q 26 24 19
-cpolys 1902 = T 733
-cpolys 1903 = T 778
-cpolys 1904 = Q 12 11 1
-cpolys 1905 = T 344
-cpolys 1906 = T 931
-cpolys 1907 = Q 16 6 4
-cpolys 1908 = T 945
-cpolys 1909 = Q 21 19 14
-cpolys 1910 = Q 18 13 11
-cpolys 1911 = T 67
-cpolys 1912 = Q 20 15 10
-cpolys 1913 = T 462
-cpolys 1914 = Q 14 5 1
-cpolys 1915 = Q 10 9 6
-cpolys 1916 = Q 18 11 10
-cpolys 1917 = Q 16 9 7
-cpolys 1918 = T 477
-cpolys 1919 = T 105
-cpolys 1920 = Q 11 3 2
-cpolys 1921 = T 468
-cpolys 1922 = Q 23 16 15
-cpolys 1923 = Q 16 15 6
-cpolys 1924 = T 327
-cpolys 1925 = Q 23 10 4
-cpolys 1926 = T 357
-cpolys 1927 = T 25
-cpolys 1928 = Q 17 16 7
-cpolys 1929 = T 31
-cpolys 1930 = Q 7 5 2
-cpolys 1931 = Q 16 7 6
-cpolys 1932 = T 277
-cpolys 1933 = Q 14 13 6
-cpolys 1934 = T 413
-cpolys 1935 = T 103
-cpolys 1936 = Q 15 10 1
-cpolys 1937 = T 231
-cpolys 1938 = T 747
-cpolys 1939 = Q 5 2 1
-cpolys 1940 = T 113
-cpolys 1941 = Q 20 10 7
-cpolys 1942 = Q 15 9 6
-cpolys 1943 = T 11
-cpolys 1944 = Q 27 22 18
-cpolys 1945 = T 91
-cpolys 1946 = T 51
-cpolys 1947 = Q 18 13 12
-cpolys 1948 = T 603
-cpolys 1949 = Q 10 7 3
-cpolys 1950 = T 9
-cpolys 1951 = T 121
-cpolys 1952 = Q 15 14 6
-cpolys 1953 = T 17
-cpolys 1954 = Q 16 11 2
-cpolys 1955 = Q 23 15 6
-cpolys 1956 = T 279
-cpolys 1957 = Q 16 12 6
-cpolys 1958 = T 89
-cpolys 1959 = T 371
-cpolys 1960 = Q 17 15 2
-cpolys 1961 = T 771
-cpolys 1962 = T 99
-cpolys 1963 = Q 7 6 3
-cpolys 1964 = T 21
-cpolys 1965 = Q 10 7 5
-cpolys 1966 = T 801
-cpolys 1967 = T 26
-cpolys 1968 = Q 25 19 14
-cpolys 1969 = T 175
-cpolys 1970 = Q 10 7 2
-cpolys 1971 = Q 20 5 4
-cpolys 1972 = Q 12 11 1
-cpolys 1973 = Q 22 5 1
-cpolys 1974 = T 165
-cpolys 1975 = T 841
-cpolys 1976 = Q 25 19 17
-cpolys 1977 = T 238
-cpolys 1978 = Q 11 8 6
-cpolys 1979 = Q 22 21 4
-cpolys 1980 = T 33
-cpolys 1981 = Q 8 7 6
-cpolys 1982 = Q 14 9 2
-cpolys 1983 = T 113
-cpolys 1984 = Q 13 11 5
-cpolys 1985 = T 311
-cpolys 1986 = T 891
-cpolys 1987 = Q 20 16 14
-cpolys 1988 = T 555
-cpolys 1989 = Q 23 14 8
-cpolys 1990 = T 133
-cpolys 1991 = T 546
-cpolys 1992 = Q 6 3 2
-cpolys 1993 = T 103
-cpolys 1994 = T 15
-cpolys 1995 = Q 10 7 3
-cpolys 1996 = T 307
-cpolys 1997 = Q 14 10 1
-cpolys 1998 = Q 15 12 2
-cpolys 1999 = T 367
-cpolys 2000 = Q 13 10 6
-cpolys 2001 = T 169
-cpolys 2002 = Q 22 21 11
-cpolys 2003 = Q 12 10 8
-cpolys 2004 = T 441
-cpolys 2005 = Q 17 12 7
-cpolys 2006 = T 917
-cpolys 2007 = T 205
-cpolys 2008 = Q 26 23 13
-cpolys 2009 = T 54
-cpolys 2010 = T 459
-cpolys 2011 = Q 17 15 4
-cpolys 2012 = Q 19 15 4
-cpolys 2013 = Q 5 4 2
-cpolys 2014 = Q 9 7 6
-cpolys 2015 = T 42
-cpolys 2016 = Q 21 15 7
-cpolys 2017 = T 330
-cpolys 2018 = Q 20 7 3
-cpolys 2019 = Q 20 7 2
-cpolys 2020 = T 81
-cpolys 2021 = Q 19 14 1
-cpolys 2022 = T 349
-cpolys 2023 = T 165
-cpolys 2024 = Q 40 35 9
-cpolys 2025 = T 274
-cpolys 2026 = T 475
-cpolys 2027 = Q 11 10 3
-cpolys 2028 = T 93
-cpolys 2029 = Q 12 7 4
-cpolys 2030 = Q 13 12 2
-cpolys 2031 = T 386
-cpolys 2032 = Q 7 6 2
-cpolys 2033 = T 881
-cpolys 2034 = T 143
-cpolys 2035 = Q 9 8 4
-cpolys 2036 = T 71
-cpolys 2037 = Q 19 18 3
-cpolys 2038 = Q 16 11 6
-cpolys 2039 = T 155
-cpolys 2040 = Q 7 2 1
-cpolys 2041 = T 735
-cpolys 2042 = Q 16 8 7
-cpolys 2043 = Q 9 7 4
-cpolys 2044 = T 45
-cpolys 2045 = Q 7 6 4
-cpolys 2046 = Q 12 11 3
-cpolys 2047 = T 3
-cpolys 2048 = Q 19 14 13
-cpolys 2049 = T 124
-cpolys 2050 = Q 15 13 8
-cpolys 2051 = Q 13 6 5
-cpolys 2052 = T 323
-cpolys 2053 = Q 21 13 6
-cpolys 2054 = T 201
-cpolys 2055 = T 11
-cpolys 2056 = Q 13 12 3
-cpolys 2057 = T 245
-cpolys 2058 = T 343
-cpolys 2059 = Q 14 12 10
-cpolys 2060 = T 387
-cpolys 2061 = Q 19 4 1
-cpolys 2062 = Q 16 3 2
-cpolys 2063 = T 48
-cpolys 2064 = Q 17 9 2
-cpolys 2065 = T 97
-cpolys 2066 = T 71
-cpolys 2067 = Q 17 13 8
-cpolys 2068 = Q 18 10 7
-cpolys 2069 = Q 18 9 8
-cpolys 2070 = T 237
-cpolys 2071 = Q 11 5 3
-cpolys 2072 = Q 13 10 3
-cpolys 2073 = T 253
-cpolys 2074 = T 231
-cpolys 2075 = Q 9 7 4
-cpolys 2076 = T 851
-cpolys 2077 = Q 15 14 4
-cpolys 2078 = Q 16 6 5
-cpolys 2079 = T 35
-cpolys 2080 = Q 4 3 1
-cpolys 2081 = T 467
-cpolys 2082 = T 523
-cpolys 2083 = Q 21 11 10
-cpolys 2084 = Q 4 2 1
-cpolys 2085 = Q 9 8 3
-cpolys 2086 = T 261
-cpolys 2087 = T 141
-cpolys 2088 = Q 18 11 5
-cpolys 2089 = T 150
-cpolys 2090 = Q 9 4 1
-cpolys 2091 = Q 12 9 5
-cpolys 2092 = Q 17 15 7
-cpolys 2093 = Q 16 15 7
-cpolys 2094 = T 645
-cpolys 2095 = T 256
-cpolys 2096 = Q 19 4 2
-cpolys 2097 = T 119
-cpolys 2098 = T 19
-cpolys 2099 = Q 15 12 9
-cpolys 2100 = T 35
-cpolys 2101 = Q 25 22 9
-cpolys 2102 = T 33
-cpolys 2103 = T 98
-cpolys 2104 = Q 19 15 9
-cpolys 2105 = T 153
-cpolys 2106 = T 111
-cpolys 2107 = Q 17 10 2
-cpolys 2108 = Q 21 5 3
-cpolys 2109 = Q 10 5 1
-cpolys 2110 = Q 12 9 6
-cpolys 2111 = T 249
-cpolys 2112 = Q 16 13 7
-cpolys 2113 = T 385
-cpolys 2114 = T 155
-cpolys 2115 = Q 11 10 1
-cpolys 2116 = T 25
-cpolys 2117 = Q 24 16 11
-cpolys 2118 = T 385
-cpolys 2119 = T 84
-cpolys 2120 = Q 17 14 6
-cpolys 2121 = T 304
-cpolys 2122 = T 91
-cpolys 2123 = Q 14 11 3
-cpolys 2124 = T 45
-cpolys 2125 = Q 24 17 14
-cpolys 2126 = T 881
-cpolys 2127 = T 539
-cpolys 2128 = Q 23 9 1
-cpolys 2129 = T 21
-cpolys 2130 = T 239
-cpolys 2131 = Q 13 6 5
-cpolys 2132 = T 213
-cpolys 2133 = Q 24 22 4
-cpolys 2134 = Q 23 13 2
-cpolys 2135 = T 47
-cpolys 2136 = Q 15 12 9
-cpolys 2137 = T 331
-cpolys 2138 = Q 13 9 2
-cpolys 2139 = Q 14 4 1
-cpolys 2140 = T 283
-cpolys 2141 = Q 16 3 1
-cpolys 2142 = T 69
-cpolys 2143 = T 345
-cpolys 2144 = Q 13 7 3
-cpolys 2145 = T 19
-cpolys 2146 = T 595
-cpolys 2147 = Q 8 3 2
-cpolys 2148 = T 549
-cpolys 2149 = Q 17 9 2
-cpolys 2150 = T 569
-cpolys 2151 = T 224
-cpolys 2152 = Q 24 13 7
-cpolys 2153 = T 582
-cpolys 2154 = Q 10 7 5
-cpolys 2155 = Q 10 9 8
-cpolys 2156 = T 405
-cpolys 2157 = Q 14 4 1
-cpolys 2158 = T 93
-cpolys 2159 = T 6
-cpolys 2160 = Q 31 25 14
-cpolys 2161 = T 766
-cpolys 2162 = T 47
-cpolys 2163 = Q 12 9 7
-cpolys 2164 = T 561
-cpolys 2165 = Q 10 4 2
-cpolys 2166 = T 693
-cpolys 2167 = T 840
-cpolys 2168 = Q 11 9 3
-cpolys 2169 = T 55
-cpolys 2170 = T 411
-cpolys 2171 = Q 7 6 4
-cpolys 2172 = Q 6 4 1
-cpolys 2173 = Q 15 8 4
-cpolys 2174 = T 225
-cpolys 2175 = T 128
-cpolys 2176 = Q 15 8 1
-cpolys 2177 = T 554
-cpolys 2178 = T 15
-cpolys 2179 = Q 8 7 2
-cpolys 2180 = T 111
-cpolys 2181 = Q 18 12 7
-cpolys 2182 = T 93
-cpolys 2183 = T 162
-cpolys 2184 = Q 11 10 5
-cpolys 2185 = T 51
-cpolys 2186 = T 51
-cpolys 2187 = Q 22 11 1
-cpolys 2188 = T 99
-cpolys 2189 = Q 19 8 7
-cpolys 2190 = T 441
-cpolys 2191 = T 111
-cpolys 2192 = Q 8 5 3
-cpolys 2193 = T 71
-cpolys 2194 = Q 15 13 9
-cpolys 2195 = Q 23 22 16
-cpolys 2196 = T 539
-cpolys 2197 = Q 6 5 2
-cpolys 2198 = T 893
-cpolys 2199 = T 49
-cpolys 2200 = Q 20 15 5
-cpolys 2201 = T 143
-cpolys 2202 = Q 15 3 2
-cpolys 2203 = Q 14 6 5
-cpolys 2204 = Q 11 7 1
-cpolys 2205 = Q 14 7 4
-cpolys 2206 = T 793
-cpolys 2207 = T 438
-cpolys 2208 = Q 21 16 6
-cpolys 2209 = T 142
-cpolys 2210 = T 539
-cpolys 2211 = Q 20 14 3
-cpolys 2212 = T 423
-cpolys 2213 = Q 20 19 4
-cpolys 2214 = T 1041
-cpolys 2215 = T 39
-cpolys 2216 = Q 24 7 2
-cpolys 2217 = T 455
-cpolys 2218 = T 603
-cpolys 2219 = Q 22 12 11
-cpolys 2220 = T 7
-cpolys 2221 = Q 17 16 6
-cpolys 2222 = T 333
-cpolys 2223 = Q 17 6 2
-cpolys 2224 = Q 21 19 5
-cpolys 2225 = T 47
-cpolys 2226 = Q 19 16 7
-cpolys 2227 = Q 14 9 8
-cpolys 2228 = T 425
-cpolys 2229 = Q 17 8 7
-cpolys 2230 = T 637
-cpolys 2231 = T 654
-cpolys 2232 = Q 19 17 4
-cpolys 2233 = T 249
-cpolys 2234 = Q 7 6 1
-cpolys 2235 = Q 20 17 11
-cpolys 2236 = T 63
-cpolys 2237 = Q 7 4 2
-cpolys 2238 = T 1053
-cpolys 2239 = T 120
-cpolys 2240 = Q 23 7 1
-cpolys 2241 = T 20
-cpolys 2242 = T 7
-cpolys 2243 = Q 27 15 2
-cpolys 2244 = T 399
-cpolys 2245 = Q 22 12 11
-cpolys 2246 = Q 23 15 6
-cpolys 2247 = T 217
-cpolys 2248 = Q 9 4 3
-cpolys 2249 = T 126
-cpolys 2250 = T 927
-cpolys 2251 = Q 19 16 13
-cpolys 2252 = T 75
-cpolys 2253 = Q 19 14 2
-cpolys 2254 = Q 10 9 2
-cpolys 2255 = T 729
-cpolys 2256 = Q 14 9 6
-cpolys 2257 = T 829
-cpolys 2258 = T 983
-cpolys 2259 = Q 16 10 6
-cpolys 2260 = Q 12 4 1
-cpolys 2261 = Q 14 12 7
-cpolys 2262 = T 57
-cpolys 2263 = T 273
-cpolys 2264 = Q 15 7 2
-cpolys 2265 = T 151
-cpolys 2266 = T 343
-cpolys 2267 = Q 18 17 8
-cpolys 2268 = T 115
-cpolys 2269 = Q 15 10 7
-cpolys 2270 = T 369
-cpolys 2271 = T 560
-cpolys 2272 = Q 21 10 9
-cpolys 2273 = T 630
-cpolys 2274 = T 239
-cpolys 2275 = Q 15 12 1
-cpolys 2276 = T 21
-cpolys 2277 = Q 10 4 2
-cpolys 2278 = Q 17 14 7
-cpolys 2279 = T 276
-cpolys 2280 = Q 13 4 2
-cpolys 2281 = T 715
-cpolys 2282 = T 975
-cpolys 2283 = Q 20 13 4
-cpolys 2284 = T 889
-cpolys 2285 = Q 8 6 2
-cpolys 2286 = T 249
-cpolys 2287 = T 651
-cpolys 2288 = Q 17 16 7
-cpolys 2289 = T 136
-cpolys 2290 = Q 23 6 5
-cpolys 2291 = Q 13 10 2
-cpolys 2292 = T 89
-cpolys 2293 = Q 10 8 3
-cpolys 2294 = Q 21 17 10
-cpolys 2295 = T 259
-cpolys 2296 = Q 15 10 1
-cpolys 2297 = T 405
-cpolys 2298 = Q 15 13 3
-cpolys 2299 = Q 16 6 1
-cpolys 2300 = T 95
-cpolys 2301 = Q 15 9 8
-cpolys 2302 = Q 15 8 1
-cpolys 2303 = T 80
-cpolys 2304 = Q 8 7 5
-cpolys 2305 = T 424
-cpolys 2306 = T 551
-cpolys 2307 = Q 11 7 2
-cpolys 2308 = T 31
-cpolys 2309 = Q 12 10 8
-cpolys 2310 = T 233
-cpolys 2311 = T 148
-cpolys 2312 = Q 19 6 4
-cpolys 2313 = T 221
-cpolys 2314 = T 879
-cpolys 2315 = Q 17 15 4
-cpolys 2316 = T 21
-cpolys 2317 = Q 17 4 2
-cpolys 2318 = T 245
-cpolys 2319 = T 161
-cpolys 2320 = Q 13 11 5
-cpolys 2321 = T 543
-cpolys 2322 = T 83
-cpolys 2323 = Q 16 3 2
-cpolys 2324 = T 717
-cpolys 2325 = Q 14 8 5
-cpolys 2326 = Q 13 10 7
-cpolys 2327 = T 32
-cpolys 2328 = Q 15 9 2
-cpolys 2329 = T 105
-cpolys 2330 = Q 15 5 1
-cpolys 2331 = T 14
-cpolys 2332 = T 349
-cpolys 2333 = Q 18 15 8
-cpolys 2334 = T 1125
-cpolys 2335 = T 553
-cpolys 2336 = Q 15 10 8
-cpolys 2337 = T 523
-cpolys 2338 = T 211
-cpolys 2339 = Q 10 3 2
-cpolys 2340 = T 39
-cpolys 2341 = Q 24 18 16
-cpolys 2342 = T 65
-cpolys 2343 = T 415
-cpolys 2344 = Q 27 26 14
-cpolys 2345 = T 29
-cpolys 2346 = T 987
-cpolys 2347 = Q 11 10 2
-cpolys 2348 = T 731
-cpolys 2349 = Q 31 16 9
-cpolys 2350 = Q 21 19 4
-cpolys 2351 = T 950
-cpolys 2352 = Q 23 20 2
-cpolys 2353 = T 328
-cpolys 2354 = Q 14 11 6
-cpolys 2355 = Q 12 11 6
-cpolys 2356 = T 183
-cpolys 2357 = Q 10 9 8
-cpolys 2358 = T 161
-cpolys 2359 = T 172
-cpolys 2360 = Q 19 10 8
-cpolys 2361 = T 646
-cpolys 2362 = Q 13 10 6
-cpolys 2363 = Q 9 7 4
-cpolys 2364 = T 643
-cpolys 2365 = Q 21 14 5
-cpolys 2366 = Q 16 13 6
-cpolys 2367 = T 610
-cpolys 2368 = Q 13 11 8
-cpolys 2369 = T 77
-cpolys 2370 = Q 12 11 6
-cpolys 2371 = Q 20 18 17
-cpolys 2372 = T 1139
-cpolys 2373 = Q 17 14 5
-cpolys 2374 = Q 24 16 13
-cpolys 2375 = T 198
-cpolys 2376 = Q 7 5 4
-cpolys 2377 = T 381
-cpolys 2378 = T 243
-cpolys 2379 = Q 22 9 3
-cpolys 2380 = T 1
-cpolys 2381 = Q 18 12 2
-cpolys 2382 = T 429
-cpolys 2383 = T 49
-cpolys 2384 = Q 21 19 1
-cpolys 2385 = T 607
-cpolys 2386 = Q 11 9 1
-cpolys 2387 = Q 8 7 6
-cpolys 2388 = T 11
-cpolys 2389 = Q 31 12 10
-cpolys 2390 = T 629
-cpolys 2391 = T 956
-cpolys 2392 = Q 31 13 3
-cpolys 2393 = T 59
-cpolys 2394 = T 423
-cpolys 2395 = Q 17 8 7
-cpolys 2396 = T 173
-cpolys 2397 = Q 22 17 4
-cpolys 2398 = Q 15 13 11
-cpolys 2399 = T 107
-cpolys 2400 = Q 20 19 17
-cpolys 2401 = T 61
-cpolys 2402 = T 251
-cpolys 2403 = Q 11 8 2
-cpolys 2404 = T 67
-cpolys 2405 = Q 17 14 5
-cpolys 2406 = Q 14 12 5
-cpolys 2407 = T 91
-cpolys 2408 = Q 23 6 4
-cpolys 2409 = T 1198
-cpolys 2410 = T 807
-cpolys 2411 = Q 12 2 1
-cpolys 2412 = T 25
-cpolys 2413 = Q 11 6 1
-cpolys 2414 = T 29
-cpolys 2415 = T 154
-cpolys 2416 = Q 23 6 5
-cpolys 2417 = T 225
-cpolys 2418 = T 311
-cpolys 2419 = Q 22 16 6
-cpolys 2420 = T 77
-cpolys 2421 = Q 11 8 4
-cpolys 2422 = T 1117
-cpolys 2423 = T 102
-cpolys 2424 = Q 21 16 6
-cpolys 2425 = T 678
-cpolys 2426 = Q 20 4 3
-cpolys 2427 = Q 8 6 5
-cpolys 2428 = T 301
-cpolys 2429 = Q 22 14 7
-cpolys 2430 = T 477
-cpolys 2431 = T 303
-cpolys 2432 = Q 29 22 19
-cpolys 2433 = T 305
-cpolys 2434 = T 507
-cpolys 2435 = Q 18 6 2
-cpolys 2436 = T 145
-cpolys 2437 = Q 9 4 3
-cpolys 2438 = T 929
-cpolys 2439 = T 404
-cpolys 2440 = Q 12 7 5
-cpolys 2441 = T 339
-cpolys 2442 = T 127
-cpolys 2443 = Q 15 13 4
-cpolys 2444 = T 1115
-cpolys 2445 = Q 23 20 10
-cpolys 2446 = Q 18 13 6
-cpolys 2447 = T 786
-cpolys 2448 = Q 21 10 4
-cpolys 2449 = T 621
-cpolys 2450 = T 191
-cpolys 2451 = Q 10 4 3
-cpolys 2452 = T 331
-cpolys 2453 = Q 21 14 11
-cpolys 2454 = T 357
-cpolys 2455 = T 313
-cpolys 2456 = Q 12 5 3
-cpolys 2457 = T 238
-cpolys 2458 = Q 23 20 18
-cpolys 2459 = Q 17 7 4
-cpolys 2460 = T 35
-cpolys 2461 = Q 19 18 10
-cpolys 2462 = Q 22 13 8
-cpolys 2463 = T 1172
-cpolys 2464 = Q 5 4 3
-cpolys 2465 = T 531
-cpolys 2466 = T 599
-cpolys 2467 = Q 18 14 2
-cpolys 2468 = T 99
-cpolys 2469 = Q 26 16 11
-cpolys 2470 = T 217
-cpolys 2471 = Q 15 6 3
-cpolys 2472 = Q 12 3 1
-cpolys 2473 = T 225
-cpolys 2474 = T 899
-cpolys 2475 = Q 12 11 9
-cpolys 2476 = Q 17 3 2
-cpolys 2477 = Q 19 17 6
-cpolys 2478 = T 765
-cpolys 2479 = T 72
-cpolys 2480 = Q 20 5 2
-cpolys 2481 = T 710
-cpolys 2482 = Q 11 7 6
-cpolys 2483 = Q 12 11 2
-cpolys 2484 = T 523
-cpolys 2485 = T 142
-cpolys 2486 = Q 19 14 9
-cpolys 2487 = T 155
-cpolys 2488 = Q 23 13 9
-cpolys 2489 = T 315
-cpolys 2490 = Q 8 7 5
-cpolys 2491 = Q 25 16 12
-cpolys 2492 = T 141
-cpolys 2493 = Q 18 15 7
-cpolys 2494 = Q 13 8 2
-cpolys 2495 = T 497
-cpolys 2496 = Q 12 3 1
-cpolys 2497 = T 1171
-cpolys 2498 = Q 8 7 4
-cpolys 2499 = Q 13 12 9
-cpolys 2500 = T 135
-cpolys 2501 = Q 22 21 5
-cpolys 2502 = T 45
-cpolys 2503 = T 316
-cpolys 2504 = Q 19 8 6
-cpolys 2505 = T 131
-cpolys 2506 = Q 17 11 3
-cpolys 2507 = Q 13 8 1
-cpolys 2508 = T 25
-cpolys 2509 = Q 14 13 3
-cpolys 2510 = T 1113
-cpolys 2511 = T 110
-cpolys 2512 = Q 29 21 7
-cpolys 2513 = T 99
-cpolys 2514 = T 183
-cpolys 2515 = Q 8 7 5
-cpolys 2516 = T 563
-cpolys 2517 = Q 14 4 1
-cpolys 2518 = Q 18 13 2
-cpolys 2519 = T 579
-cpolys 2520 = Q 31 15 13
-cpolys 2521 = T 426
-cpolys 2522 = Q 16 10 5
-cpolys 2523 = Q 23 17 14
-cpolys 2524 = Q 15 6 4
-cpolys 2525 = Q 7 6 5
-cpolys 2526 = T 141
-cpolys 2527 = T 640
-cpolys 2528 = Q 19 9 4
-cpolys 2529 = T 49
-cpolys 2530 = Q 14 5 3
-cpolys 2531 = Q 6 2 1
-cpolys 2532 = Q 26 22 13
-cpolys 2533 = Q 10 3 1
-cpolys 2534 = T 185
-cpolys 2535 = Q 24 19 16
-cpolys 2536 = Q 21 10 9
-cpolys 2537 = T 77
-cpolys 2538 = T 315
-cpolys 2539 = Q 10 9 3
-cpolys 2540 = T 209
-cpolys 2541 = Q 11 8 7
-cpolys 2542 = T 97
-cpolys 2543 = T 240
-cpolys 2544 = Q 21 20 6
-cpolys 2545 = T 982
-cpolys 2546 = T 891
-cpolys 2547 = Q 22 10 3
-cpolys 2548 = T 373
-cpolys 2549 = Q 10 9 5
-cpolys 2550 = T 333
-cpolys 2551 = T 103
-cpolys 2552 = Q 28 3 2
-cpolys 2553 = T 28
-cpolys 2554 = T 1123
-cpolys 2555 = Q 9 6 2
-cpolys 2556 = T 349
-cpolys 2557 = Q 18 17 7
-cpolys 2558 = Q 18 8 1
-cpolys 2559 = T 23
-cpolys 2560 = Q 9 3 1
-cpolys 2561 = T 201
-cpolys 2562 = T 203
-cpolys 2563 = Q 12 11 10
-cpolys 2564 = T 561
-cpolys 2565 = Q 25 16 14
-cpolys 2566 = T 37
-cpolys 2567 = T 122
-cpolys 2568 = Q 8 5 2
-cpolys 2569 = T 69
-cpolys 2570 = Q 18 15 14
-cpolys 2571 = Q 18 16 9
-cpolys 2572 = T 535
-cpolys 2573 = Q 12 11 3
-cpolys 2574 = T 5
-cpolys 2575 = T 867
-cpolys 2576 = Q 7 2 1
-cpolys 2577 = T 674
-cpolys 2578 = Q 15 7 3
-cpolys 2579 = Q 23 6 1
-cpolys 2580 = T 105
-cpolys 2581 = Q 26 14 12
-cpolys 2582 = Q 22 19 15
-cpolys 2583 = T 31
-cpolys 2584 = Q 25 19 12
-cpolys 2585 = T 263
-cpolys 2586 = T 1047
-cpolys 2587 = Q 23 12 10
-cpolys 2588 = Q 13 8 1
-cpolys 2589 = Q 29 11 10
-cpolys 2590 = T 1017
-cpolys 2591 = T 219
-cpolys 2592 = Q 15 12 5
-cpolys 2593 = T 297
-cpolys 2594 = T 863
-cpolys 2595 = Q 24 17 2
-cpolys 2596 = T 145
-cpolys 2597 = Q 16 8 7
-cpolys 2598 = T 225
-cpolys 2599 = T 289
-cpolys 2600 = Q 14 13 7
-cpolys 2601 = T 406
-cpolys 2602 = Q 11 6 1
-cpolys 2603 = Q 18 8 7
-cpolys 2604 = T 435
-cpolys 2605 = Q 19 14 5
-cpolys 2606 = T 1181
-cpolys 2607 = T 34
-cpolys 2608 = Q 15 11 2
-cpolys 2609 = T 425
-cpolys 2610 = T 427
-cpolys 2611 = Q 27 17 10
-cpolys 2612 = Q 21 14 6
-cpolys 2613 = Q 14 12 9
-cpolys 2614 = T 553
-cpolys 2615 = T 518
-cpolys 2616 = Q 17 8 7
-cpolys 2617 = T 462
-cpolys 2618 = T 71
-cpolys 2619 = Q 17 10 1
-cpolys 2620 = T 835
-cpolys 2621 = Q 8 7 1
-cpolys 2622 = Q 11 5 3
-cpolys 2623 = T 409
-cpolys 2624 = Q 15 10 4
-cpolys 2625 = T 112
-cpolys 2626 = T 43
-cpolys 2627 = Q 20 17 11
-cpolys 2628 = T 47
-cpolys 2629 = Q 13 9 6
-cpolys 2630 = T 177
-cpolys 2631 = T 139
-cpolys 2632 = Q 19 5 3
-cpolys 2633 = T 1241
-cpolys 2634 = Q 20 11 5
-cpolys 2635 = Q 25 21 14
-cpolys 2636 = Q 18 11 10
-cpolys 2637 = Q 9 6 4
-cpolys 2638 = Q 10 3 1
-cpolys 2639 = T 144
-cpolys 2640 = Q 23 11 9
-cpolys 2641 = T 736
-cpolys 2642 = T 551
-cpolys 2643 = Q 16 13 10
-cpolys 2644 = T 597
-cpolys 2645 = Q 18 11 10
-cpolys 2646 = T 297
-cpolys 2647 = T 513
-cpolys 2648 = Q 15 8 1
-cpolys 2649 = T 689
-cpolys 2650 = Q 17 13 5
-cpolys 2651 = Q 7 5 4
-cpolys 2652 = T 519
-cpolys 2653 = Q 17 4 2
-cpolys 2654 = Q 20 16 13
-cpolys 2655 = T 53
-cpolys 2656 = Q 19 11 5
-cpolys 2657 = T 242
-cpolys 2658 = Q 6 3 2
-cpolys 2659 = Q 20 18 16
-cpolys 2660 = T 5
-cpolys 2661 = Q 17 14 2
-cpolys 2662 = Q 14 12 7
-cpolys 2663 = T 458
-cpolys 2664 = Q 27 21 19
-cpolys 2665 = T 772
-cpolys 2666 = T 663
-cpolys 2667 = T 254
-cpolys 2668 = T 819
-cpolys 2669 = Q 18 4 2
-cpolys 2670 = T 229
-cpolys 2671 = T 46
-cpolys 2672 = Q 18 7 1
-cpolys 2673 = T 530
-cpolys 2674 = T 967
-cpolys 2675 = Q 13 10 9
-cpolys 2676 = T 93
-cpolys 2677 = Q 17 8 6
-cpolys 2678 = Q 15 6 5
-cpolys 2679 = T 286
-cpolys 2680 = Q 15 9 4
-cpolys 2681 = T 635
-cpolys 2682 = T 463
-cpolys 2683 = Q 11 6 1
-cpolys 2684 = Q 14 12 3
-cpolys 2685 = Q 8 2 1
-cpolys 2686 = T 789
-cpolys 2687 = T 225
-cpolys 2688 = Q 21 10 6
-cpolys 2689 = T 36
-cpolys 2690 = Q 12 9 3
-cpolys 2691 = Q 14 10 8
-cpolys 2692 = T 577
-cpolys 2693 = Q 10 5 3
-cpolys 2694 = T 621
-cpolys 2695 = T 123
-cpolys 2696 = Q 17 15 12
-cpolys 2697 = T 170
-cpolys 2698 = T 963
-cpolys 2699 = Q 32 30 29
-cpolys 2700 = T 3
-cpolys 2701 = Q 12 10 5
-cpolys 2702 = T 257
-cpolys 2703 = T 67
-cpolys 2704 = Q 12 9 7
-cpolys 2705 = Q 12 10 5
-cpolys 2706 = T 515
-cpolys 2707 = Q 9 6 4
-cpolys 2708 = T 423
-cpolys 2709 = Q 10 9 3
-cpolys 2710 = Q 7 3 1
-cpolys 2711 = T 690
-cpolys 2712 = Q 21 12 7
-cpolys 2713 = T 840
-cpolys 2714 = Q 12 8 7
-cpolys 2715 = Q 30 26 15
-cpolys 2716 = T 255
-cpolys 2717 = Q 14 8 3
-cpolys 2718 = T 369
-cpolys 2719 = T 102
-cpolys 2720 = Q 25 18 1
-cpolys 2721 = T 826
-cpolys 2722 = T 127
-cpolys 2723 = Q 9 6 5
-cpolys 2724 = T 121
-cpolys 2725 = Q 21 17 2
-cpolys 2726 = Q 10 6 1
-cpolys 2727 = T 430
-cpolys 2728 = Q 21 7 5
-cpolys 2729 = T 96
-cpolys 2730 = T 343
-cpolys 2731 = Q 15 11 2
-cpolys 2732 = T 845
-cpolys 2733 = Q 19 8 7
-cpolys 2734 = Q 9 5 4
-cpolys 2735 = T 933
-cpolys 2736 = Q 16 3 1
-cpolys 2737 = T 226
-cpolys 2738 = T 923
-cpolys 2739 = Q 12 9 5
-cpolys 2740 = T 109
-cpolys 2741 = Q 6 5 4
-cpolys 2742 = T 149
-cpolys 2743 = T 447
-cpolys 2744 = Q 19 18 10
-cpolys 2745 = T 484
-cpolys 2746 = Q 9 7 2
-cpolys 2747 = Q 15 11 6
-cpolys 2748 = T 25
-cpolys 2749 = Q 22 18 17
-cpolys 2750 = T 629
-cpolys 2751 = T 49
-cpolys 2752 = Q 15 4 2
-cpolys 2753 = T 716
-cpolys 2754 = T 231
-cpolys 2755 = Q 13 7 6
-cpolys 2756 = T 159
-cpolys 2757 = Q 24 23 12
-cpolys 2758 = Q 17 5 4
-cpolys 2759 = T 842
-cpolys 2760 = Q 29 26 7
-cpolys 2761 = T 108
-cpolys 2762 = T 1319
-cpolys 2763 = Q 12 10 6
-cpolys 2764 = T 687
-cpolys 2765 = Q 16 10 3
-cpolys 2766 = T 1285
-cpolys 2767 = T 102
-cpolys 2768 = Q 25 19 15
-cpolys 2769 = T 269
-cpolys 2770 = T 567
-cpolys 2771 = Q 13 12 5
-cpolys 2772 = T 135
-cpolys 2773 = Q 30 25 20
-cpolys 2774 = Q 28 3 2
-cpolys 2775 = T 802
-cpolys 2776 = Q 7 3 2
-cpolys 2777 = Q 22 21 17
-cpolys 2778 = T 1095
-cpolys 2779 = Q 20 17 9
-cpolys 2780 = T 51
-cpolys 2781 = Q 28 27 10
-cpolys 2782 = Q 22 10 9
-cpolys 2783 = T 168
-cpolys 2784 = Q 29 21 15
-cpolys 2785 = T 349
-cpolys 2786 = T 339
-cpolys 2787 = Q 19 18 3
-cpolys 2788 = Q 21 16 2
-cpolys 2789 = Q 14 12 8
-cpolys 2790 = T 837
-cpolys 2791 = T 490
-cpolys 2792 = Q 12 7 2
-cpolys 2793 = T 343
-cpolys 2794 = Q 11 9 4
-cpolys 2795 = Q 10 8 4
-cpolys 2796 = T 769
-cpolys 2797 = Q 19 6 1
-cpolys 2798 = Q 20 14 5
-cpolys 2799 = T 880
-cpolys 2800 = Q 17 14 6
-cpolys 2801 = T 279
-cpolys 2802 = Q 18 14 3
-cpolys 2803 = Q 18 16 13
-cpolys 2804 = T 609
-cpolys 2805 = Q 24 8 2
-cpolys 2806 = T 729
-cpolys 2807 = T 270
-cpolys 2808 = Q 15 13 1
-cpolys 2809 = T 1342
-cpolys 2810 = Q 23 10 9
-cpolys 2811 = Q 10 9 7
-cpolys 2812 = T 453
-cpolys 2813 = Q 13 7 6
-cpolys 2814 = T 621
-cpolys 2815 = T 84
-cpolys 2816 = Q 21 19 8
-cpolys 2817 = T 109
-cpolys 2818 = Q 15 9 1
-cpolys 2819 = Q 10 6 5
-cpolys 2820 = T 815
-cpolys 2821 = Q 16 6 4
-cpolys 2822 = Q 18 17 3
-cpolys 2823 = T 592
-cpolys 2824 = Q 15 14 10
-cpolys 2825 = T 288
-cpolys 2826 = T 135
-cpolys 2827 = Q 19 10 6
-cpolys 2828 = T 1103
-cpolys 2829 = Q 9 6 4
-cpolys 2830 = Q 17 15 13
-cpolys 2831 = T 186
-cpolys 2832 = Q 27 18 1
-cpolys 2833 = T 409
-cpolys 2834 = Q 15 13 7
-cpolys 2835 = Q 20 13 5
-cpolys 2836 = T 1113
-cpolys 2837 = Q 17 8 3
-cpolys 2838 = Q 20 4 1
-cpolys 2839 = T 1033
-cpolys 2840 = Q 20 15 9
-cpolys 2841 = T 370
-cpolys 2842 = T 1231
-cpolys 2843 = Q 7 3 2
-cpolys 2844 = T 25
-cpolys 2845 = Q 10 9 1
-cpolys 2846 = Q 23 15 4
-cpolys 2847 = T 329
-cpolys 2848 = Q 15 8 1
-cpolys 2849 = T 114
-cpolys 2850 = T 1411
-cpolys 2851 = Q 10 7 1
-cpolys 2852 = T 1145
-cpolys 2853 = Q 14 8 1
-cpolys 2854 = T 313
-cpolys 2855 = T 41
-cpolys 2856 = Q 15 13 3
-cpolys 2857 = T 756
-cpolys 2858 = Q 17 9 7
-cpolys 2859 = Q 29 20 11
-cpolys 2860 = T 603
-cpolys 2861 = Q 20 16 10
-cpolys 2862 = T 405
-cpolys 2863 = T 139
-cpolys 2864 = Q 21 17 15
-cpolys 2865 = T 212
-cpolys 2866 = Q 9 7 2
-cpolys 2867 = Q 15 13 10
-cpolys 2868 = T 915
-cpolys 2869 = Q 8 6 1
-cpolys 2870 = Q 12 11 1
-cpolys 2871 = T 272
-cpolys 2872 = Q 21 5 2
-cpolys 2873 = T 75
-cpolys 2874 = Q 13 6 3
-cpolys 2875 = Q 20 16 2
-cpolys 2876 = T 605
-cpolys 2877 = Q 10 7 4
-cpolys 2878 = T 781
-cpolys 2879 = T 149
-cpolys 2880 = Q 13 10 6
-cpolys 2881 = T 1201
-cpolys 2882 = T 1431
-cpolys 2883 = Q 16 13 12
-cpolys 2884 = T 529
-cpolys 2885 = Q 13 11 6
-cpolys 2886 = Q 20 14 9
-cpolys 2887 = T 469
-cpolys 2888 = Q 11 4 1
-cpolys 2889 = T 76
-cpolys 2890 = T 31
-cpolys 2891 = Q 16 15 10
-cpolys 2892 = T 309
-cpolys 2893 = Q 27 7 2
-cpolys 2894 = Q 16 14 9
-cpolys 2895 = T 358
-cpolys 2896 = Q 29 6 1
-cpolys 2897 = T 15
-cpolys 2898 = T 91
-cpolys 2899 = Q 19 10 1
-cpolys 2900 = T 303
-cpolys 2901 = Q 11 3 2
-cpolys 2902 = Q 14 10 9
-cpolys 2903 = T 279
-cpolys 2904 = Q 27 15 6
-cpolys 2905 = T 321
-cpolys 2906 = T 1155
-cpolys 2907 = Q 17 14 1
-cpolys 2908 = Q 19 13 10
-cpolys 2909 = Q 23 22 4
-cpolys 2910 = T 1301
-cpolys 2911 = T 685
-cpolys 2912 = Q 16 9 2
-cpolys 2913 = T 238
-cpolys 2914 = T 351
-cpolys 2915 = Q 18 7 5
-cpolys 2916 = T 21
-cpolys 2917 = Q 16 15 4
-cpolys 2918 = T 237
-cpolys 2919 = T 149
-cpolys 2920 = Q 19 9 5
-cpolys 2921 = T 480
-cpolys 2922 = T 559
-cpolys 2923 = Q 11 6 5
-cpolys 2924 = Q 12 4 1
-cpolys 2925 = Q 12 4 3
-cpolys 2926 = Q 20 14 1
-cpolys 2927 = T 974
-cpolys 2928 = Q 24 21 11
-cpolys 2929 = T 651
-cpolys 2930 = Q 9 4 1
-cpolys 2931 = Q 13 8 1
-cpolys 2932 = Q 14 7 6
-cpolys 2933 = Q 15 14 13
-cpolys 2934 = T 713
-cpolys 2935 = Q 13 12 7
-cpolys 2936 = Q 5 3 2
-cpolys 2937 = T 172
-cpolys 2938 = T 499
-cpolys 2939 = Q 30 17 5
-cpolys 2940 = T 49
-cpolys 2941 = Q 23 18 17
-cpolys 2942 = T 1425
-cpolys 2943 = T 320
-cpolys 2944 = Q 5 3 2
-cpolys 2945 = T 146
-cpolys 2946 = T 551
-cpolys 2947 = Q 22 20 11
-cpolys 2948 = Q 17 3 2
-cpolys 2949 = Q 17 7 4
-cpolys 2950 = T 397
-cpolys 2951 = T 872
-cpolys 2952 = Q 17 13 2
-cpolys 2953 = T 33
-cpolys 2954 = Q 9 6 5
-cpolys 2955 = Q 12 10 6
-cpolys 2956 = T 823
-cpolys 2957 = Q 19 14 3
-cpolys 2958 = Q 23 13 5
-cpolys 2959 = T 69
-cpolys 2960 = Q 12 3 2
-cpolys 2961 = T 86
-cpolys 2962 = T 319
-cpolys 2963 = Q 21 14 5
-cpolys 2964 = T 83
-cpolys 2965 = Q 25 22 15
-cpolys 2966 = T 861
-cpolys 2967 = T 1028
-cpolys 2968 = Q 29 27 4
-cpolys 2969 = T 561
-cpolys 2970 = T 583
-cpolys 2971 = Q 18 13 2
-cpolys 2972 = T 693
-cpolys 2973 = Q 18 10 4
-cpolys 2974 = Q 11 3 1
-cpolys 2975 = T 192
-cpolys 2976 = Q 21 10 3
-cpolys 2977 = T 126
-cpolys 2978 = T 375
-cpolys 2979 = Q 12 11 6
-cpolys 2980 = T 381
-cpolys 2981 = Q 13 2 1
-cpolys 2982 = T 669
-cpolys 2983 = T 330
-cpolys 2984 = Q 17 9 6
-cpolys 2985 = T 166
-cpolys 2986 = T 343
-cpolys 2987 = Q 8 3 2
-cpolys 2988 = T 313
-cpolys 2989 = Q 18 9 7
-cpolys 2990 = Q 26 22 9
-cpolys 2991 = T 292
-cpolys 2992 = Q 23 3 1
-cpolys 2993 = T 569
-cpolys 2994 = T 303
-cpolys 2995 = Q 9 6 4
-cpolys 2996 = T 345
-cpolys 2997 = Q 12 6 5
-cpolys 2998 = T 669
-cpolys 2999 = T 1011
-cpolys 3000 = Q 15 12 9
-cpolys 3001 = T 975
-cpolys 3002 = Q 22 21 10
-cpolys 3003 = Q 12 11 5
-cpolys 3004 = T 351
-cpolys 3005 = Q 14 12 5
-cpolys 3006 = Q 15 9 6
-cpolys 3007 = T 963
-cpolys 3008 = Q 15 13 1
-cpolys 3009 = T 1349
-cpolys 3010 = Q 25 12 10
-cpolys 3011 = Q 22 8 6
-cpolys 3012 = T 1327
-cpolys 3013 = Q 23 6 2
-cpolys 3014 = Q 17 15 5
-cpolys 3015 = T 308
-cpolys 3016 = Q 38 25 9
-cpolys 3017 = T 108
-cpolys 3018 = T 203
-cpolys 3019 = Q 16 6 1
-cpolys 3020 = T 413
-cpolys 3021 = Q 22 10 1
-cpolys 3022 = Q 14 12 1
-cpolys 3023 = T 734
-cpolys 3024 = Q 32 3 2
-cpolys 3025 = T 757
-cpolys 3026 = Q 19 18 13
-cpolys 3027 = Q 17 16 4
-cpolys 3028 = T 135
-cpolys 3029 = Q 11 6 4
-cpolys 3030 = Q 12 9 4
-cpolys 3031 = T 55
-cpolys 3032 = Q 17 15 4
-cpolys 3033 = T 238
-cpolys 3034 = T 399
-cpolys 3035 = Q 21 20 2
-cpolys 3036 = T 391
-cpolys 3037 = Q 7 6 3
-cpolys 3038 = T 633
-cpolys 3039 = T 436
-cpolys 3040 = Q 27 21 3
-cpolys 3041 = T 776
-cpolys 3042 = T 415
-cpolys 3043 = Q 18 16 15
-cpolys 3044 = T 69
-cpolys 3045 = Q 17 14 11
-cpolys 3046 = T 1021
-cpolys 3047 = Q 19 15 4
-cpolys 3048 = Q 18 3 2
-cpolys 3049 = T 765
-cpolys 3050 = T 651
-cpolys 3051 = Q 19 17 16
-cpolys 3052 = T 363
-cpolys 3053 = Q 22 20 15
-cpolys 3054 = Q 21 4 3
-cpolys 3055 = Q 13 7 1
-cpolys 3056 = Q 5 4 3
-cpolys 3057 = T 110
-cpolys 3058 = T 811
-cpolys 3059 = Q 15 10 1
-cpolys 3060 = T 405
-cpolys 3061 = Q 22 15 1
-cpolys 3062 = T 1053
-cpolys 3063 = T 32
-cpolys 3064 = Q 25 11 9
-cpolys 3065 = T 432
-cpolys 3066 = T 455
-cpolys 3067 = Q 18 16 13
-cpolys 3068 = T 215
-cpolys 3069 = Q 34 26 19
-cpolys 3070 = Q 20 13 8
-cpolys 3071 = T 65
-cpolys 3072 = Q 11 10 5
-cpolys 3073 = T 184
-cpolys 3074 = Q 17 9 3
-cpolys 3075 = Q 16 14 10
-cpolys 3076 = T 475
-cpolys 3077 = Q 12 10 8
-cpolys 3078 = T 105
-cpolys 3079 = T 174
-cpolys 3080 = Q 21 19 16
-cpolys 3081 = T 64
-cpolys 3082 = Q 9 6 1
-cpolys 3083 = Q 23 20 18
-cpolys 3084 = T 109
-cpolys 3085 = Q 25 14 12
-cpolys 3086 = T 1281
-cpolys 3087 = T 49
-cpolys 3088 = Q 20 13 11
-cpolys 3089 = T 261
-cpolys 3090 = T 279
-cpolys 3091 = Q 12 7 5
-cpolys 3092 = T 45
-cpolys 3093 = Q 14 11 8
-cpolys 3094 = T 769
-cpolys 3095 = T 419
-cpolys 3096 = Q 33 29 14
-cpolys 3097 = T 1162
-cpolys 3098 = Q 18 17 11
-cpolys 3099 = Q 14 13 11
-cpolys 3100 = T 45
-cpolys 3101 = Q 10 7 3
-cpolys 3102 = T 225
-cpolys 3103 = T 124
-cpolys 3104 = Q 23 9 5
-cpolys 3105 = T 833
-cpolys 3106 = Q 6 2 1
-cpolys 3107 = Q 14 12 11
-cpolys 3108 = T 61
-cpolys 3109 = Q 26 20 19
-cpolys 3110 = T 1421
-cpolys 3111 = T 199
-cpolys 3112 = Q 17 15 1
-cpolys 3113 = T 191
-cpolys 3114 = Q 19 15 4
-cpolys 3115 = Q 25 18 16
-cpolys 3116 = T 461
-cpolys 3117 = Q 19 8 4
-cpolys 3118 = T 525
-cpolys 3119 = T 315
-cpolys 3120 = Q 18 17 11
-cpolys 3121 = T 493
-cpolys 3122 = Q 22 7 6
-cpolys 3123 = Q 15 10 4
-cpolys 3124 = T 861
-cpolys 3125 = Q 24 21 18
-cpolys 3126 = T 449
-cpolys 3127 = T 139
-cpolys 3128 = Q 30 19 11
-cpolys 3129 = T 23
-cpolys 3130 = T 867
-cpolys 3131 = Q 22 8 7
-cpolys 3132 = T 123
-cpolys 3133 = Q 6 4 3
-cpolys 3134 = T 89
-cpolys 3135 = T 356
-cpolys 3136 = Q 15 12 10
-cpolys 3137 = T 587
-cpolys 3138 = Q 29 19 13
-cpolys 3139 = Q 14 11 10
-cpolys 3140 = T 1115
-cpolys 3141 = Q 23 18 12
-cpolys 3142 = T 981
-cpolys 3143 = T 8
-cpolys 3144 = Q 23 21 8
-cpolys 3145 = T 112
-cpolys 3146 = Q 18 11 6
-cpolys 3147 = Q 17 10 7
-cpolys 3148 = T 1171
-cpolys 3149 = Q 22 3 2
-cpolys 3150 = T 253
-cpolys 3151 = T 1254
-cpolys 3152 = Q 21 17 6
-cpolys 3153 = T 98
-cpolys 3154 = Q 19 17 6
-cpolys 3155 = Q 15 12 2
-cpolys 3156 = T 565
-cpolys 3157 = Q 24 14 10
-cpolys 3158 = Q 19 9 5
-cpolys 3159 = T 103
-cpolys 3160 = Q 7 6 2
-cpolys 3161 = T 858
-cpolys 3162 = T 315
-cpolys 3163 = Q 18 13 10
-cpolys 3164 = T 113
-cpolys 3165 = Q 17 13 10
-cpolys 3166 = Q 18 10 1
-cpolys 3167 = T 672
-cpolys 3168 = Q 33 31 18
-cpolys 3169 = T 1123
-cpolys 3170 = T 783
-cpolys 3171 = Q 19 14 13
-cpolys 3172 = T 301
-cpolys 3173 = Q 20 17 14
-cpolys 3174 = T 81
-cpolys 3175 = T 646
-cpolys 3176 = Q 13 10 5
-cpolys 3177 = T 484
-cpolys 3178 = T 915
-cpolys 3179 = Q 22 12 2
-cpolys 3180 = T 1085
-cpolys 3181 = Q 12 10 3
-cpolys 3182 = T 1205
-cpolys 3183 = T 1225
-cpolys 3184 = Q 11 10 2
-cpolys 3185 = T 204
-cpolys 3186 = T 891
-cpolys 3187 = Q 9 8 2
-cpolys 3188 = T 129
-cpolys 3189 = Q 19 18 12
-cpolys 3190 = Q 12 4 1
-cpolys 3191 = T 495
-cpolys 3192 = Q 25 8 7
-cpolys 3193 = T 211
-cpolys 3194 = T 1059
-cpolys 3195 = Q 19 14 1
-cpolys 3196 = T 175
-cpolys 3197 = Q 22 16 14
-cpolys 3198 = T 841
-cpolys 3199 = T 54
-cpolys 3200 = Q 11 6 4
-cpolys 3201 = T 674
-cpolys 3202 = Q 24 12 3
-cpolys 3203 = Q 14 7 3
-cpolys 3204 = T 31
-cpolys 3205 = Q 17 9 2
-cpolys 3206 = Q 15 8 6
-cpolys 3207 = T 704
-cpolys 3208 = Q 16 13 3
-cpolys 3209 = T 81
-cpolys 3210 = T 1303
-cpolys 3211 = Q 12 10 5
-cpolys 3212 = T 1559
-cpolys 3213 = Q 30 16 1
-cpolys 3214 = T 1197
-cpolys 3215 = T 614
-cpolys 3216 = Q 21 11 3
-cpolys 3217 = T 67
-cpolys 3218 = Q 10 9 8
-cpolys 3219 = Q 24 10 3
-cpolys 3220 = T 19
-cpolys 3221 = Q 11 6 5
-cpolys 3222 = T 145
-cpolys 3223 = T 784
-cpolys 3224 = Q 23 19 1
-cpolys 3225 = T 101
-cpolys 3226 = Q 9 7 5
-cpolys 3227 = Q 8 7 6
-cpolys 3228 = T 1225
-cpolys 3229 = Q 12 9 7
-cpolys 3230 = T 501
-cpolys 3231 = Q 15 9 8
-cpolys 3232 = Q 12 9 7
-cpolys 3233 = T 575
-cpolys 3234 = T 511
-cpolys 3235 = Q 21 11 8
-cpolys 3236 = T 887
-cpolys 3237 = Q 19 8 4
-cpolys 3238 = T 409
-cpolys 3239 = T 98
-cpolys 3240 = Q 12 3 2
-cpolys 3241 = T 127
-cpolys 3242 = Q 27 13 7
-cpolys 3243 = Q 22 13 5
-cpolys 3244 = T 1249
-cpolys 3245 = Q 11 10 4
-cpolys 3246 = T 1221
-cpolys 3247 = T 426
-cpolys 3248 = Q 15 8 1
-cpolys 3249 = T 149
-cpolys 3250 = Q 15 11 8
-cpolys 3251 = Q 9 6 5
-cpolys 3252 = T 567
-cpolys 3253 = Q 10 5 3
-cpolys 3254 = T 1485
-cpolys 3255 = T 124
-cpolys 3256 = Q 31 26 2
-cpolys 3257 = T 806
-cpolys 3258 = T 203
-cpolys 3259 = Q 22 4 1
-cpolys 3260 = T 237
-cpolys 3261 = Q 18 12 10
-cpolys 3262 = Q 15 13 7
-cpolys 3263 = T 939
-cpolys 3264 = Q 17 5 2
-cpolys 3265 = Q 18 16 7
-cpolys 3266 = Q 19 2 1
-cpolys 3267 = Q 20 19 10
-cpolys 3268 = T 73
-cpolys 3269 = Q 22 3 2
-cpolys 3270 = T 237
-cpolys 3271 = T 333
-cpolys 3272 = Q 23 10 1
-cpolys 3273 = T 1408
-cpolys 3274 = T 775
-cpolys 3275 = Q 24 13 10
-cpolys 3276 = T 69
-cpolys 3277 = Q 25 22 1
-cpolys 3278 = Q 22 12 1
-cpolys 3279 = T 446
-cpolys 3280 = Q 16 15 6
-cpolys 3281 = T 47
-cpolys 3282 = T 783
-cpolys 3283 = Q 30 28 21
-cpolys 3284 = Q 24 17 13
-cpolys 3285 = Q 18 4 1
-cpolys 3286 = T 397
-cpolys 3287 = T 717
-cpolys 3288 = Q 21 18 11
-cpolys 3289 = T 43
-cpolys 3290 = Q 11 7 3
-cpolys 3291 = Q 18 7 1
-cpolys 3292 = T 61
-cpolys 3293 = Q 20 18 15
-cpolys 3294 = T 249
-cpolys 3295 = T 594
-cpolys 3296 = Q 19 14 13
-cpolys 3297 = T 7
-cpolys 3298 = T 639
-cpolys 3299 = Q 18 17 14
-cpolys 3300 = T 55
-cpolys 3301 = Q 24 10 4
-cpolys 3302 = T 605
-cpolys 3303 = T 1336
-cpolys 3304 = Q 19 17 3
-cpolys 3305 = T 806
-cpolys 3306 = T 127
-cpolys 3307 = Q 15 10 2
-cpolys 3308 = T 717
-cpolys 3309 = Q 23 20 6
-cpolys 3310 = T 1
-cpolys 3311 = T 618
-cpolys 3312 = Q 14 9 3
-cpolys 3313 = T 436
-cpolys 3314 = T 1019
-cpolys 3315 = Q 12 8 2
-cpolys 3316 = T 1641
-cpolys 3317 = Q 22 17 7
-cpolys 3318 = T 585
-cpolys 3319 = T 58
-cpolys 3320 = Q 17 10 4
-cpolys 3321 = T 20
-cpolys 3322 = T 567
-cpolys 3323 = Q 28 14 10
-cpolys 3324 = T 173
-cpolys 3325 = Q 25 19 10
-cpolys 3326 = T 1145
-cpolys 3327 = T 875
-cpolys 3328 = Q 17 9 2
-cpolys 3329 = T 525
-cpolys 3330 = T 191
-cpolys 3331 = Q 18 17 11
-cpolys 3332 = T 587
-cpolys 3333 = Q 16 8 7
-cpolys 3334 = Q 6 4 1
-cpolys 3335 = T 636
-cpolys 3336 = Q 11 10 5
-cpolys 3337 = T 370
-cpolys 3338 = T 1155
-cpolys 3339 = Q 22 16 12
-cpolys 3340 = Q 11 7 5
-cpolys 3341 = Q 25 19 12
-cpolys 3342 = Q 9 6 5
-cpolys 3343 = T 73
-cpolys 3344 = Q 30 27 15
-cpolys 3345 = T 796
-cpolys 3346 = Q 15 6 1
-cpolys 3347 = Q 23 18 16
-cpolys 3348 = T 177
-cpolys 3349 = Q 20 19 17
-cpolys 3350 = T 1401
-cpolys 3351 = T 731
-cpolys 3352 = Q 21 20 19
-cpolys 3353 = T 389
-cpolys 3354 = Q 10 9 3
-cpolys 3355 = Q 10 6 4
-cpolys 3356 = T 339
-cpolys 3357 = Q 24 17 15
-cpolys 3358 = Q 19 8 6
-cpolys 3359 = T 99
-cpolys 3360 = Q 18 15 5
-cpolys 3361 = Q 12 10 4
-cpolys 3362 = Q 11 7 4
-cpolys 3363 = Q 14 10 2
-cpolys 3364 = T 85
-cpolys 3365 = Q 24 15 2
-cpolys 3366 = T 257
-cpolys 3367 = T 136
-cpolys 3368 = Q 7 5 1
-cpolys 3369 = T 1541
-cpolys 3370 = Q 15 10 1
-cpolys 3371 = Q 30 29 18
-cpolys 3372 = T 47
-cpolys 3373 = Q 14 6 4
-cpolys 3374 = T 417
-cpolys 3375 = T 49
-cpolys 3376 = Q 11 9 1
-cpolys 3377 = T 236
-cpolys 3378 = T 623
-cpolys 3379 = Q 25 20 9
-cpolys 3380 = T 659
-cpolys 3381 = Q 7 4 1
-cpolys 3382 = T 217
-cpolys 3383 = T 956
-cpolys 3384 = Q 21 9 3
-cpolys 3385 = T 603
-cpolys 3386 = Q 19 9 2
-cpolys 3387 = Q 26 25 16
-cpolys 3388 = T 169
-cpolys 3389 = Q 17 15 4
-cpolys 3390 = T 1381
-cpolys 3391 = T 465
-cpolys 3392 = Q 23 13 6
-cpolys 3393 = T 1615
-cpolys 3394 = Q 13 12 3
-cpolys 3395 = Q 22 10 6
-cpolys 3396 = Q 13 6 1
-cpolys 3397 = Q 19 4 1
-cpolys 3398 = T 245
-cpolys 3399 = T 416
-cpolys 3400 = Q 14 13 6
-cpolys 3401 = T 531
-cpolys 3402 = T 387
-cpolys 3403 = Q 15 12 6
-cpolys 3404 = T 173
-cpolys 3405 = Q 24 9 2
-cpolys 3406 = Q 22 13 12
-cpolys 3407 = T 507
-cpolys 3408 = Q 16 15 6
-cpolys 3409 = T 244
-cpolys 3410 = T 1023
-cpolys 3411 = Q 14 8 5
-cpolys 3412 = T 325
-cpolys 3413 = Q 14 9 6
-cpolys 3414 = T 93
-cpolys 3415 = T 1272
-cpolys 3416 = Q 28 27 1
-cpolys 3417 = T 32
-cpolys 3418 = T 15
-cpolys 3419 = Q 12 9 3
-cpolys 3420 = T 423
-cpolys 3421 = Q 19 14 5
-cpolys 3422 = T 1121
-cpolys 3423 = T 11
-cpolys 3424 = Q 22 15 6
-cpolys 3425 = T 189
-cpolys 3426 = T 1071
-cpolys 3427 = Q 16 12 1
-cpolys 3428 = Q 17 16 13
-cpolys 3429 = Q 16 12 6
-cpolys 3430 = T 153
-cpolys 3431 = T 153
-cpolys 3432 = Q 25 2 1
-cpolys 3433 = Q 28 25 12
-cpolys 3434 = Q 14 13 12
-cpolys 3435 = Q 15 14 5
-cpolys 3436 = T 159
-cpolys 3437 = Q 18 16 10
-cpolys 3438 = T 393
-cpolys 3439 = T 147
-cpolys 3440 = Q 27 16 1
-cpolys 3441 = T 394
-cpolys 3442 = Q 8 7 3
-cpolys 3443 = Q 26 19 3
-cpolys 3444 = T 69
-cpolys 3445 = Q 21 5 2
-cpolys 3446 = Q 21 17 8
-cpolys 3447 = T 404
-cpolys 3448 = Q 17 11 6
-cpolys 3449 = T 917
-cpolys 3450 = Q 11 8 3
-cpolys 3451 = Q 19 14 9
-cpolys 3452 = T 1145
-cpolys 3453 = Q 16 6 1
-cpolys 3454 = Q 25 23 21
-cpolys 3455 = T 21
-cpolys 3456 = Q 19 18 9
-cpolys 3457 = T 120
-cpolys 3458 = T 519
-cpolys 3459 = Q 19 18 12
-cpolys 3460 = T 1495
-cpolys 3461 = Q 20 10 7
-cpolys 3462 = T 225
-cpolys 3463 = T 289
-cpolys 3464 = Q 11 6 3
-cpolys 3465 = T 304
-cpolys 3466 = T 43
-cpolys 3467 = Q 28 26 6
-cpolys 3468 = T 921
-cpolys 3469 = Q 38 16 6
-cpolys 3470 = T 917
-cpolys 3471 = T 314
-cpolys 3472 = Q 17 14 7
-cpolys 3473 = T 720
-cpolys 3474 = T 735
-cpolys 3475 = Q 30 16 13
-cpolys 3476 = T 525
-cpolys 3477 = Q 16 15 12
-cpolys 3478 = T 465
-cpolys 3479 = T 155
-cpolys 3480 = Q 19 15 13
-cpolys 3481 = T 546
-cpolys 3482 = Q 15 5 4
-cpolys 3483 = Q 12 5 2
-cpolys 3484 = T 1329
-cpolys 3485 = Q 8 7 4
-cpolys 3486 = T 1085
-cpolys 3487 = T 120
-cpolys 3488 = Q 12 11 1
-cpolys 3489 = T 518
-cpolys 3490 = Q 16 12 3
-cpolys 3491 = Q 19 14 7
-cpolys 3492 = T 57
-cpolys 3493 = Q 19 18 1
-cpolys 3494 = Q 25 19 9
-cpolys 3495 = T 254
-cpolys 3496 = Q 35 21 4
-cpolys 3497 = T 1025
-cpolys 3498 = T 567
-cpolys 3499 = Q 29 24 4
-cpolys 3500 = T 375
-cpolys 3501 = Q 15 8 2
-cpolys 3502 = Q 15 13 6
-cpolys 3503 = T 993
-cpolys 3504 = Q 23 17 10
-cpolys 3505 = T 103
-cpolys 3506 = Q 13 5 3
-cpolys 3507 = Q 21 14 6
-cpolys 3508 = Q 10 7 6
-cpolys 3509 = Q 23 12 7
-cpolys 3510 = T 81
-cpolys 3511 = T 1141
-cpolys 3512 = Q 37 35 6
-cpolys 3513 = T 41
-cpolys 3514 = Q 11 9 4
-cpolys 3515 = Q 17 10 9
-cpolys 3516 = T 667
-cpolys 3517 = Q 22 14 12
-cpolys 3518 = Q 16 14 9
-cpolys 3519 = T 569
-cpolys 3520 = Q 32 29 3
-cpolys 3521 = T 129
-cpolys 3522 = T 399
-cpolys 3523 = Q 23 12 2
-cpolys 3524 = T 1439
-cpolys 3525 = Q 10 7 5
-cpolys 3526 = Q 12 11 10
-cpolys 3527 = T 476
-cpolys 3528 = Q 25 18 7
-cpolys 3529 = T 270
-cpolys 3530 = Q 10 9 5
-cpolys 3531 = Q 18 3 1
-cpolys 3532 = T 1561
-cpolys 3533 = Q 30 3 2
-cpolys 3534 = T 973
-cpolys 3535 = T 162
-cpolys 3536 = Q 12 7 5
-cpolys 3537 = T 218
-cpolys 3538 = Q 13 6 5
-cpolys 3539 = Q 16 2 1
-cpolys 3540 = T 75
-cpolys 3541 = Q 23 7 2
-cpolys 3542 = T 345
-cpolys 3543 = T 377
-cpolys 3544 = Q 21 14 2
-cpolys 3545 = T 998
-cpolys 3546 = T 151
-cpolys 3547 = Q 26 23 12
-cpolys 3548 = T 255
-cpolys 3549 = Q 14 6 3
-cpolys 3550 = T 1269
-cpolys 3551 = T 183
-cpolys 3552 = Q 15 9 6
-cpolys 3553 = Q 13 3 2
-cpolys 3554 = Q 24 23 17
-cpolys 3555 = Q 28 25 15
-cpolys 3556 = T 127
-cpolys 3557 = Q 14 8 5
-cpolys 3558 = T 397
-cpolys 3559 = T 69
-cpolys 3560 = Q 17 3 2
-cpolys 3561 = T 257
-cpolys 3562 = T 927
-cpolys 3563 = Q 18 15 6
-cpolys 3564 = T 225
-cpolys 3565 = Q 22 17 12
-cpolys 3566 = Q 8 6 1
-cpolys 3567 = Q 24 20 12
-cpolys 3568 = Q 21 12 10
-cpolys 3569 = T 1028
-cpolys 3570 = T 699
-cpolys 3571 = Q 30 13 3
-cpolys 3572 = T 1143
-cpolys 3573 = Q 13 8 2
-cpolys 3574 = T 889
-cpolys 3575 = T 339
-cpolys 3576 = Q 19 10 3
-cpolys 3577 = T 348
-cpolys 3578 = Q 17 9 5
-cpolys 3579 = Q 20 14 6
-cpolys 3580 = T 915
-cpolys 3581 = Q 22 15 2
-cpolys 3582 = T 713
-cpolys 3583 = T 747
-cpolys 3584 = Q 25 12 10
-cpolys 3585 = T 7
-cpolys 3586 = Q 19 14 8
-cpolys 3587 = Q 26 6 5
-cpolys 3588 = T 843
-cpolys 3589 = Q 30 28 8
-cpolys 3590 = T 1713
-cpolys 3591 = T 509
-cpolys 3592 = Q 38 33 14
-cpolys 3593 = T 72
-cpolys 3594 = T 59
-cpolys 3595 = Q 28 14 2
-cpolys 3596 = T 383
-cpolys 3597 = Q 22 9 3
-cpolys 3598 = Q 24 5 1
-cpolys 3599 = T 114
-cpolys 3600 = Q 9 5 2
-cpolys 3601 = T 669
-cpolys 3602 = Q 10 2 1
-cpolys 3603 = Q 23 11 6
-cpolys 3604 = T 637
-cpolys 3605 = Q 8 7 4
-cpolys 3606 = T 861
-cpolys 3607 = T 142
-cpolys 3608 = Q 15 14 10
-cpolys 3609 = T 1016
-cpolys 3610 = Q 12 5 2
-cpolys 3611 = Q 18 7 1
-cpolys 3612 = T 215
-cpolys 3613 = Q 17 7 6
-cpolys 3614 = T 29
-cpolys 3615 = T 47
-cpolys 3616 = Q 25 18 7
-cpolys 3617 = T 377
-cpolys 3618 = T 1539
-cpolys 3619 = Q 13 12 5
-cpolys 3620 = T 231
-cpolys 3621 = Q 22 21 16
-cpolys 3622 = T 481
-cpolys 3623 = Q 10 9 7
-cpolys 3624 = Q 29 27 12
-cpolys 3625 = T 279
-cpolys 3626 = Q 26 25 13
-cpolys 3627 = Q 7 6 4
-cpolys 3628 = T 957
-cpolys 3629 = Q 15 10 2
-cpolys 3630 = T 729
-cpolys 3631 = T 90
-cpolys 3632 = Q 26 17 5
-cpolys 3633 = T 553
-cpolys 3634 = T 651
-cpolys 3635 = Q 15 8 2
-cpolys 3636 = T 391
-cpolys 3637 = Q 7 6 5
-cpolys 3638 = Q 28 8 1
-cpolys 3639 = T 76
-cpolys 3640 = Q 20 15 10
-cpolys 3641 = T 1626
-cpolys 3642 = T 771
-cpolys 3643 = Q 14 13 8
-cpolys 3644 = T 1365
-cpolys 3645 = Q 21 14 6
-cpolys 3646 = Q 20 17 6
-cpolys 3647 = T 45
-cpolys 3648 = Q 23 7 2
-cpolys 3649 = T 394
-cpolys 3650 = T 1691
-cpolys 3651 = Q 15 13 6
-cpolys 3652 = T 721
-cpolys 3653 = Q 10 9 8
-cpolys 3654 = T 273
-cpolys 3655 = T 112
-cpolys 3656 = Q 17 12 11
-cpolys 3657 = T 928
-cpolys 3658 = T 1471
-cpolys 3659 = Q 18 13 2
-cpolys 3660 = T 61
-cpolys 3661 = Q 16 11 6
-cpolys 3662 = T 1365
-cpolys 3663 = T 130
-cpolys 3664 = Q 35 24 14
-cpolys 3665 = T 189
-cpolys 3666 = Q 30 20 11
-cpolys 3667 = Q 15 6 4
-cpolys 3668 = T 269
-cpolys 3669 = Q 22 7 4
-cpolys 3670 = Q 23 4 3
-cpolys 3671 = T 101
-cpolys 3672 = Q 19 17 8
-cpolys 3673 = T 544
-cpolys 3674 = Q 27 15 11
-cpolys 3675 = Q 30 10 9
-cpolys 3676 = T 609
-cpolys 3677 = Q 25 20 7
-cpolys 3678 = T 501
-cpolys 3679 = T 21
-cpolys 3680 = Q 14 13 7
-cpolys 3681 = T 115
-cpolys 3682 = T 471
-cpolys 3683 = Q 15 13 10
-cpolys 3684 = T 81
-cpolys 3685 = Q 9 4 3
-cpolys 3686 = T 81
-cpolys 3687 = T 889
-cpolys 3688 = Q 32 13 11
-cpolys 3689 = T 759
-cpolys 3690 = T 839
-cpolys 3691 = Q 26 9 2
-cpolys 3692 = Q 6 5 3
-cpolys 3693 = Q 26 20 18
-cpolys 3694 = T 1129
-cpolys 3695 = T 62
-cpolys 3696 = Q 36 33 22
-cpolys 3697 = T 91
-cpolys 3698 = T 1719
-cpolys 3699 = Q 24 21 5
-cpolys 3700 = T 675
-cpolys 3701 = Q 4 2 1
-cpolys 3702 = T 1281
-cpolys 3703 = T 429
-cpolys 3704 = Q 14 13 1
-cpolys 3705 = T 148
-cpolys 3706 = T 1195
-cpolys 3707 = Q 11 6 1
-cpolys 3708 = T 147
-cpolys 3709 = Q 16 14 6
-cpolys 3710 = T 797
-cpolys 3711 = T 1735
-cpolys 3712 = Q 13 12 7
-cpolys 3713 = T 413
-cpolys 3714 = T 459
-cpolys 3715 = Q 20 18 11
-cpolys 3716 = Q 24 11 4
-cpolys 3717 = Q 18 15 4
-cpolys 3718 = Q 23 18 10
-cpolys 3719 = T 488
-cpolys 3720 = Q 17 15 11
-cpolys 3721 = T 31
-cpolys 3722 = Q 15 7 5
-cpolys 3723 = Q 18 6 4
-cpolys 3724 = Q 10 9 8
-cpolys 3725 = Q 21 14 8
-cpolys 3726 = T 609
-cpolys 3727 = T 42
-cpolys 3728 = Q 9 4 2
-cpolys 3729 = T 184
-cpolys 3730 = T 1191
-cpolys 3731 = Q 26 20 5
-cpolys 3732 = T 1327
-cpolys 3733 = Q 8 7 3
-cpolys 3734 = T 1305
-cpolys 3735 = T 46
-cpolys 3736 = Q 33 22 18
-cpolys 3737 = T 287
-cpolys 3738 = T 75
-cpolys 3739 = Q 18 10 5
-cpolys 3740 = T 95
-cpolys 3741 = Q 16 15 4
-cpolys 3742 = Q 25 18 11
-cpolys 3743 = T 279
-cpolys 3744 = Q 27 14 2
-cpolys 3745 = T 684
-cpolys 3746 = Q 22 9 7
-cpolys 3747 = Q 32 22 11
-cpolys 3748 = Q 19 11 8
-cpolys 3749 = Q 15 4 1
-cpolys 3750 = T 1013
-cpolys 3751 = T 435
-cpolys 3752 = Q 9 4 2
-cpolys 3753 = T 407
-cpolys 3754 = T 1611
-cpolys 3755 = Q 15 13 8
-cpolys 3756 = T 291
-cpolys 3757 = Q 18 16 5
-cpolys 3758 = Q 21 20 9
-cpolys 3759 = T 208
-cpolys 3760 = Q 23 9 1
-cpolys 3761 = T 30
-cpolys 3762 = T 383
-cpolys 3763 = Q 23 10 2
-cpolys 3764 = T 1307
-cpolys 3765 = Q 28 19 12
-cpolys 3766 = Q 21 15 1
-cpolys 3767 = T 672
-cpolys 3768 = Q 14 7 2
-cpolys 3769 = T 300
-cpolys 3770 = T 107
-cpolys 3771 = Q 13 10 9
-cpolys 3772 = T 61
-cpolys 3773 = Q 10 9 4
-cpolys 3774 = Q 24 9 4
-cpolys 3775 = T 1416
-cpolys 3776 = Q 7 5 4
-cpolys 3777 = T 1414
-cpolys 3778 = Q 9 5 1
-cpolys 3779 = Q 23 8 2
-cpolys 3780 = T 63
-cpolys 3781 = Q 10 9 6
-cpolys 3782 = T 1785
-cpolys 3783 = T 272
-cpolys 3784 = Q 29 13 6
-cpolys 3785 = T 87
-cpolys 3786 = T 1027
-cpolys 3787 = Q 14 6 1
-cpolys 3788 = T 1173
-cpolys 3789 = Q 16 15 4
-cpolys 3790 = Q 22 21 17
-cpolys 3791 = T 45
-cpolys 3792 = Q 20 7 5
-cpolys 3793 = T 481
-cpolys 3794 = Q 17 4 3
-cpolys 3795 = Q 8 7 5
-cpolys 3796 = T 127
-cpolys 3797 = Q 16 8 6
-cpolys 3798 = T 1337
-cpolys 3799 = T 202
-cpolys 3800 = Q 24 23 21
-cpolys 3801 = T 112
-cpolys 3802 = Q 16 15 8
-cpolys 3803 = Q 18 15 6
-cpolys 3804 = T 349
-cpolys 3805 = Q 18 12 9
-cpolys 3806 = Q 9 7 5
-cpolys 3807 = T 68
-cpolys 3808 = Q 29 18 4
-cpolys 3809 = T 938
-cpolys 3810 = T 323
-cpolys 3811 = Q 9 8 4
-cpolys 3812 = T 1799
-cpolys 3813 = Q 11 8 7
-cpolys 3814 = Q 22 21 11
-cpolys 3815 = T 143
-cpolys 3816 = Q 19 13 9
-cpolys 3817 = T 252
-cpolys 3818 = Q 17 8 6
-cpolys 3819 = Q 16 6 3
-cpolys 3820 = Q 20 11 3
-cpolys 3821 = Q 8 7 6
-cpolys 3822 = T 29
-cpolys 3823 = T 609
-cpolys 3824 = Q 19 13 2
-cpolys 3825 = T 437
-cpolys 3826 = Q 23 8 1
-cpolys 3827 = Q 18 13 8
-cpolys 3828 = T 1217
-cpolys 3829 = Q 13 9 6
-cpolys 3830 = T 713
-cpolys 3831 = T 310
-cpolys 3832 = Q 35 13 2
-cpolys 3833 = T 35
-cpolys 3834 = T 567
-cpolys 3835 = Q 15 5 4
-cpolys 3836 = T 681
-cpolys 3837 = Q 22 18 3
-cpolys 3838 = T 273
-cpolys 3839 = T 503
-cpolys 3840 = Q 27 9 1
-cpolys 3841 = T 840
-cpolys 3842 = T 1331
-cpolys 3843 = Q 16 5 2
-cpolys 3844 = T 1063
-cpolys 3845 = Q 11 10 9
-cpolys 3846 = T 693
-cpolys 3847 = T 108
-cpolys 3848 = Q 29 18 13
-cpolys 3849 = T 71
-cpolys 3850 = T 583
-cpolys 3851 = Q 29 24 19
-cpolys 3852 = T 169
-cpolys 3853 = Q 12 7 5
-cpolys 3854 = T 765
-cpolys 3855 = T 1399
-cpolys 3856 = Q 39 25 3
-cpolys 3857 = T 50
-cpolys 3858 = T 459
-cpolys 3859 = Q 14 8 7
-cpolys 3860 = T 35
-cpolys 3861 = Q 31 10 2
-cpolys 3862 = Q 18 16 5
-cpolys 3863 = T 834
-cpolys 3864 = Q 19 15 9
-cpolys 3865 = T 289
-cpolys 3866 = T 315
-cpolys 3867 = Q 20 14 6
-cpolys 3868 = Q 13 12 9
-cpolys 3869 = Q 24 22 13
-cpolys 3870 = T 913
-cpolys 3871 = T 264
-cpolys 3872 = Q 10 3 2
-cpolys 3873 = T 32
-cpolys 3874 = Q 20 8 3
-cpolys 3875 = Q 11 10 4
-cpolys 3876 = T 157
-cpolys 3877 = Q 17 11 4
-cpolys 3878 = Q 19 9 2
-cpolys 3879 = T 121
-cpolys 3880 = Q 27 5 1
-cpolys 3881 = T 810
-cpolys 3882 = T 1775
-cpolys 3883 = Q 20 9 2
-cpolys 3884 = T 45
-cpolys 3885 = Q 15 8 3
-cpolys 3886 = T 273
-cpolys 3887 = T 915
-cpolys 3888 = Q 45 42 6
-cpolys 3889 = T 340
-cpolys 3890 = Q 20 19 10
-cpolys 3891 = Q 17 9 2
-cpolys 3892 = T 289
-cpolys 3893 = Q 16 13 2
-cpolys 3894 = T 1197
-cpolys 3895 = T 777
-cpolys 3896 = Q 15 7 5
-cpolys 3897 = T 310
-cpolys 3898 = Q 25 9 1
-cpolys 3899 = Q 21 20 12
-cpolys 3900 = T 65
-cpolys 3901 = Q 26 6 1
-cpolys 3902 = T 1845
-cpolys 3903 = T 350
-cpolys 3904 = Q 17 13 2
-cpolys 3905 = T 26
-cpolys 3906 = T 251
-cpolys 3907 = Q 15 4 1
-cpolys 3908 = T 855
-cpolys 3909 = Q 14 12 11
-cpolys 3910 = Q 28 22 13
-cpolys 3911 = T 1673
-cpolys 3912 = Q 24 11 2
-cpolys 3913 = T 393
-cpolys 3914 = T 531
-cpolys 3915 = Q 25 22 9
-cpolys 3916 = T 445
-cpolys 3917 = Q 16 12 11
-cpolys 3918 = T 117
-cpolys 3919 = T 285
-cpolys 3920 = Q 15 13 8
-cpolys 3921 = T 785
-cpolys 3922 = Q 26 21 1
-cpolys 3923 = Q 24 21 3
-cpolys 3924 = T 245
-cpolys 3925 = Q 18 16 5
-cpolys 3926 = Q 17 16 12
-cpolys 3927 = T 367
-cpolys 3928 = Q 8 7 5
-cpolys 3929 = T 1440
-cpolys 3930 = T 199
-cpolys 3931 = Q 23 9 4
-cpolys 3932 = T 1563
-cpolys 3933 = Q 30 19 3
-cpolys 3934 = Q 28 12 5
-cpolys 3935 = Q 20 15 8
-cpolys 3936 = Q 15 5 3
-cpolys 3937 = T 252
-cpolys 3938 = T 1835
-cpolys 3939 = Q 28 19 10
-cpolys 3940 = Q 21 5 2
-cpolys 3941 = Q 19 11 6
-cpolys 3942 = T 57
-cpolys 3943 = T 1125
-cpolys 3944 = Q 31 29 28
-cpolys 3945 = T 427
-cpolys 3946 = T 1155
-cpolys 3947 = Q 22 10 5
-cpolys 3948 = T 293
-cpolys 3949 = Q 28 22 3
-cpolys 3950 = T 873
-cpolys 3951 = T 752
-cpolys 3952 = Q 11 6 5
-cpolys 3953 = T 698
-cpolys 3954 = T 503
-cpolys 3955 = Q 24 8 5
-cpolys 3956 = T 429
-cpolys 3957 = Q 18 16 10
-cpolys 3958 = Q 27 4 2
-cpolys 3959 = T 891
-cpolys 3960 = Q 29 15 2
-cpolys 3961 = T 756
-cpolys 3962 = T 255
-cpolys 3963 = Q 13 8 1
-cpolys 3964 = T 735
-cpolys 3965 = Q 14 3 2
-cpolys 3966 = T 337
-cpolys 3967 = T 357
-cpolys 3968 = Q 25 18 14
-cpolys 3969 = T 196
-cpolys 3970 = T 163
-cpolys 3971 = Q 10 7 2
-cpolys 3972 = T 595
-cpolys 3973 = Q 13 11 8
-cpolys 3974 = T 861
-cpolys 3975 = T 322
-cpolys 3976 = Q 36 3 1
-cpolys 3977 = T 221
-cpolys 3978 = Q 19 9 7
-cpolys 3979 = Q 25 9 2
-cpolys 3980 = Q 16 9 4
-cpolys 3981 = Q 21 11 8
-cpolys 3982 = Q 21 13 8
-cpolys 3983 = T 11
-cpolys 3984 = Q 19 5 2
-cpolys 3985 = T 1038
-cpolys 3986 = Q 12 8 7
-cpolys 3987 = Q 11 4 2
-cpolys 3988 = T 1017
-cpolys 3989 = Q 6 5 2
-cpolys 3990 = T 469
-cpolys 3991 = T 168
-cpolys 3992 = Q 27 8 6
-cpolys 3993 = T 1468
-cpolys 3994 = Q 19 12 9
-cpolys 3995 = Q 12 9 8
-cpolys 3996 = T 19
-cpolys 3997 = Q 16 13 3
-cpolys 3998 = T 153
-cpolys 3999 = T 1250
-cpolys 4000 = Q 31 18 17
-cpolys 4001 = T 137
-cpolys 4002 = Q 24 11 6
-cpolys 4003 = Q 14 12 5
-cpolys 4004 = T 1479
-cpolys 4005 = Q 17 12 2
-cpolys 4006 = Q 17 6 1
-cpolys 4007 = T 705
-cpolys 4008 = Q 24 9 6
-cpolys 4009 = T 124
-cpolys 4010 = Q 18 15 2
-cpolys 4011 = Q 28 15 9
-cpolys 4012 = Q 21 20 8
-cpolys 4013 = Q 18 17 15
-cpolys 4014 = T 125
-cpolys 4015 = T 249
-cpolys 4016 = Q 33 32 23
-cpolys 4017 = T 22
-cpolys 4018 = T 1467
-cpolys 4019 = Q 7 6 1
-cpolys 4020 = T 375
-cpolys 4021 = Q 24 19 16
-cpolys 4022 = Q 7 4 2
-cpolys 4023 = T 985
-cpolys 4024 = Q 16 9 7
-cpolys 4025 = T 599
-cpolys 4026 = Q 23 20 10
-cpolys 4027 = Q 9 7 4
-cpolys 4028 = Q 22 12 7
-cpolys 4029 = Q 14 11 4
-cpolys 4030 = T 93
-cpolys 4031 = T 1805
-cpolys 4032 = Q 15 13 6
-cpolys 4033 = T 223
-cpolys 4034 = T 1163
-cpolys 4035 = Q 25 16 1
-cpolys 4036 = T 157
-cpolys 4037 = Q 21 14 10
-cpolys 4038 = T 953
-cpolys 4039 = T 1408
-cpolys 4040 = Q 29 20 15
-cpolys 4041 = T 410
-cpolys 4042 = Q 23 21 13
-cpolys 4043 = Q 6 5 1
-cpolys 4044 = T 1659
-cpolys 4045 = Q 22 12 10
-cpolys 4046 = T 981
-cpolys 4047 = T 158
-cpolys 4048 = Q 21 5 2
-cpolys 4049 = T 215
-cpolys 4050 = T 71
-cpolys 4051 = Q 24 14 7
-cpolys 4052 = T 17
-cpolys 4053 = Q 17 14 5
-cpolys 4054 = T 981
-cpolys 4055 = T 854
-cpolys 4056 = Q 21 17 6
-cpolys 4057 = T 871
-cpolys 4058 = T 419
-cpolys 4059 = Q 13 6 3
-cpolys 4060 = T 435
-cpolys 4061 = Q 28 20 10
-cpolys 4062 = T 765
-cpolys 4063 = T 118
-cpolys 4064 = Q 33 29 7
-cpolys 4065 = T 356
-cpolys 4066 = T 847
-cpolys 4067 = Q 24 8 5
-cpolys 4068 = T 825
-cpolys 4069 = Q 18 9 1
-cpolys 4070 = T 1529
-cpolys 4071 = T 661
-cpolys 4072 = Q 13 10 6
-cpolys 4073 = T 575
-cpolys 4074 = T 595
-cpolys 4075 = Q 21 10 6
-cpolys 4076 = Q 19 15 7
-cpolys 4077 = Q 24 18 2
-cpolys 4078 = Q 29 18 16
-cpolys 4079 = T 224
-cpolys 4080 = Q 15 9 6
-cpolys 4081 = T 78
-cpolys 4082 = Q 16 10 3
-cpolys 4083 = Q 19 10 4
-cpolys 4084 = T 1435
-cpolys 4085 = Q 12 11 6
-cpolys 4086 = T 1445
-cpolys 4087 = T 769
-cpolys 4088 = Q 15 7 2
-cpolys 4089 = T 463
-cpolys 4090 = T 79
-cpolys 4091 = Q 23 12 10
-cpolys 4092 = T 1491
-cpolys 4093 = Q 23 22 18
-cpolys 4094 = T 321
-cpolys 4095 = T 616
-cpolys 4096 = Q 27 15 1
-cpolys 4097 = T 1232
-cpolys 4098 = T 3
-cpolys 4099 = Q 19 18 2
-cpolys 4100 = T 615
-cpolys 4101 = Q 18 10 6
-cpolys 4102 = T 57
-cpolys 4103 = T 1278
-cpolys 4104 = Q 30 13 3
-cpolys 4105 = T 252
-cpolys 4106 = T 123
-cpolys 4107 = Q 27 6 2
-cpolys 4108 = T 1615
-cpolys 4109 = Q 19 12 1
-cpolys 4110 = Q 16 12 1
-cpolys 4111 = T 201
-cpolys 4112 = Q 23 12 1
-cpolys 4113 = T 913
-cpolys 4114 = T 219
-cpolys 4115 = Q 16 12 1
-cpolys 4116 = T 245
-cpolys 4117 = Q 19 18 13
-cpolys 4118 = Q 22 12 1
-cpolys 4119 = T 1015
-cpolys 4120 = Q 26 17 9
-cpolys 4121 = Q 12 6 3
-cpolys 4122 = T 595
-cpolys 4123 = Q 10 9 1
-cpolys 4124 = T 345
-cpolys 4125 = T 2
-cpolys 4126 = T 133
-cpolys 4127 = T 276
-cpolys 4128 = Q 31 2 1
-cpolys 4129 = T 1315
-cpolys 4130 = Q 21 7 5
-cpolys 4131 = Q 18 14 5
-cpolys 4132 = T 873
-cpolys 4133 = Q 19 14 12
-cpolys 4134 = T 1045
-cpolys 4135 = T 1554
-cpolys 4136 = Q 31 29 15
-cpolys 4137 = T 862
-cpolys 4138 = T 1899
-cpolys 4139 = Q 15 7 2
-cpolys 4140 = T 549
-cpolys 4141 = Q 28 23 2
-cpolys 4142 = T 525
-cpolys 4143 = T 421
-cpolys 4144 = Q 15 10 1
-cpolys 4145 = T 51
-cpolys 4146 = T 131
-cpolys 4147 = Q 14 10 5
-cpolys 4148 = T 1857
-cpolys 4149 = Q 28 8 2
-cpolys 4150 = T 573
-cpolys 4151 = T 186
-cpolys 4152 = Q 25 13 3
-cpolys 4153 = Q 20 13 5
-cpolys 4154 = T 231
-cpolys 4155 = Q 17 10 7
-cpolys 4156 = T 1165
-cpolys 4157 = Q 19 17 10
-cpolys 4158 = T 133
-cpolys 4159 = T 81
-cpolys 4160 = Q 27 18 12
-cpolys 4161 = T 1361
-cpolys 4162 = T 2047
-cpolys 4163 = Q 22 15 5
-cpolys 4164 = T 2045
-cpolys 4165 = Q 18 13 2
-cpolys 4166 = T 645
-cpolys 4167 = T 698
-cpolys 4168 = Q 17 10 6
-cpolys 4169 = T 105
-cpolys 4170 = T 387
-cpolys 4171 = Q 24 8 1
-cpolys 4172 = Q 13 9 5
-cpolys 4173 = Q 16 12 10
-cpolys 4174 = T 1297
-cpolys 4175 = T 1698
-cpolys 4176 = Q 26 15 5
-cpolys 4177 = T 805
-cpolys 4178 = Q 18 2 1
-cpolys 4179 = Q 14 6 3
-cpolys 4180 = T 273
-cpolys 4181 = Q 26 18 1
-cpolys 4182 = T 1985
-cpolys 4183 = T 1984
-cpolys 4184 = Q 29 15 7
-cpolys 4185 = T 341
-cpolys 4186 = T 1411
-cpolys 4187 = Q 15 14 6
-cpolys 4188 = T 947
-cpolys 4189 = Q 16 10 1
-cpolys 4190 = Q 11 7 6
-cpolys 4191 = T 454
-cpolys 4192 = Q 15 11 5
-cpolys 4193 = T 200
-cpolys 4194 = Q 18 5 2
-cpolys 4195 = Q 21 13 2
-cpolys 4196 = T 1565
-cpolys 4197 = Q 16 13 6
-cpolys 4198 = Q 19 14 6
-cpolys 4199 = T 225
-cpolys 4200 = Q 12 5 2
-cpolys 4201 = T 76
-cpolys 4202 = T 1031
-cpolys 4203 = Q 10 4 1
-cpolys 4204 = T 1327
-cpolys 4205 = Q 8 4 3
-cpolys 4206 = T 381
-cpolys 4207 = T 1846
-cpolys 4208 = Q 15 6 3
-cpolys 4209 = T 826
-cpolys 4210 = T 1491
-cpolys 4211 = Q 14 12 6
-cpolys 4212 = T 243
-cpolys 4213 = Q 18 15 10
-cpolys 4214 = T 473
-cpolys 4215 = T 34
-cpolys 4216 = Q 13 3 2
-cpolys 4217 = T 347
-cpolys 4218 = T 287
-cpolys 4219 = Q 24 6 4
-cpolys 4220 = T 525
-cpolys 4221 = Q 13 10 3
-cpolys 4222 = Q 18 10 1
-cpolys 4223 = T 144
-cpolys 4224 = Q 8 3 2
-cpolys 4225 = T 9
-cpolys 4226 = Q 30 23 10
-cpolys 4227 = Q 19 11 2
-cpolys 4228 = T 145
-cpolys 4229 = Q 7 6 1
-cpolys 4230 = T 533
-cpolys 4231 = T 756
-cpolys 4232 = Q 18 13 7
-cpolys 4233 = T 5
-cpolys 4234 = T 799
-cpolys 4235 = Q 15 3 2
-cpolys 4236 = T 459
-cpolys 4237 = Q 21 19 14
-cpolys 4238 = T 389
-cpolys 4239 = T 904
-cpolys 4240 = Q 31 6 1
-cpolys 4241 = T 273
-cpolys 4242 = T 503
-cpolys 4243 = Q 14 12 10
-cpolys 4244 = T 387
-cpolys 4245 = Q 26 20 15
-cpolys 4246 = T 273
-cpolys 4247 = T 783
-cpolys 4248 = Q 11 6 2
-cpolys 4249 = T 387
-cpolys 4250 = Q 7 6 4
-cpolys 4251 = Q 23 18 17
-cpolys 4252 = Q 28 10 7
-cpolys 4253 = Q 21 12 11
-cpolys 4254 = Q 11 5 3
-cpolys 4255 = T 754
-cpolys 4256 = Q 15 13 8
-cpolys 4257 = T 578
-cpolys 4258 = Q 9 7 5
-cpolys 4259 = Q 17 12 7
-cpolys 4260 = T 99
-cpolys 4261 = Q 23 20 18
-cpolys 4262 = T 1301
-cpolys 4263 = T 217
-cpolys 4264 = Q 15 14 5
-cpolys 4265 = T 362
-cpolys 4266 = T 727
-cpolys 4267 = Q 24 8 2
-cpolys 4268 = T 147
-cpolys 4269 = Q 19 17 16
-cpolys 4270 = Q 18 11 7
-cpolys 4271 = T 1775
-cpolys 4272 = Q 11 8 1
-cpolys 4273 = T 385
-cpolys 4274 = T 1859
-cpolys 4275 = Q 13 12 10
-cpolys 4276 = T 1471
-cpolys 4277 = Q 26 3 1
-cpolys 4278 = T 309
-cpolys 4279 = T 945
-cpolys 4280 = Q 17 14 5
-cpolys 4281 = T 226
-cpolys 4282 = T 1671
-cpolys 4283 = Q 30 27 15
-cpolys 4284 = T 81
-cpolys 4285 = Q 20 18 11
-cpolys 4286 = Q 12 5 4
-cpolys 4287 = T 679
-cpolys 4288 = Q 5 4 3
-cpolys 4289 = T 689
-cpolys 4290 = T 99
-cpolys 4291 = Q 18 14 10
-cpolys 4292 = Q 22 18 7
-cpolys 4293 = Q 20 19 17
-cpolys 4294 = Q 9 8 7
-cpolys 4295 = T 302
-cpolys 4296 = Q 14 5 2
-cpolys 4297 = Q 15 4 2
-cpolys 4298 = Q 30 24 11
-cpolys 4299 = Q 17 16 14
-cpolys 4300 = T 175
-cpolys 4301 = Q 12 11 2
-cpolys 4302 = T 569
-cpolys 4303 = T 84
-cpolys 4304 = Q 12 7 2
-cpolys 4305 = T 116
-cpolys 4306 = Q 9 5 1
-cpolys 4307 = Q 28 24 2
-cpolys 4308 = T 901
-cpolys 4309 = Q 23 15 10
-cpolys 4310 = Q 13 10 2
-cpolys 4311 = T 455
-cpolys 4312 = Q 21 5 2
-cpolys 4313 = T 1016
-cpolys 4314 = T 1071
-cpolys 4315 = Q 9 8 4
-cpolys 4316 = T 431
-cpolys 4317 = Q 20 18 11
-cpolys 4318 = T 973
-cpolys 4319 = T 1850
-cpolys 4320 = Q 21 20 14
-cpolys 4321 = T 390
-cpolys 4322 = T 111
-cpolys 4323 = Q 16 6 3
-cpolys 4324 = T 987
-cpolys 4325 = Q 22 16 12
-cpolys 4326 = T 485
-cpolys 4327 = T 540
-cpolys 4328 = Q 20 17 15
-cpolys 4329 = T 833
-cpolys 4330 = T 1351
-cpolys 4331 = Q 12 9 2
-cpolys 4332 = T 593
-cpolys 4333 = Q 21 17 10
-cpolys 4334 = Q 17 12 6
-cpolys 4335 = T 826
-cpolys 4336 = Q 18 11 5
-cpolys 4337 = T 1991
-cpolys 4338 = T 287
-cpolys 4339 = Q 25 22 16
-cpolys 4340 = T 725
-cpolys 4341 = Q 28 14 11
-cpolys 4342 = T 1477
-cpolys 4343 = T 678
-cpolys 4344 = Q 8 7 5
-cpolys 4345 = T 271
-cpolys 4346 = T 1911
-cpolys 4347 = Q 10 8 5
-cpolys 4348 = T 429
-cpolys 4349 = Q 13 11 10
-cpolys 4350 = T 301
-cpolys 4351 = T 900
-cpolys 4352 = Q 33 27 20
-cpolys 4353 = T 1042
-cpolys 4354 = Q 11 5 3
-cpolys 4355 = Q 24 23 14
-cpolys 4356 = T 667
-cpolys 4357 = Q 16 7 6
-cpolys 4358 = T 645
-cpolys 4359 = T 595
-cpolys 4360 = Q 21 4 2
-cpolys 4361 = T 272
-cpolys 4362 = T 539
-cpolys 4363 = Q 15 8 2
-cpolys 4364 = T 1523
-cpolys 4365 = Q 22 12 10
-cpolys 4366 = T 1773
-cpolys 4367 = T 197
-cpolys 4368 = Q 27 12 6
-cpolys 4369 = T 154
-cpolys 4370 = Q 26 15 11
-cpolys 4371 = Q 18 15 5
-cpolys 4372 = T 151
-cpolys 4373 = Q 8 7 1
-cpolys 4374 = T 729
-cpolys 4375 = T 253
-cpolys 4376 = Q 18 7 1
-cpolys 4377 = T 155
-cpolys 4378 = T 1939
-cpolys 4379 = Q 16 13 8
-cpolys 4380 = T 745
-cpolys 4381 = Q 22 19 12
-cpolys 4382 = T 1541
-cpolys 4383 = T 886
-cpolys 4384 = Q 27 19 17
-cpolys 4385 = Q 19 17 10
-cpolys 4386 = T 175
-cpolys 4387 = Q 23 18 4
-cpolys 4388 = Q 18 8 5
-cpolys 4389 = Q 15 10 3
-cpolys 4390 = T 1029
-cpolys 4391 = T 84
-cpolys 4392 = Q 20 19 5
-cpolys 4393 = Q 15 13 9
-cpolys 4394 = T 1535
-cpolys 4395 = Q 33 25 18
-cpolys 4396 = T 925
-cpolys 4397 = Q 25 18 11
-cpolys 4398 = T 933
-cpolys 4399 = T 585
-cpolys 4400 = Q 37 35 3
-cpolys 4401 = T 394
-cpolys 4402 = T 351
-cpolys 4403 = Q 15 14 4
-cpolys 4404 = T 543
-cpolys 4405 = Q 21 13 2
-cpolys 4406 = T 137
-cpolys 4407 = Q 21 3 2
-cpolys 4408 = Q 9 8 7
-cpolys 4409 = T 218
-cpolys 4410 = T 211
-cpolys 4411 = Q 22 6 3
-cpolys 4412 = T 1769
-cpolys 4413 = Q 23 22 20
-cpolys 4414 = Q 19 6 4
-cpolys 4415 = T 1269
-cpolys 4416 = Q 31 10 6
-cpolys 4417 = T 442
-cpolys 4418 = Q 23 19 7
-cpolys 4419 = Q 13 11 8
-cpolys 4420 = T 865
-cpolys 4421 = Q 32 22 18
-cpolys 4422 = T 1069
-cpolys 4423 = T 271
-cpolys 4424 = Q 21 19 13
-cpolys 4425 = T 533
-cpolys 4426 = Q 11 6 1
-cpolys 4427 = Q 27 22 16
-cpolys 4428 = T 63
-cpolys 4429 = Q 16 6 4
-cpolys 4430 = Q 14 4 1
-cpolys 4431 = T 47
-cpolys 4432 = Q 25 5 3
-cpolys 4433 = T 350
-cpolys 4434 = T 207
-cpolys 4435 = Q 12 5 2
-cpolys 4436 = T 273
-cpolys 4437 = Q 20 8 2
-cpolys 4438 = Q 8 6 1
-cpolys 4439 = T 869
-cpolys 4440 = Q 26 21 14
-cpolys 4441 = T 909
-cpolys 4442 = T 1187
-cpolys 4443 = Q 16 6 4
-cpolys 4444 = T 1839
-cpolys 4445 = T 254
-cpolys 4446 = T 589
-cpolys 4447 = T 21
-cpolys 4448 = Q 11 9 8
-cpolys 4449 = T 644
-cpolys 4450 = T 1603
-cpolys 4451 = Q 17 12 8
-cpolys 4452 = T 905
-cpolys 4453 = Q 26 15 2
-cpolys 4454 = T 621
-cpolys 4455 = T 1189
-cpolys 4456 = Q 24 9 7
-cpolys 4457 = T 329
-cpolys 4458 = T 255
-cpolys 4459 = Q 13 9 6
-cpolys 4460 = T 155
-cpolys 4461 = Q 15 10 6
-cpolys 4462 = Q 21 16 3
-cpolys 4463 = T 582
-cpolys 4464 = Q 13 3 1
-cpolys 4465 = T 351
-cpolys 4466 = T 639
-cpolys 4467 = Q 30 29 11
-cpolys 4468 = T 1621
-cpolys 4469 = Q 19 18 16
-cpolys 4470 = T 2117
-cpolys 4471 = T 471
-cpolys 4472 = Q 30 7 2
-cpolys 4473 = T 112
-cpolys 4474 = T 799
-cpolys 4475 = Q 16 5 3
-cpolys 4476 = T 595
-cpolys 4477 = Q 37 22 4
-cpolys 4478 = Q 25 21 8
-cpolys 4479 = T 1165
-cpolys 4480 = Q 28 21 15
-cpolys 4481 = T 273
-cpolys 4482 = T 919
-cpolys 4483 = Q 8 7 2
-cpolys 4484 = T 975
-cpolys 4485 = Q 8 2 1
-cpolys 4486 = T 1749
-cpolys 4487 = T 843
-cpolys 4488 = Q 38 35 13
-cpolys 4489 = T 193
-cpolys 4490 = T 1907
-cpolys 4491 = Q 18 7 3
-cpolys 4492 = T 895
-cpolys 4493 = Q 22 8 1
-cpolys 4494 = T 401
-cpolys 4495 = T 1
-cpolys 4496 = Q 17 10 7
-cpolys 4497 = T 299
-cpolys 4498 = Q 23 8 1
-cpolys 4499 = Q 27 8 5
-cpolys 4500 = T 5
-cpolys 4501 = Q 7 6 1
-cpolys 4502 = T 657
-cpolys 4503 = Q 7 5 1
-cpolys 4504 = Q 12 9 6
-cpolys 4505 = T 794
-cpolys 4506 = Q 13 9 3
-cpolys 4507 = Q 14 9 4
-cpolys 4508 = T 285
-cpolys 4509 = Q 14 5 4
-cpolys 4510 = Q 20 13 9
-cpolys 4511 = T 173
-cpolys 4512 = Q 12 3 1
-cpolys 4513 = T 196
-cpolys 4514 = T 323
-cpolys 4515 = Q 8 6 3
-cpolys 4516 = T 715
-cpolys 4517 = Q 21 16 11
-cpolys 4518 = T 577
-cpolys 4519 = T 1191
-cpolys 4520 = Q 39 25 23
-cpolys 4521 = T 650
-cpolys 4522 = T 1327
-cpolys 4523 = Q 17 12 7
-cpolys 4524 = T 1339
-cpolys 4525 = Q 16 11 8
-cpolys 4526 = T 849
-cpolys 4527 = T 674
-cpolys 4528 = Q 23 13 9
-cpolys 4529 = T 345
-cpolys 4530 = T 151
-cpolys 4531 = Q 8 5 1
-cpolys 4532 = Q 25 22 20
-cpolys 4533 = Q 15 4 1
-cpolys 4534 = T 381
-cpolys 4535 = T 993
-cpolys 4536 = Q 25 11 7
-cpolys 4537 = T 21
-cpolys 4538 = T 2223
-cpolys 4539 = Q 11 8 6
-cpolys 4540 = T 715
-cpolys 4541 = Q 12 11 2
-cpolys 4542 = T 897
-cpolys 4543 = T 358
-cpolys 4544 = Q 25 14 7
-cpolys 4545 = T 523
-cpolys 4546 = Q 27 23 16
-cpolys 4547 = Q 6 5 1
-cpolys 4548 = T 831
-cpolys 4549 = Q 23 12 7
-cpolys 4550 = T 297
-cpolys 4551 = T 730
-cpolys 4552 = Q 34 27 18
-cpolys 4553 = T 704
-cpolys 4554 = T 207
-cpolys 4555 = Q 25 22 12
-cpolys 4556 = Q 26 21 12
-cpolys 4557 = T 98
-cpolys 4558 = T 1869
-cpolys 4559 = T 1356
-cpolys 4560 = Q 14 13 7
-cpolys 4561 = T 835
-cpolys 4562 = T 87
-cpolys 4563 = Q 20 11 1
-cpolys 4564 = T 165
-cpolys 4565 = Q 18 6 2
-cpolys 4566 = T 905
-cpolys 4567 = T 126
-cpolys 4568 = Q 22 17 6
-cpolys 4569 = T 2110
-cpolys 4570 = T 2079
-cpolys 4571 = Q 10 6 1
-cpolys 4572 = T 81
-cpolys 4573 = Q 24 15 6
-cpolys 4574 = T 69
-cpolys 4575 = T 638
-cpolys 4576 = Q 26 19 9
-cpolys 4577 = Q 9 8 4
-cpolys 4578 = T 1419
-cpolys 4579 = Q 10 6 2
-cpolys 4580 = Q 21 12 5
-cpolys 4581 = Q 27 13 10
-cpolys 4582 = Q 14 12 1
-cpolys 4583 = T 1358
-cpolys 4584 = Q 19 15 9
-cpolys 4585 = T 223
-cpolys 4586 = T 483
-cpolys 4587 = Q 13 6 1
-cpolys 4588 = T 265
-cpolys 4589 = Q 26 18 16
-cpolys 4590 = T 497
-cpolys 4591 = T 1254
-cpolys 4592 = Q 21 16 11
-cpolys 4593 = Q 22 16 12
-cpolys 4594 = Q 30 11 4
-cpolys 4595 = Q 15 14 1
-cpolys 4596 = T 371
-cpolys 4597 = Q 34 13 12
-cpolys 4598 = Q 32 28 9
-cpolys 4599 = T 25
-cpolys 4600 = Q 17 14 1
-cpolys 4601 = T 68
-cpolys 4602 = T 675
-cpolys 4603 = Q 24 22 5
-cpolys 4604 = T 1907
-cpolys 4605 = Q 8 5 2
-cpolys 4606 = T 2013
-cpolys 4607 = T 1026
-cpolys 4608 = Q 23 20 13
-cpolys 4609 = T 780
-cpolys 4610 = T 239
-cpolys 4611 = Q 23 13 10
-cpolys 4612 = T 1557
-cpolys 4613 = Q 27 14 10
-cpolys 4614 = T 965
-cpolys 4615 = T 232
-cpolys 4616 = Q 27 23 5
-cpolys 4617 = T 287
-cpolys 4618 = T 975
-cpolys 4619 = Q 10 8 7
-cpolys 4620 = T 77
-cpolys 4621 = Q 28 15 4
-cpolys 4622 = Q 21 20 17
-cpolys 4623 = T 136
-cpolys 4624 = Q 26 23 10
-cpolys 4625 = T 42
-cpolys 4626 = T 367
-cpolys 4627 = Q 16 8 5
-cpolys 4628 = T 1779
-cpolys 4629 = Q 20 3 2
-cpolys 4630 = Q 14 3 2
-cpolys 4631 = Q 25 17 7
-cpolys 4632 = Q 19 16 2
-cpolys 4633 = T 1035
-cpolys 4634 = T 1535
-cpolys 4635 = Q 21 16 1
-cpolys 4636 = T 901
-cpolys 4637 = Q 18 17 3
-cpolys 4638 = Q 30 24 15
-cpolys 4639 = T 448
-cpolys 4640 = Q 25 8 7
-cpolys 4641 = T 149
-cpolys 4642 = T 1311
-cpolys 4643 = Q 15 13 10
-cpolys 4644 = T 189
-cpolys 4645 = Q 24 11 5
-cpolys 4646 = Q 16 13 9
-cpolys 4647 = T 959
-cpolys 4648 = Q 8 5 3
-cpolys 4649 = T 207
-cpolys 4650 = T 567
-cpolys 4651 = Q 29 24 8
-cpolys 4652 = T 95
-cpolys 4653 = Q 30 21 13
-cpolys 4654 = Q 21 20 1
-cpolys 4655 = T 474
-cpolys 4656 = Q 27 25 4
-cpolys 4657 = T 417
-cpolys 4658 = T 1943
-cpolys 4659 = Q 8 7 5
-cpolys 4660 = T 885
-cpolys 4661 = Q 26 21 2
-cpolys 4662 = T 297
-cpolys 4663 = T 841
-cpolys 4664 = Q 37 6 5
-cpolys 4665 = T 1663
-cpolys 4666 = Q 24 17 11
-cpolys 4667 = Q 36 25 20
-cpolys 4668 = T 917
-cpolys 4669 = Q 18 14 10
-cpolys 4670 = Q 29 12 2
-cpolys 4671 = T 392
-cpolys 4672 = Q 27 25 23
-cpolys 4673 = T 147
-cpolys 4674 = Q 10 5 4
-cpolys 4675 = Q 26 25 21
-cpolys 4676 = T 603
-cpolys 4677 = Q 19 11 10
-cpolys 4678 = T 2245
-cpolys 4679 = T 1146
-cpolys 4680 = Q 10 9 3
-cpolys 4681 = T 216
-cpolys 4682 = T 119
-cpolys 4683 = Q 35 28 14
-cpolys 4684 = T 819
-cpolys 4685 = Q 24 10 1
-cpolys 4686 = T 285
-cpolys 4687 = T 1330
-cpolys 4688 = Q 13 7 6
-cpolys 4689 = T 421
-cpolys 4690 = T 283
-cpolys 4691 = Q 26 21 3
-cpolys 4692 = T 21
-cpolys 4693 = Q 26 13 6
-cpolys 4694 = T 1725
-cpolys 4695 = T 1522
-cpolys 4696 = Q 18 17 11
-cpolys 4697 = T 386
-cpolys 4698 = T 351
-cpolys 4699 = Q 36 7 5
-cpolys 4700 = T 873
-cpolys 4701 = Q 23 21 18
-cpolys 4702 = Q 17 3 2
-cpolys 4703 = T 248
-cpolys 4704 = Q 11 8 1
-cpolys 4705 = T 1033
-cpolys 4706 = T 2151
-cpolys 4707 = Q 17 16 11
-cpolys 4708 = T 1543
-cpolys 4709 = Q 21 12 11
-cpolys 4710 = T 2257
-cpolys 4711 = T 426
-cpolys 4712 = Q 25 16 6
-cpolys 4713 = T 67
-cpolys 4714 = Q 19 17 6
-cpolys 4715 = Q 26 24 7
-cpolys 4716 = T 97
-cpolys 4717 = Q 30 17 16
-cpolys 4718 = Q 16 14 1
-cpolys 4719 = T 466
-cpolys 4720 = Q 24 19 9
-cpolys 4721 = Q 10 9 7
-cpolys 4722 = Q 24 19 18
-cpolys 4723 = Q 19 14 2
-cpolys 4724 = T 617
-cpolys 4725 = Q 13 10 8
-cpolys 4726 = T 1693
-cpolys 4727 = T 408
-cpolys 4728 = Q 26 21 14
-cpolys 4729 = T 73
-cpolys 4730 = Q 19 12 10
-cpolys 4731 = Q 14 6 5
-cpolys 4732 = T 157
-cpolys 4733 = Q 14 9 5
-cpolys 4734 = T 2193
-cpolys 4735 = T 412
-cpolys 4736 = Q 15 10 1
-cpolys 4737 = T 248
-cpolys 4738 = Q 12 7 5
-cpolys 4739 = Q 27 26 6
-cpolys 4740 = T 1941
-cpolys 4741 = Q 21 10 8
-cpolys 4742 = T 2201
-cpolys 4743 = T 857
-cpolys 4744 = Q 19 14 6
-cpolys 4745 = T 281
-cpolys 4746 = T 363
-cpolys 4747 = Q 25 24 8
-cpolys 4748 = T 1257
-cpolys 4749 = Q 29 19 16
-cpolys 4750 = T 541
-cpolys 4751 = T 1946
-cpolys 4752 = Q 29 5 2
-cpolys 4753 = T 2368
-cpolys 4754 = T 923
-cpolys 4755 = Q 19 6 4
-cpolys 4756 = T 279
-cpolys 4757 = Q 30 22 17
-cpolys 4758 = T 401
-cpolys 4759 = T 883
-cpolys 4760 = Q 28 11 9
-cpolys 4761 = T 170
-cpolys 4762 = Q 7 6 4
-cpolys 4763 = Q 17 16 7
-cpolys 4764 = T 477
-cpolys 4765 = Q 30 19 7
-cpolys 4766 = Q 25 22 21
-cpolys 4767 = T 178
-cpolys 4768 = Q 25 17 3
-cpolys 4769 = T 119
-cpolys 4770 = T 507
-cpolys 4771 = Q 24 5 4
-cpolys 4772 = T 213
-cpolys 4773 = Q 26 12 5
-cpolys 4774 = Q 16 13 6
-cpolys 4775 = T 2381
-cpolys 4776 = Q 27 23 6
-cpolys 4777 = T 348
-cpolys 4778 = Q 18 5 3
-cpolys 4779 = Q 14 8 1
-cpolys 4780 = T 321
-cpolys 4781 = Q 22 19 5
-cpolys 4782 = T 1397
-cpolys 4783 = T 369
-cpolys 4784 = Q 30 29 7
-cpolys 4785 = T 382
-cpolys 4786 = Q 20 3 1
-cpolys 4787 = Q 19 6 5
-cpolys 4788 = T 9
-cpolys 4789 = Q 14 7 2
-cpolys 4790 = T 1233
-cpolys 4791 = T 707
-cpolys 4792 = Q 29 18 4
-cpolys 4793 = T 413
-cpolys 4794 = Q 19 12 7
-cpolys 4795 = Q 23 7 2
-cpolys 4796 = Q 18 8 7
-cpolys 4797 = Q 15 14 3
-cpolys 4798 = T 117
-cpolys 4799 = T 158
-cpolys 4800 = Q 29 19 11
-cpolys 4801 = T 1146
-cpolys 4802 = T 291
-cpolys 4803 = Q 7 5 4
-cpolys 4804 = Q 18 15 4
-cpolys 4805 = T 1922
-cpolys 4806 = T 2349
-cpolys 4807 = T 12
-cpolys 4808 = Q 13 4 2
-cpolys 4809 = T 91
-cpolys 4810 = T 1171
-cpolys 4811 = Q 13 10 2
-cpolys 4812 = Q 22 15 13
-cpolys 4813 = Q 18 7 6
-cpolys 4814 = Q 22 10 9
-cpolys 4815 = T 638
-cpolys 4816 = Q 33 31 25
-cpolys 4817 = T 491
-cpolys 4818 = T 459
-cpolys 4819 = Q 28 25 7
-cpolys 4820 = T 515
-cpolys 4821 = Q 16 13 2
-cpolys 4822 = Q 33 17 13
-cpolys 4823 = T 1094
-cpolys 4824 = Q 25 16 3
-cpolys 4825 = T 558
-cpolys 4826 = Q 24 19 17
-cpolys 4827 = Q 29 20 14
-cpolys 4828 = T 913
-cpolys 4829 = Q 20 14 2
-cpolys 4830 = T 1493
-cpolys 4831 = T 337
-cpolys 4832 = Q 33 30 5
-cpolys 4833 = T 458
-cpolys 4834 = Q 19 17 2
-cpolys 4835 = Q 28 10 5
-cpolys 4836 = T 301
-cpolys 4837 = Q 14 9 1
-cpolys 4838 = Q 17 12 7
-cpolys 4839 = T 238
-cpolys 4840 = Q 25 21 2
-cpolys 4841 = Q 19 13 3
-cpolys 4842 = Q 33 29 18
-cpolys 4843 = Q 22 21 3
-cpolys 4844 = Q 16 15 1
-cpolys 4845 = Q 38 21 17
-cpolys 4846 = T 1477
-cpolys 4847 = T 1085
-cpolys 4848 = Q 28 27 6
-cpolys 4849 = T 184
-cpolys 4850 = T 243
-cpolys 4851 = Q 24 17 2
-cpolys 4852 = T 561
-cpolys 4853 = Q 17 7 4
-cpolys 4854 = T 633
-cpolys 4855 = T 172
-cpolys 4856 = Q 27 23 21
-cpolys 4857 = T 34
-cpolys 4858 = T 355
-cpolys 4859 = Q 25 22 14
-cpolys 4860 = T 81
-cpolys 4861 = Q 15 7 6
-cpolys 4862 = Q 15 8 1
-cpolys 4863 = T 166
-cpolys 4864 = Q 29 22 17
-cpolys 4865 = T 1551
-cpolys 4866 = Q 23 15 2
-cpolys 4867 = Q 18 11 1
-cpolys 4868 = T 593
-cpolys 4869 = Q 22 16 4
-cpolys 4870 = T 213
-cpolys 4871 = T 1251
-cpolys 4872 = Q 24 9 2
-cpolys 4873 = T 1798
-cpolys 4874 = T 555
-cpolys 4875 = Q 26 16 10
-cpolys 4876 = T 585
-cpolys 4877 = Q 23 20 6
-cpolys 4878 = T 1457
-cpolys 4879 = T 1342
-cpolys 4880 = Q 32 21 7
-cpolys 4881 = T 1276
-cpolys 4882 = Q 28 7 4
-cpolys 4883 = Q 26 8 2
-cpolys 4884 = T 91
-cpolys 4885 = Q 27 21 12
-cpolys 4886 = T 1989
-cpolys 4887 = T 139
-cpolys 4888 = Q 35 21 8
-cpolys 4889 = T 45
-cpolys 4890 = T 1967
-cpolys 4891 = Q 25 19 16
-cpolys 4892 = T 2381
-cpolys 4893 = Q 15 12 2
-cpolys 4894 = T 469
-cpolys 4895 = T 623
-cpolys 4896 = Q 21 19 12
-cpolys 4897 = T 210
-cpolys 4898 = Q 25 12 2
-cpolys 4899 = Q 33 28 6
-cpolys 4900 = T 697
-cpolys 4901 = Q 20 18 14
-cpolys 4902 = T 1253
-cpolys 4903 = T 774
-cpolys 4904 = Q 27 18 15
-cpolys 4905 = T 296
-cpolys 4906 = Q 22 21 6
-cpolys 4907 = Q 14 10 3
-cpolys 4908 = T 111
-cpolys 4909 = Q 30 16 11
-cpolys 4910 = T 377
-cpolys 4911 = T 1955
-cpolys 4912 = Q 30 29 7
-cpolys 4913 = T 693
-cpolys 4914 = T 259
-cpolys 4915 = Q 16 9 1
-cpolys 4916 = T 1793
-cpolys 4917 = Q 34 5 4
-cpolys 4918 = T 889
-cpolys 4919 = T 380
-cpolys 4920 = Q 11 9 5
-cpolys 4921 = T 277
-cpolys 4922 = T 2387
-cpolys 4923 = Q 10 3 1
-cpolys 4924 = T 1545
-cpolys 4925 = Q 19 6 2
-cpolys 4926 = T 693
-cpolys 4927 = T 21
-cpolys 4928 = Q 29 9 3
-cpolys 4929 = T 49
-cpolys 4930 = T 2143
-cpolys 4931 = Q 23 21 18
-cpolys 4932 = T 1039
-cpolys 4933 = Q 13 11 8
-cpolys 4934 = T 413
-cpolys 4935 = T 133
-cpolys 4936 = Q 27 22 15
-cpolys 4937 = T 63
-cpolys 4938 = Q 19 9 3
-cpolys 4939 = Q 24 8 1
-cpolys 4940 = T 383
-cpolys 4941 = Q 17 14 1
-cpolys 4942 = Q 13 12 9
-cpolys 4943 = T 494
-cpolys 4944 = Q 19 6 4
-cpolys 4945 = T 1011
-cpolys 4946 = Q 23 9 1
-cpolys 4947 = Q 24 6 4
-cpolys 4948 = T 601
-cpolys 4949 = Q 30 25 2
-cpolys 4950 = T 517
-cpolys 4951 = T 217
-cpolys 4952 = Q 29 11 5
-cpolys 4953 = T 938
-cpolys 4954 = Q 15 10 7
-cpolys 4955 = Q 27 12 5
-cpolys 4956 = T 559
-cpolys 4957 = Q 11 6 5
-cpolys 4958 = T 1709
-cpolys 4959 = T 920
-cpolys 4960 = Q 25 20 6
-cpolys 4961 = T 843
-cpolys 4962 = Q 23 11 6
-cpolys 4963 = Q 20 17 15
-cpolys 4964 = Q 13 10 5
-cpolys 4965 = Q 13 12 6
-cpolys 4966 = T 2205
-cpolys 4967 = T 1292
-cpolys 4968 = Q 26 25 17
-cpolys 4969 = T 1084
-cpolys 4970 = T 1131
-cpolys 4971 = Q 12 6 2
-cpolys 4972 = T 709
-cpolys 4973 = Q 26 22 16
-cpolys 4974 = T 1229
-cpolys 4975 = T 2301
-cpolys 4976 = Q 42 7 1
-cpolys 4977 = T 644
-cpolys 4978 = T 315
-cpolys 4979 = Q 29 11 8
-cpolys 4980 = T 111
-cpolys 4981 = Q 33 15 12
-cpolys 4982 = T 1701
-cpolys 4983 = T 1070
-cpolys 4984 = Q 23 16 9
-cpolys 4985 = T 384
-cpolys 4986 = T 239
-cpolys 4987 = Q 10 7 4
-cpolys 4988 = T 375
-cpolys 4989 = Q 15 8 2
-cpolys 4990 = Q 23 19 3
-cpolys 4991 = T 201
-cpolys 4992 = Q 15 8 6
-cpolys 4993 = T 39
-cpolys 4994 = T 1791
-cpolys 4995 = Q 28 25 19
-cpolys 4996 = Q 18 15 13
-cpolys 4997 = Q 31 11 6
-cpolys 4998 = T 161
-cpolys 4999 = Q 13 11 9
-cpolys 5000 = Q 17 15 7
-cpolys 5001 = T 637
-cpolys 5002 = Q 33 13 8
-cpolys 5003 = Q 18 16 8
-cpolys 5004 = T 671
-cpolys 5005 = Q 22 13 6
-cpolys 5006 = Q 12 3 2
-cpolys 5007 = T 464
-cpolys 5008 = Q 21 10 3
-cpolys 5009 = T 38
-cpolys 5010 = Q 17 8 6
-cpolys 5011 = Q 29 20 15
-cpolys 5012 = T 33
-cpolys 5013 = Q 38 35 15
-cpolys 5014 = T 1197
-cpolys 5015 = T 206
-cpolys 5016 = Q 15 12 9
-cpolys 5017 = T 385
-cpolys 5018 = T 731
-cpolys 5019 = Q 23 19 2
-cpolys 5020 = T 97
-cpolys 5021 = Q 14 11 2
-cpolys 5022 = T 329
-cpolys 5023 = T 777
-cpolys 5024 = Q 33 23 14
-cpolys 5025 = T 1379
-cpolys 5026 = Q 20 15 11
-cpolys 5027 = Q 28 9 5
-cpolys 5028 = T 1089
-cpolys 5029 = Q 22 3 2
-cpolys 5030 = T 2373
-cpolys 5031 = T 496
-cpolys 5032 = Q 25 6 2
-cpolys 5033 = T 1122
-cpolys 5034 = T 387
-cpolys 5035 = Q 24 21 10
-cpolys 5036 = T 1295
-cpolys 5037 = Q 22 15 3
-cpolys 5038 = T 45
-cpolys 5039 = T 489
-cpolys 5040 = Q 24 5 3
-cpolys 5041 = T 646
-cpolys 5042 = T 1607
-cpolys 5043 = Q 23 17 8
-cpolys 5044 = T 1165
-cpolys 5045 = Q 25 24 2
-cpolys 5046 = Q 17 11 4
-cpolys 5047 = T 415
-cpolys 5048 = Q 34 15 10
-cpolys 5049 = T 133
-cpolys 5050 = T 2467
-cpolys 5051 = Q 22 17 15
-cpolys 5052 = T 833
-cpolys 5053 = Q 26 18 11
-cpolys 5054 = T 1493
-cpolys 5055 = T 211
-cpolys 5056 = Q 22 9 6
-cpolys 5057 = T 126
-cpolys 5058 = T 1411
-cpolys 5059 = Q 20 19 14
-cpolys 5060 = T 161
-cpolys 5061 = Q 16 11 7
-cpolys 5062 = T 141
-cpolys 5063 = T 795
-cpolys 5064 = Q 21 12 11
-cpolys 5065 = T 126
-cpolys 5066 = T 783
-cpolys 5067 = Q 12 6 2
-cpolys 5068 = T 1635
-cpolys 5069 = Q 18 5 3
-cpolys 5070 = Q 16 13 7
-cpolys 5071 = T 258
-cpolys 5072 = Q 25 5 3
-cpolys 5073 = T 476
-cpolys 5074 = T 2119
-cpolys 5075 = Q 18 15 5
-cpolys 5076 = T 1467
-cpolys 5077 = Q 18 11 5
-cpolys 5078 = T 2201
-cpolys 5079 = T 35
-cpolys 5080 = Q 21 7 6
-cpolys 5081 = T 1562
-cpolys 5082 = T 35
-cpolys 5083 = Q 25 19 6
-cpolys 5084 = T 173
-cpolys 5085 = Q 20 14 13
-cpolys 5086 = Q 23 18 14
-cpolys 5087 = T 210
-cpolys 5088 = Q 22 21 3
-cpolys 5089 = T 88
-cpolys 5090 = T 147
-cpolys 5091 = Q 18 13 10
-cpolys 5092 = T 843
-cpolys 5093 = Q 15 6 2
-cpolys 5094 = T 1377
-cpolys 5095 = T 489
-cpolys 5096 = Q 19 18 13
-cpolys 5097 = T 454
-cpolys 5098 = T 243
-cpolys 5099 = Q 24 2 1
-cpolys 5100 = T 675
-cpolys 5101 = Q 18 16 15
-cpolys 5102 = Q 22 18 11
-cpolys 5103 = T 148
-cpolys 5104 = Q 30 13 2
-cpolys 5105 = T 72
-cpolys 5106 = T 1307
-cpolys 5107 = Q 17 2 1
-cpolys 5108 = T 191
-cpolys 5109 = Q 26 19 7
-cpolys 5110 = T 2209
-cpolys 5111 = T 279
-cpolys 5112 = Q 42 33 9
-cpolys 5113 = T 559
-cpolys 5114 = T 899
-cpolys 5115 = Q 14 8 5
-cpolys 5116 = T 1387
-cpolys 5117 = Q 19 14 6
-cpolys 5118 = T 2045
-cpolys 5119 = T 130
-cpolys 5120 = Q 33 27 5
-cpolys 5121 = T 457
-cpolys 5122 = T 199
-cpolys 5123 = Q 11 8 5
-cpolys 5124 = T 279
-cpolys 5125 = Q 23 18 4
-cpolys 5126 = Q 22 14 9
-cpolys 5127 = T 1519
-cpolys 5128 = Q 24 15 6
-cpolys 5129 = T 1514
-cpolys 5130 = T 603
-cpolys 5131 = Q 21 7 4
-cpolys 5132 = T 15
-cpolys 5133 = Q 15 11 8
-cpolys 5134 = T 1629
-cpolys 5135 = T 141
-cpolys 5136 = Q 27 25 4
-cpolys 5137 = T 1701
-cpolys 5138 = T 1571
-cpolys 5139 = Q 36 22 1
-cpolys 5140 = T 1015
-cpolys 5141 = Q 24 14 5
-cpolys 5142 = Q 12 11 3
-cpolys 5143 = T 1767
-cpolys 5144 = Q 15 11 5
-cpolys 5145 = T 308
-cpolys 5146 = T 1771
-cpolys 5147 = Q 12 10 2
-cpolys 5148 = T 103
-cpolys 5149 = Q 30 22 2
-cpolys 5150 = T 213
-cpolys 5151 = T 724
-cpolys 5152 = Q 15 8 1
-cpolys 5153 = T 708
-cpolys 5154 = Q 16 5 2
-cpolys 5155 = Q 15 14 1
-cpolys 5156 = Q 14 6 1
-cpolys 5157 = Q 8 6 3
-cpolys 5158 = Q 21 20 2
-cpolys 5159 = T 494
-cpolys 5160 = Q 35 31 13
-cpolys 5161 = T 315
-cpolys 5162 = T 419
-cpolys 5163 = Q 20 17 5
-cpolys 5164 = Q 12 7 3
-cpolys 5165 = Q 18 16 10
-cpolys 5166 = T 117
-cpolys 5167 = T 2193
-cpolys 5168 = Q 15 11 5
-cpolys 5169 = T 1196
-cpolys 5170 = T 1411
-cpolys 5171 = Q 18 3 2
-cpolys 5172 = T 2247
-cpolys 5173 = Q 23 22 2
-cpolys 5174 = T 189
-cpolys 5175 = T 347
-cpolys 5176 = Q 24 21 3
-cpolys 5177 = T 963
-cpolys 5178 = Q 15 13 10
-cpolys 5179 = Q 30 12 9
-cpolys 5180 = T 2055
-cpolys 5181 = Q 23 7 2
-cpolys 5182 = Q 16 13 6
-cpolys 5183 = T 1869
-cpolys 5184 = Q 20 11 5
-cpolys 5185 = T 373
-cpolys 5186 = T 1755
-cpolys 5187 = Q 16 8 5
-cpolys 5188 = T 2305
-cpolys 5189 = Q 28 22 2
-cpolys 5190 = T 677
-cpolys 5191 = T 330
-cpolys 5192 = Q 11 8 2
-cpolys 5193 = T 1006
-cpolys 5194 = Q 25 15 13
-cpolys 5195 = Q 27 11 6
-cpolys 5196 = T 617
-cpolys 5197 = Q 20 15 7
-cpolys 5198 = Q 27 10 8
-cpolys 5199 = T 1546
-cpolys 5200 = Q 33 27 19
-cpolys 5201 = T 125
-cpolys 5202 = T 1519
-cpolys 5203 = Q 14 4 3
-cpolys 5204 = T 917
-cpolys 5205 = Q 9 8 6
-cpolys 5206 = T 465
-cpolys 5207 = T 588
-cpolys 5208 = Q 23 22 2
-cpolys 5209 = T 156
-cpolys 5210 = T 2219
-cpolys 5211 = Q 20 19 1
-cpolys 5212 = T 487
-cpolys 5213 = Q 19 8 7
-cpolys 5214 = Q 12 9 8
-cpolys 5215 = T 354
-cpolys 5216 = Q 27 19 2
-cpolys 5217 = T 1507
-cpolys 5218 = T 2335
-cpolys 5219 = Q 23 3 2
-cpolys 5220 = T 205
-cpolys 5221 = Q 12 11 8
-cpolys 5222 = T 1637
-cpolys 5223 = T 1787
-cpolys 5224 = Q 29 15 1
-cpolys 5225 = T 503
-cpolys 5226 = T 2607
-cpolys 5227 = Q 24 10 7
-cpolys 5228 = T 327
-cpolys 5229 = Q 28 19 13
-cpolys 5230 = Q 13 12 11
-cpolys 5231 = T 1188
-cpolys 5232 = Q 21 11 2
-cpolys 5233 = T 205
-cpolys 5234 = T 275
-cpolys 5235 = Q 16 6 1
-cpolys 5236 = T 475
-cpolys 5237 = Q 12 10 7
-cpolys 5238 = T 765
-cpolys 5239 = T 549
-cpolys 5240 = Q 33 27 21
-cpolys 5241 = T 101
-cpolys 5242 = T 895
-cpolys 5243 = Q 10 9 1
-cpolys 5244 = T 2321
-cpolys 5245 = Q 28 23 3
-cpolys 5246 = T 2477
-cpolys 5247 = T 235
-cpolys 5248 = Q 27 18 1
-cpolys 5249 = T 197
-cpolys 5250 = T 1371
-cpolys 5251 = Q 35 25 14
-cpolys 5252 = T 627
-cpolys 5253 = Q 24 17 14
-cpolys 5254 = T 1305
-cpolys 5255 = T 167
-cpolys 5256 = Q 9 5 2
-cpolys 5257 = T 1537
-cpolys 5258 = T 1359
-cpolys 5259 = Q 10 8 4
-cpolys 5260 = T 1455
-cpolys 5261 = Q 22 10 9
-cpolys 5262 = Q 22 20 1
-cpolys 5263 = T 769
-cpolys 5264 = Q 16 11 9
-cpolys 5265 = T 41
-cpolys 5266 = T 483
-cpolys 5267 = Q 31 25 14
-cpolys 5268 = T 297
-cpolys 5269 = Q 23 6 1
-cpolys 5270 = T 341
-cpolys 5271 = T 1106
-cpolys 5272 = Q 29 18 10
-cpolys 5273 = T 1395
-cpolys 5274 = Q 17 11 10
-cpolys 5275 = Q 16 10 1
-cpolys 5276 = T 609
-cpolys 5277 = Q 9 7 6
-cpolys 5278 = T 2337
-cpolys 5279 = T 1299
-cpolys 5280 = Q 13 11 1
-cpolys 5281 = Q 29 9 4
-cpolys 5282 = Q 13 10 9
-cpolys 5283 = Q 25 17 2
-cpolys 5284 = Q 16 9 5
-cpolys 5285 = Q 25 24 23
-cpolys 5286 = Q 20 14 7
-cpolys 5287 = T 196
-cpolys 5288 = Q 11 10 1
-cpolys 5289 = T 1424
-cpolys 5290 = Q 17 9 4
-cpolys 5291 = Q 24 18 5
-cpolys 5292 = T 315
-cpolys 5293 = Q 25 9 2
-cpolys 5294 = Q 14 3 1
-cpolys 5295 = T 1133
-cpolys 5296 = Q 8 3 2
-cpolys 5297 = T 446
-cpolys 5298 = T 575
-cpolys 5299 = Q 17 12 1
-cpolys 5300 = T 2195
-cpolys 5301 = Q 14 8 1
-cpolys 5302 = T 2205
-cpolys 5303 = T 434
-cpolys 5304 = Q 27 6 5
-cpolys 5305 = T 1863
-cpolys 5306 = Q 15 4 1
-cpolys 5307 = Q 12 10 4
-cpolys 5308 = Q 18 14 11
-cpolys 5309 = Q 7 6 1
-cpolys 5310 = T 837
-cpolys 5311 = T 142
-cpolys 5312 = Q 22 3 2
-cpolys 5313 = T 598
-cpolys 5314 = T 7
-cpolys 5315 = Q 18 14 3
-cpolys 5316 = T 1067
-cpolys 5317 = Q 17 4 3
-cpolys 5318 = T 125
-cpolys 5319 = T 1573
-cpolys 5320 = Q 19 17 3
-cpolys 5321 = T 351
-cpolys 5322 = T 1199
-cpolys 5323 = Q 15 11 2
-cpolys 5324 = T 15
-cpolys 5325 = Q 18 14 11
-cpolys 5326 = T 1545
-cpolys 5327 = T 723
-cpolys 5328 = Q 30 27 9
-cpolys 5329 = T 1219
-cpolys 5330 = T 803
-cpolys 5331 = Q 18 5 3
-cpolys 5332 = T 171
-cpolys 5333 = Q 25 24 19
-cpolys 5334 = T 545
-cpolys 5335 = Q 16 15 11
-cpolys 5336 = Q 23 21 8
-cpolys 5337 = T 2279
-cpolys 5338 = T 1647
-cpolys 5339 = Q 17 16 15
-cpolys 5340 = T 731
-cpolys 5341 = Q 22 15 13
-cpolys 5342 = Q 27 9 3
-cpolys 5343 = T 485
-cpolys 5344 = Q 17 11 10
-cpolys 5345 = T 339
-cpolys 5346 = T 171
-cpolys 5347 = Q 24 22 11
-cpolys 5348 = T 2259
-cpolys 5349 = Q 16 13 10
-cpolys 5350 = Q 15 14 5
-cpolys 5351 = T 707
-cpolys 5352 = Q 23 20 1
-cpolys 5353 = T 1419
-cpolys 5354 = Q 22 7 6
-cpolys 5355 = Q 16 11 2
-cpolys 5356 = T 51
-cpolys 5357 = Q 29 24 10
-cpolys 5358 = T 2485
-cpolys 5359 = T 81
-cpolys 5360 = Q 19 11 1
-cpolys 5361 = T 35
-cpolys 5362 = Q 15 7 1
-cpolys 5363 = Q 20 7 1
-cpolys 5364 = T 863
-cpolys 5365 = Q 14 13 8
-cpolys 5366 = Q 20 3 2
-cpolys 5367 = T 194
-cpolys 5368 = Q 19 18 3
-cpolys 5369 = T 152
-cpolys 5370 = T 1919
-cpolys 5371 = Q 18 15 6
-cpolys 5372 = T 1151
-cpolys 5373 = Q 20 14 13
-cpolys 5374 = Q 24 19 14
-cpolys 5375 = T 188
-cpolys 5376 = Q 7 4 1
-cpolys 5377 = T 547
-cpolys 5378 = T 1059
-cpolys 5379 = Q 23 17 4
-cpolys 5380 = T 423
-cpolys 5381 = Q 13 11 10
-cpolys 5382 = Q 26 24 17
-cpolys 5383 = T 1509
-cpolys 5384 = Q 17 15 4
-cpolys 5385 = T 376
-cpolys 5386 = T 2055
-cpolys 5387 = Q 28 21 8
-cpolys 5388 = T 2261
-cpolys 5389 = Q 18 10 9
-cpolys 5390 = T 2409
-cpolys 5391 = T 434
-cpolys 5392 = Q 7 3 2
-cpolys 5393 = T 215
-cpolys 5394 = T 1523
-cpolys 5395 = Q 18 13 1
-cpolys 5396 = T 2255
-cpolys 5397 = Q 9 5 2
-cpolys 5398 = T 357
-cpolys 5399 = T 485
-cpolys 5400 = Q 33 17 3
-cpolys 5401 = T 420
-cpolys 5402 = Q 18 15 9
-cpolys 5403 = Q 14 11 6
-cpolys 5404 = T 387
-cpolys 5405 = Q 17 14 12
-cpolys 5406 = T 1205
-cpolys 5407 = T 955
-cpolys 5408 = Q 30 23 1
-cpolys 5409 = T 1720
-cpolys 5410 = T 2343
-cpolys 5411 = Q 28 10 3
-cpolys 5412 = T 917
-cpolys 5413 = Q 21 18 7
-cpolys 5414 = Q 25 2 1
-cpolys 5415 = T 331
-cpolys 5416 = Q 34 31 19
-cpolys 5417 = T 1256
-cpolys 5418 = T 303
-cpolys 5419 = Q 25 24 23
-cpolys 5420 = T 945
-cpolys 5421 = Q 30 29 6
-cpolys 5422 = T 445
-cpolys 5423 = T 311
-cpolys 5424 = Q 16 15 13
-cpolys 5425 = T 186
-cpolys 5426 = Q 18 11 8
-cpolys 5427 = Q 18 12 11
-cpolys 5428 = T 117
-cpolys 5429 = Q 40 22 5
-cpolys 5430 = T 513
-cpolys 5431 = T 2163
-cpolys 5432 = Q 37 34 23
-cpolys 5433 = T 791
-cpolys 5434 = Q 19 18 15
-cpolys 5435 = Q 24 18 14
-cpolys 5436 = T 1229
-cpolys 5437 = Q 21 8 2
-cpolys 5438 = T 1289
-cpolys 5439 = T 203
-cpolys 5440 = Q 24 15 10
-cpolys 5441 = T 1254
-cpolys 5442 = T 1635
-cpolys 5443 = Q 20 10 6
-cpolys 5444 = T 1235
-cpolys 5445 = Q 20 19 7
-cpolys 5446 = T 865
-cpolys 5447 = T 860
-cpolys 5448 = Q 43 33 15
-cpolys 5449 = T 103
-cpolys 5450 = T 479
-cpolys 5451 = Q 30 19 16
-cpolys 5452 = T 2691
-cpolys 5453 = Q 13 4 2
-cpolys 5454 = T 893
-cpolys 5455 = T 91
-cpolys 5456 = Q 21 14 10
-cpolys 5457 = T 767
-cpolys 5458 = T 1839
-cpolys 5459 = Q 36 20 2
-cpolys 5460 = T 29
-cpolys 5461 = Q 30 28 5
-cpolys 5462 = Q 15 11 1
-cpolys 5463 = T 167
-cpolys 5464 = Q 15 5 2
-cpolys 5465 = T 54
-cpolys 5466 = Q 32 23 10
-cpolys 5467 = Q 22 8 5
-cpolys 5468 = T 95
-cpolys 5469 = Q 32 23 2
-cpolys 5470 = Q 13 12 1
-cpolys 5471 = T 198
-cpolys 5472 = Q 21 15 3
-cpolys 5473 = T 589
-cpolys 5474 = T 1247
-cpolys 5475 = Q 18 16 13
-cpolys 5476 = Q 30 23 11
-cpolys 5477 = Q 23 18 10
-cpolys 5478 = T 305
-cpolys 5479 = T 370
-cpolys 5480 = Q 13 10 3
-cpolys 5481 = T 167
-cpolys 5482 = Q 20 17 9
-cpolys 5483 = Q 22 2 1
-cpolys 5484 = T 1029
-cpolys 5485 = Q 16 8 2
-cpolys 5486 = Q 14 9 8
-cpolys 5487 = T 1834
-cpolys 5488 = Q 21 19 9
-cpolys 5489 = T 1290
-cpolys 5490 = T 1143
-cpolys 5491 = Q 24 14 1
-cpolys 5492 = T 135
-cpolys 5493 = Q 15 12 7
-cpolys 5494 = T 537
-cpolys 5495 = T 279
-cpolys 5496 = Q 13 11 4
-cpolys 5497 = T 1729
-cpolys 5498 = Q 19 12 7
-cpolys 5499 = Q 29 21 18
-cpolys 5500 = T 175
-cpolys 5501 = Q 27 19 2
-cpolys 5502 = T 2537
-cpolys 5503 = T 237
-cpolys 5504 = Q 20 19 1
-cpolys 5505 = T 98
-cpolys 5506 = Q 23 20 12
-cpolys 5507 = Q 15 10 7
-cpolys 5508 = T 729
-cpolys 5509 = Q 11 9 4
-cpolys 5510 = Q 19 15 2
-cpolys 5511 = T 554
-cpolys 5512 = Q 13 11 6
-cpolys 5513 = T 1814
-cpolys 5514 = T 535
-cpolys 5515 = Q 19 3 2
-cpolys 5516 = T 1563
-cpolys 5517 = Q 40 13 11
-cpolys 5518 = Q 26 23 7
-cpolys 5519 = T 773
-cpolys 5520 = Q 10 5 2
-cpolys 5521 = T 1209
-cpolys 5522 = Q 26 15 2
-cpolys 5523 = Q 26 20 13
-cpolys 5524 = T 2113
-cpolys 5525 = Q 24 21 6
-cpolys 5526 = T 1505
-cpolys 5527 = T 318
-cpolys 5528 = Q 25 18 14
-cpolys 5529 = T 1756
-cpolys 5530 = T 1467
-cpolys 5531 = Q 20 15 1
-cpolys 5532 = T 1017
-cpolys 5533 = Q 19 16 10
-cpolys 5534 = T 1425
-cpolys 5535 = T 217
-cpolys 5536 = Q 20 5 3
-cpolys 5537 = T 492
-cpolys 5538 = Q 28 22 7
-cpolys 5539 = Q 14 9 7
-cpolys 5540 = T 1089
-cpolys 5541 = Q 15 9 4
-cpolys 5542 = T 957
-cpolys 5543 = T 248
-cpolys 5544 = Q 11 10 2
-cpolys 5545 = T 298
-cpolys 5546 = Q 23 12 6
-cpolys 5547 = Q 22 4 3
-cpolys 5548 = T 403
-cpolys 5549 = Q 33 11 10
-cpolys 5550 = T 1273
-cpolys 5551 = T 712
-cpolys 5552 = Q 15 9 8
-cpolys 5553 = T 116
-cpolys 5554 = Q 16 5 2
-cpolys 5555 = Q 24 20 5
-cpolys 5556 = T 269
-cpolys 5557 = Q 39 35 8
-cpolys 5558 = T 1301
-cpolys 5559 = T 938
-cpolys 5560 = Q 55 46 10
-cpolys 5561 = T 773
-cpolys 5562 = T 995
-cpolys 5563 = Q 22 19 13
-cpolys 5564 = T 705
-cpolys 5565 = Q 17 14 5
-cpolys 5566 = T 2185
-cpolys 5567 = T 239
-cpolys 5568 = Q 33 22 7
-cpolys 5569 = T 4
-cpolys 5570 = Q 17 16 3
-cpolys 5571 = Q 27 11 2
-cpolys 5572 = T 1053
-cpolys 5573 = Q 18 11 6
-cpolys 5574 = T 901
-cpolys 5575 = T 699
-cpolys 5576 = Q 27 23 6
-cpolys 5577 = T 328
-cpolys 5578 = Q 15 9 3
-cpolys 5579 = Q 25 20 12
-cpolys 5580 = T 81
-cpolys 5581 = Q 20 6 4
-cpolys 5582 = T 1697
-cpolys 5583 = T 1037
-cpolys 5584 = Q 13 9 7
-cpolys 5585 = T 1338
-cpolys 5586 = T 371
-cpolys 5587 = Q 21 16 7
-cpolys 5588 = T 39
-cpolys 5589 = Q 29 27 8
-cpolys 5590 = T 1381
-cpolys 5591 = T 870
-cpolys 5592 = Q 29 20 7
-cpolys 5593 = T 124
-cpolys 5594 = T 15
-cpolys 5595 = Q 21 12 2
-cpolys 5596 = T 853
-cpolys 5597 = Q 20 6 3
-cpolys 5598 = T 101
-cpolys 5599 = T 565
-cpolys 5600 = Q 8 5 3
-cpolys 5601 = T 487
-cpolys 5602 = T 963
-cpolys 5603 = Q 22 20 4
-cpolys 5604 = T 2251
-cpolys 5605 = Q 32 23 1
-cpolys 5606 = T 1905
-cpolys 5607 = T 43
-cpolys 5608 = Q 22 5 2
-cpolys 5609 = T 287
-cpolys 5610 = T 271
-cpolys 5611 = Q 20 9 7
-cpolys 5612 = T 135
-cpolys 5613 = Q 20 17 14
-cpolys 5614 = Q 6 3 1
-cpolys 5615 = T 461
-cpolys 5616 = Q 30 15 6
-cpolys 5617 = T 6
-cpolys 5618 = Q 17 15 2
-cpolys 5619 = Q 11 8 6
-cpolys 5620 = T 1251
-cpolys 5621 = Q 12 11 4
-cpolys 5622 = T 2465
-cpolys 5623 = T 709
-cpolys 5624 = Q 21 18 14
-cpolys 5625 = T 28
-cpolys 5626 = T 943
-cpolys 5627 = Q 13 9 8
-cpolys 5628 = T 863
-cpolys 5629 = Q 23 12 4
-cpolys 5630 = T 357
-cpolys 5631 = T 1502
-cpolys 5632 = Q 17 15 5
-cpolys 5633 = T 143
-cpolys 5634 = T 759
-cpolys 5635 = Q 17 10 3
-cpolys 5636 = T 555
-cpolys 5637 = Q 8 6 5
-cpolys 5638 = Q 20 17 13
-cpolys 5639 = T 1365
-cpolys 5640 = Q 29 27 23
-cpolys 5641 = T 568
-cpolys 5642 = Q 33 23 2
-cpolys 5643 = Q 10 3 1
-cpolys 5644 = T 2233
-cpolys 5645 = Q 19 16 2
-cpolys 5646 = Q 23 8 5
-cpolys 5647 = Q 17 16 9
-cpolys 5648 = Q 21 15 8
-cpolys 5649 = T 49
-cpolys 5650 = T 967
-cpolys 5651 = Q 10 7 2
-cpolys 5652 = T 929
-cpolys 5653 = Q 16 11 5
-cpolys 5654 = T 149
-cpolys 5655 = T 434
-cpolys 5656 = Q 27 12 9
-cpolys 5657 = T 165
-cpolys 5658 = Q 9 4 3
-cpolys 5659 = Q 12 8 2
-cpolys 5660 = T 39
-cpolys 5661 = Q 26 14 10
-cpolys 5662 = T 2637
-cpolys 5663 = T 90
-cpolys 5664 = Q 31 29 11
-cpolys 5665 = T 714
-cpolys 5666 = T 1215
-cpolys 5667 = Q 10 8 1
-cpolys 5668 = Q 34 27 3
-cpolys 5669 = Q 27 4 1
-cpolys 5670 = T 41
-cpolys 5671 = T 37
-cpolys 5672 = Q 26 25 10
-cpolys 5673 = T 82
-cpolys 5674 = Q 18 15 13
-cpolys 5675 = Q 17 15 4
-cpolys 5676 = T 1259
-cpolys 5677 = Q 27 26 2
-cpolys 5678 = Q 31 21 8
-cpolys 5679 = T 271
-cpolys 5680 = Q 40 17 2
-cpolys 5681 = T 326
-cpolys 5682 = Q 35 16 1
-cpolys 5683 = Q 22 18 11
-cpolys 5684 = T 87
-cpolys 5685 = Q 10 7 5
-cpolys 5686 = Q 27 7 3
-cpolys 5687 = T 2007
-cpolys 5688 = Q 41 20 11
-cpolys 5689 = T 1384
-cpolys 5690 = T 1623
-cpolys 5691 = Q 21 15 4
-cpolys 5692 = T 561
-cpolys 5693 = Q 24 4 2
-cpolys 5694 = T 1609
-cpolys 5695 = T 732
-cpolys 5696 = Q 26 21 14
-cpolys 5697 = Q 19 8 2
-cpolys 5698 = Q 14 9 5
-cpolys 5699 = Q 12 8 5
-cpolys 5700 = T 705
-cpolys 5701 = Q 16 6 5
-cpolys 5702 = Q 22 15 8
-cpolys 5703 = T 82
-cpolys 5704 = Q 27 25 14
-cpolys 5705 = T 248
-cpolys 5706 = T 2199
-cpolys 5707 = Q 24 21 16
-cpolys 5708 = T 1151
-cpolys 5709 = Q 22 9 1
-cpolys 5710 = T 409
-cpolys 5711 = T 441
-cpolys 5712 = Q 10 9 3
-cpolys 5713 = T 27
-cpolys 5714 = T 1775
-cpolys 5715 = Q 28 6 3
-cpolys 5716 = Q 14 13 8
-cpolys 5717 = Q 21 6 5
-cpolys 5718 = T 1361
-cpolys 5719 = T 375
-cpolys 5720 = Q 32 11 2
-cpolys 5721 = T 1562
-cpolys 5722 = Q 19 18 14
-cpolys 5723 = Q 28 19 6
-cpolys 5724 = T 103
-cpolys 5725 = Q 22 9 3
-cpolys 5726 = T 309
-cpolys 5727 = T 1310
-cpolys 5728 = Q 25 24 7
-cpolys 5729 = T 515
-cpolys 5730 = Q 25 18 10
-cpolys 5731 = Q 13 11 8
-cpolys 5732 = T 2267
-cpolys 5733 = Q 10 8 5
-cpolys 5734 = T 2629
-cpolys 5735 = T 744
-cpolys 5736 = Q 25 18 10
-cpolys 5737 = T 507
-cpolys 5738 = Q 30 17 4
-cpolys 5739 = Q 18 15 13
-cpolys 5740 = T 115
-cpolys 5741 = Q 16 6 4
-cpolys 5742 = T 1085
-cpolys 5743 = T 1621
-cpolys 5744 = Q 21 11 8
-cpolys 5745 = T 544
-cpolys 5746 = T 279
-cpolys 5747 = Q 13 4 2
-cpolys 5748 = Q 18 17 2
-cpolys 5749 = Q 26 19 18
-cpolys 5750 = T 377
-cpolys 5751 = T 127
-cpolys 5752 = Q 21 20 7
-cpolys 5753 = T 1721
-cpolys 5754 = T 1235
-cpolys 5755 = Q 8 7 2
-cpolys 5756 = T 371
-cpolys 5757 = Q 22 18 16
-cpolys 5758 = T 805
-cpolys 5759 = T 1431
-cpolys 5760 = Q 29 23 10
-cpolys 5761 = T 615
-cpolys 5762 = T 2759
-cpolys 5763 = Q 18 13 1
-cpolys 5764 = T 2019
-cpolys 5765 = Q 17 10 7
-cpolys 5766 = Q 13 10 4
-cpolys 5767 = T 124
-cpolys 5768 = Q 21 14 3
-cpolys 5769 = T 83
-cpolys 5770 = Q 9 7 2
-cpolys 5771 = Q 16 14 13
-cpolys 5772 = T 343
-cpolys 5773 = Q 12 11 8
-cpolys 5774 = Q 15 5 4
-cpolys 5775 = T 266
-cpolys 5776 = Q 19 12 1
-cpolys 5777 = T 134
-cpolys 5778 = T 1071
-cpolys 5779 = Q 21 7 4
-cpolys 5780 = T 1535
-cpolys 5781 = Q 24 14 6
-cpolys 5782 = T 2377
-cpolys 5783 = T 954
-cpolys 5784 = Q 25 22 6
-cpolys 5785 = T 1161
-cpolys 5786 = Q 20 19 7
-cpolys 5787 = Q 30 20 15
-cpolys 5788 = T 1585
-cpolys 5789 = Q 21 14 12
-cpolys 5790 = T 197
-cpolys 5791 = T 2101
-cpolys 5792 = Q 33 13 11
-cpolys 5793 = T 437
-cpolys 5794 = T 2383
-cpolys 5795 = Q 15 14 3
-cpolys 5796 = T 831
-cpolys 5797 = Q 33 26 23
-cpolys 5798 = T 1853
-cpolys 5799 = T 934
-cpolys 5800 = Q 25 7 6
-cpolys 5801 = T 129
-cpolys 5802 = T 1015
-cpolys 5803 = Q 16 15 10
-cpolys 5804 = Q 13 8 1
-cpolys 5805 = Q 10 7 3
-cpolys 5806 = T 369
-cpolys 5807 = T 731
-cpolys 5808 = Q 43 10 1
-cpolys 5809 = T 369
-cpolys 5810 = T 47
-cpolys 5811 = Q 21 17 2
-cpolys 5812 = T 295
-cpolys 5813 = Q 14 13 1
-cpolys 5814 = T 2233
-cpolys 5815 = T 1083
-cpolys 5816 = Q 17 15 7
-cpolys 5817 = T 343
-cpolys 5818 = T 763
-cpolys 5819 = T 1058
-cpolys 5820 = T 61
-cpolys 5821 = Q 18 11 4
-cpolys 5822 = T 2145
-cpolys 5823 = T 916
-cpolys 5824 = Q 23 17 10
-cpolys 5825 = T 323
-cpolys 5826 = T 2027
-cpolys 5827 = Q 28 16 10
-cpolys 5828 = Q 17 8 5
-cpolys 5829 = Q 24 6 5
-cpolys 5830 = Q 27 23 11
-cpolys 5831 = T 275
-cpolys 5832 = Q 21 18 13
-cpolys 5833 = T 264
-cpolys 5834 = T 935
-cpolys 5835 = Q 13 5 2
-cpolys 5836 = T 91
-cpolys 5837 = Q 13 9 2
-cpolys 5838 = T 153
-cpolys 5839 = T 169
-cpolys 5840 = Q 23 14 2
-cpolys 5841 = T 250
-cpolys 5842 = Q 21 18 7
-cpolys 5843 = Q 20 7 6
-cpolys 5844 = T 1809
-cpolys 5845 = Q 18 5 1
-cpolys 5846 = Q 20 17 3
-cpolys 5847 = T 1013
-cpolys 5848 = Q 19 8 6
-cpolys 5849 = T 105
-cpolys 5850 = T 27
-cpolys 5851 = Q 9 6 1
-cpolys 5852 = Q 15 13 10
-cpolys 5853 = Q 46 36 18
-cpolys 5854 = T 2217
-cpolys 5855 = T 1334
-cpolys 5856 = Q 23 15 6
-cpolys 5857 = T 516
-cpolys 5858 = T 2735
-cpolys 5859 = Q 28 25 16
-cpolys 5860 = T 1899
-cpolys 5861 = Q 16 2 1
-cpolys 5862 = Q 18 3 2
-cpolys 5863 = T 58
-cpolys 5864 = Q 27 11 10
-cpolys 5865 = T 1249
-cpolys 5866 = Q 30 23 2
-cpolys 5867 = Q 17 6 2
-cpolys 5868 = T 373
-cpolys 5869 = Q 26 23 4
-cpolys 5870 = Q 15 9 5
-cpolys 5871 = T 287
-cpolys 5872 = Q 19 15 10
-cpolys 5873 = T 113
-cpolys 5874 = T 267
-cpolys 5875 = Q 20 13 9
-cpolys 5876 = T 243
-cpolys 5877 = Q 37 36 30
-cpolys 5878 = Q 24 9 1
-cpolys 5879 = T 2556
-cpolys 5880 = Q 21 10 3
-cpolys 5881 = T 81
-cpolys 5882 = T 975
-cpolys 5883 = Q 19 6 4
-cpolys 5884 = Q 14 11 10
-cpolys 5885 = Q 38 29 14
-cpolys 5886 = T 297
-cpolys 5887 = T 142
-cpolys 5888 = Q 23 10 4
-cpolys 5889 = T 541
-cpolys 5890 = Q 13 8 3
-cpolys 5891 = Q 20 15 9
-cpolys 5892 = T 63
-cpolys 5893 = Q 28 3 1
-cpolys 5894 = Q 21 15 2
-cpolys 5895 = T 781
-cpolys 5896 = Q 30 23 1
-cpolys 5897 = T 390
-cpolys 5898 = T 247
-cpolys 5899 = Q 35 21 10
-cpolys 5900 = T 125
-cpolys 5901 = Q 23 15 12
-cpolys 5902 = T 1981
-cpolys 5903 = T 380
-cpolys 5904 = Q 32 19 5
-cpolys 5905 = T 172
-cpolys 5906 = Q 23 18 15
-cpolys 5907 = Q 25 17 2
-cpolys 5908 = T 2101
-cpolys 5909 = Q 34 24 14
-cpolys 5910 = T 449
-cpolys 5911 = T 2545
-cpolys 5912 = Q 33 22 13
-cpolys 5913 = T 292
-cpolys 5914 = Q 25 13 7
-cpolys 5915 = Q 30 29 28
-cpolys 5916 = Q 20 15 3
-cpolys 5917 = Q 21 12 6
-cpolys 5918 = Q 13 12 8
-cpolys 5919 = T 1843
-cpolys 5920 = Q 16 15 6
-cpolys 5921 = T 311
-cpolys 5922 = T 495
-cpolys 5923 = Q 18 10 5
-cpolys 5924 = T 1017
-cpolys 5925 = Q 24 7 3
-cpolys 5926 = T 325
-cpolys 5927 = T 1305
-cpolys 5928 = Q 16 7 2
-cpolys 5929 = Q 16 6 4
-cpolys 5930 = Q 17 13 10
-cpolys 5931 = Q 30 26 14
-cpolys 5932 = T 2673
-cpolys 5933 = Q 15 11 6
-cpolys 5934 = Q 28 25 4
-cpolys 5935 = T 84
-cpolys 5936 = Q 27 4 1
-cpolys 5937 = T 49
-cpolys 5938 = Q 23 7 3
-cpolys 5939 = Q 12 5 3
-cpolys 5940 = T 99
-cpolys 5941 = Q 20 18 11
-cpolys 5942 = T 245
-cpolys 5943 = T 1075
-cpolys 5944 = Q 23 21 14
-cpolys 5945 = Q 9 5 3
-cpolys 5946 = Q 33 20 3
-cpolys 5947 = Q 14 11 4
-cpolys 5948 = T 117
-cpolys 5949 = Q 23 21 18
-cpolys 5950 = Q 32 13 8
-cpolys 5951 = T 216
-cpolys 5952 = Q 25 23 2
-cpolys 5953 = T 1767
-cpolys 5954 = T 95
-cpolys 5955 = Q 28 8 5
-cpolys 5956 = T 385
-cpolys 5957 = Q 18 6 2
-cpolys 5958 = T 2297
-cpolys 5959 = T 1864
-cpolys 5960 = Q 37 35 25
-cpolys 5961 = T 2081
-cpolys 5962 = T 2599
-cpolys 5963 = Q 35 28 6
-cpolys 5964 = T 1475
-cpolys 5965 = Q 27 19 12
-cpolys 5966 = T 609
-cpolys 5967 = T 2359
-cpolys 5968 = Q 21 14 4
-cpolys 5969 = T 24
-cpolys 5970 = T 399
-cpolys 5971 = Q 11 3 2
-cpolys 5972 = T 315
-cpolys 5973 = Q 20 8 3
-cpolys 5974 = Q 23 19 3
-cpolys 5975 = T 284
-cpolys 5976 = Q 18 9 6
-cpolys 5977 = T 657
-cpolys 5978 = T 1151
-cpolys 5979 = Q 29 25 2
-cpolys 5980 = T 1951
-cpolys 5981 = Q 21 14 13
-cpolys 5982 = T 45
-cpolys 5983 = T 1960
-cpolys 5984 = Q 17 7 1
-cpolys 5985 = T 203
-cpolys 5986 = T 895
-cpolys 5987 = Q 23 18 4
-cpolys 5988 = T 1067
-cpolys 5989 = Q 36 20 2
-cpolys 5990 = T 2729
-cpolys 5991 = T 680
-cpolys 5992 = Q 29 9 2
-cpolys 5993 = T 1133
-cpolys 5994 = Q 17 9 5
-cpolys 5995 = Q 26 25 20
-cpolys 5996 = Q 20 18 3
-cpolys 5997 = Q 10 8 1
-cpolys 5998 = T 1765
-cpolys 5999 = T 362
-cpolys 6000 = Q 23 21 12
-cpolys 6001 = T 648
-cpolys 6002 = T 2895
-cpolys 6003 = Q 25 19 14
-cpolys 6004 = T 2287
-cpolys 6005 = Q 22 13 8
-cpolys 6006 = T 1025
-cpolys 6007 = T 435
-cpolys 6008 = Q 30 27 15
-cpolys 6009 = T 346
-cpolys 6010 = T 2907
-cpolys 6011 = Q 36 30 5
-cpolys 6012 = T 533
-cpolys 6013 = Q 31 24 16
-cpolys 6014 = Q 21 14 9
-cpolys 6015 = T 91
-cpolys 6016 = Q 35 34 2
-cpolys 6017 = T 261
-cpolys 6018 = T 1315
-cpolys 6019 = Q 19 18 11
-cpolys 6020 = T 645
-cpolys 6021 = Q 32 22 17
-cpolys 6022 = T 2217
-cpolys 6023 = T 143
-cpolys 6024 = Q 39 33 26
-cpolys 6025 = T 586
-cpolys 6026 = T 915
-cpolys 6027 = T 98
-cpolys 6028 = Q 18 8 7
-cpolys 6029 = Q 22 17 3
-cpolys 6030 = T 1377
-cpolys 6031 = T 613
-cpolys 6032 = Q 44 21 14
-cpolys 6033 = T 406
-cpolys 6034 = T 439
-cpolys 6035 = Q 28 14 13
-cpolys 6036 = T 1577
-cpolys 6037 = Q 10 7 1
-cpolys 6038 = Q 21 17 11
-cpolys 6039 = T 1556
-cpolys 6040 = Q 25 11 5
-cpolys 6041 = T 1476
-cpolys 6042 = Q 21 3 2
-cpolys 6043 = Q 15 12 6
-cpolys 6044 = T 2525
-cpolys 6045 = Q 19 16 10
-cpolys 6046 = Q 16 3 2
-cpolys 6047 = T 411
-cpolys 6048 = Q 17 15 8
-cpolys 6049 = T 988
-cpolys 6050 = T 1227
-cpolys 6051 = Q 34 17 1
-cpolys 6052 = T 127
-cpolys 6053 = Q 15 11 2
-cpolys 6054 = Q 24 22 21
-cpolys 6055 = T 1242
-cpolys 6056 = Q 7 6 1
-cpolys 6057 = T 2378
-cpolys 6058 = T 1155
-cpolys 6059 = Q 39 34 20
-cpolys 6060 = T 243
-cpolys 6061 = Q 31 25 6
-cpolys 6062 = Q 15 7 2
-cpolys 6063 = Q 28 24 9
-cpolys 6064 = Q 23 18 11
-cpolys 6065 = T 129
-cpolys 6066 = T 67
-cpolys 6067 = Q 30 18 10
-cpolys 6068 = T 1149
-cpolys 6069 = Q 21 5 2
-cpolys 6070 = T 37
-cpolys 6071 = T 789
-cpolys 6072 = Q 28 15 13
-cpolys 6073 = T 1753
-cpolys 6074 = T 35
-cpolys 6075 = Q 26 24 6
-cpolys 6076 = T 1387
-cpolys 6077 = Q 17 11 8
-cpolys 6078 = T 1241
-cpolys 6079 = T 382
-cpolys 6080 = Q 19 8 6
-cpolys 6081 = T 1081
-cpolys 6082 = Q 20 2 1
-cpolys 6083 = Q 33 26 6
-cpolys 6084 = T 279
-cpolys 6085 = Q 16 13 7
-cpolys 6086 = T 557
-cpolys 6087 = T 1948
-cpolys 6088 = Q 23 10 3
-cpolys 6089 = T 1062
-cpolys 6090 = T 11
-cpolys 6091 = Q 15 9 4
-cpolys 6092 = T 1475
-cpolys 6093 = Q 14 9 6
-cpolys 6094 = T 973
-cpolys 6095 = T 2186
-cpolys 6096 = Q 20 11 2
-cpolys 6097 = T 346
-cpolys 6098 = T 1395
-cpolys 6099 = Q 22 16 14
-cpolys 6100 = T 577
-cpolys 6101 = Q 24 20 11
-cpolys 6102 = Q 22 17 16
-cpolys 6103 = T 376
-cpolys 6104 = Q 13 11 6
-cpolys 6105 = T 823
-cpolys 6106 = T 2079
-cpolys 6107 = Q 23 12 10
-cpolys 6108 = T 213
-cpolys 6109 = Q 17 11 4
-cpolys 6110 = Q 26 19 13
-cpolys 6111 = T 467
-cpolys 6112 = Q 35 12 1
-cpolys 6113 = T 1283
-cpolys 6114 = Q 11 6 5
-cpolys 6115 = Q 22 19 10
-cpolys 6116 = T 873
-cpolys 6117 = Q 34 33 30
-cpolys 6118 = T 1765
-cpolys 6119 = T 287
-cpolys 6120 = Q 4 3 1
-cpolys 6121 = T 490
-cpolys 6122 = Q 32 24 11
-cpolys 6123 = Q 25 22 6
-cpolys 6124 = T 19
-cpolys 6125 = Q 22 8 6
-cpolys 6126 = Q 20 15 5
-cpolys 6127 = Q 31 9 4
-cpolys 6128 = Q 34 15 2
-cpolys 6129 = T 1421
-cpolys 6130 = Q 24 22 7
-cpolys 6131 = Q 36 34 7
-cpolys 6132 = T 135
-cpolys 6133 = Q 16 7 3
-cpolys 6134 = T 2445
-cpolys 6135 = T 572
-cpolys 6136 = Q 17 7 5
-cpolys 6137 = T 1682
-cpolys 6138 = Q 26 11 10
-cpolys 6139 = Q 14 13 3
-cpolys 6140 = T 135
-cpolys 6141 = Q 16 13 6
-cpolys 6142 = T 2245
-cpolys 6143 = T 1005
-cpolys 6144 = Q 26 7 1
-cpolys 6145 = T 348
-cpolys 6146 = T 71
-cpolys 6147 = Q 29 24 6
-cpolys 6148 = Q 25 18 16
-cpolys 6149 = Q 23 20 14
-cpolys 6150 = T 1297
-cpolys 6151 = T 538
-cpolys 6152 = Q 28 27 13
-cpolys 6153 = T 77
-cpolys 6154 = Q 23 12 10
-cpolys 6155 = Q 34 33 4
-cpolys 6156 = T 25
-cpolys 6157 = Q 17 16 14
-cpolys 6158 = Q 14 6 5
-cpolys 6159 = T 1165
-cpolys 6160 = Q 38 15 10
-cpolys 6161 = T 1556
-cpolys 6162 = T 603
-cpolys 6163 = Q 17 12 7
-cpolys 6164 = T 1179
-cpolys 6165 = Q 25 15 12
-cpolys 6166 = Q 5 4 2
-cpolys 6167 = T 33
-cpolys 6168 = Q 20 11 2
-cpolys 6169 = T 1204
-cpolys 6170 = T 1179
-cpolys 6171 = Q 22 10 8
-cpolys 6172 = T 3
-cpolys 6173 = Q 10 9 1
-cpolys 6174 = T 1029
-cpolys 6175 = T 823
-cpolys 6176 = Q 29 15 1
-cpolys 6177 = T 430
-cpolys 6178 = T 1719
-cpolys 6179 = Q 16 8 1
-cpolys 6180 = T 245
-cpolys 6181 = Q 22 13 6
-cpolys 6182 = T 1773
-cpolys 6183 = T 56
-cpolys 6184 = Q 39 13 12
-cpolys 6185 = T 308
-cpolys 6186 = Q 15 6 4
-cpolys 6187 = Q 26 25 18
-cpolys 6188 = T 1223
-cpolys 6189 = Q 26 8 5
-cpolys 6190 = T 877
-cpolys 6191 = T 1074
-cpolys 6192 = Q 20 5 2
-cpolys 6193 = T 919
-cpolys 6194 = Q 21 9 2
-cpolys 6195 = Q 30 24 23
-cpolys 6196 = T 1807
-cpolys 6197 = Q 25 14 4
-cpolys 6198 = T 213
-cpolys 6199 = T 109
-cpolys 6200 = Q 29 10 7
-cpolys 6201 = T 922
-cpolys 6202 = T 867
-cpolys 6203 = Q 20 15 10
-cpolys 6204 = T 691
-cpolys 6205 = Q 14 12 1
-cpolys 6206 = Q 22 7 5
-cpolys 6207 = T 1363
-cpolys 6208 = Q 25 23 14
-cpolys 6209 = T 935
-cpolys 6210 = T 711
-cpolys 6211 = Q 19 18 5
-cpolys 6212 = Q 27 16 14
-cpolys 6213 = Q 15 14 12
-cpolys 6214 = T 913
-cpolys 6215 = T 134
-cpolys 6216 = Q 39 30 9
-cpolys 6217 = T 711
-cpolys 6218 = T 383
-cpolys 6219 = Q 17 14 4
-cpolys 6220 = T 889
-cpolys 6221 = Q 21 12 3
-cpolys 6222 = T 693
-cpolys 6223 = T 1033
-cpolys 6224 = Q 13 4 2
-cpolys 6225 = T 317
-cpolys 6226 = T 1035
-cpolys 6227 = Q 18 9 8
-cpolys 6228 = T 2691
-cpolys 6229 = Q 12 7 6
-cpolys 6230 = T 1317
-cpolys 6231 = T 359
-cpolys 6232 = Q 17 3 1
-cpolys 6233 = T 777
-cpolys 6234 = Q 22 18 7
-cpolys 6235 = Q 23 18 10
-cpolys 6236 = T 1701
-cpolys 6237 = Q 32 14 9
-cpolys 6238 = T 2353
-cpolys 6239 = T 921
-cpolys 6240 = Q 11 10 2
-cpolys 6241 = T 592
-cpolys 6242 = Q 32 28 27
-cpolys 6243 = Q 17 10 5
-cpolys 6244 = T 475
-cpolys 6245 = Q 28 26 4
-cpolys 6246 = T 1565
-cpolys 6247 = T 586
-cpolys 6248 = Q 18 7 2
-cpolys 6249 = T 1000
-cpolys 6250 = T 363
-cpolys 6251 = Q 35 34 31
-cpolys 6252 = Q 15 10 6
-cpolys 6253 = Q 14 10 2
-cpolys 6254 = Q 30 29 4
-cpolys 6255 = T 2318
-cpolys 6256 = Q 11 10 5
-cpolys 6257 = T 852
-cpolys 6258 = T 647
-cpolys 6259 = Q 18 12 3
-cpolys 6260 = T 1601
-cpolys 6261 = Q 17 14 12
-cpolys 6262 = T 261
-cpolys 6263 = T 1466
-cpolys 6264 = Q 17 16 7
-cpolys 6265 = T 502
-cpolys 6266 = Q 10 7 5
-cpolys 6267 = Q 26 8 5
-cpolys 6268 = T 973
-cpolys 6269 = Q 31 8 3
-cpolys 6270 = T 737
-cpolys 6271 = T 54
-cpolys 6272 = Q 17 10 6
-cpolys 6273 = T 1106
-cpolys 6274 = T 999
-cpolys 6275 = Q 15 14 5
-cpolys 6276 = T 1787
-cpolys 6277 = Q 16 10 6
-cpolys 6278 = T 749
-cpolys 6279 = T 290
-cpolys 6280 = Q 9 7 5
-cpolys 6281 = T 2021
-cpolys 6282 = T 1895
-cpolys 6283 = Q 14 11 4
-cpolys 6284 = Q 16 13 8
-cpolys 6285 = Q 26 14 5
-cpolys 6286 = T 741
-cpolys 6287 = T 104
-cpolys 6288 = Q 34 25 5
-cpolys 6289 = T 237
-cpolys 6290 = T 1127
-cpolys 6291 = Q 29 6 5
-cpolys 6292 = T 2317
-cpolys 6293 = Q 30 20 18
-cpolys 6294 = T 57
-cpolys 6295 = T 82
-cpolys 6296 = Q 35 19 10
-cpolys 6297 = T 190
-cpolys 6298 = Q 15 10 1
-cpolys 6299 = Q 25 13 2
-cpolys 6300 = T 7
-cpolys 6301 = Q 17 8 7
-cpolys 6302 = T 2105
-cpolys 6303 = T 467
-cpolys 6304 = Q 13 3 1
-cpolys 6305 = T 1052
-cpolys 6306 = T 2079
-cpolys 6307 = Q 28 27 5
-cpolys 6308 = T 405
-cpolys 6309 = Q 23 13 10
-cpolys 6310 = Q 11 7 2
-cpolys 6311 = T 1155
-cpolys 6312 = Q 35 33 14
-cpolys 6313 = T 355
-cpolys 6314 = Q 16 11 7
-cpolys 6315 = Q 42 40 31
-cpolys 6316 = T 21
-cpolys 6317 = Q 11 6 1
-cpolys 6318 = T 333
-cpolys 6319 = T 1213
-cpolys 6320 = Q 29 28 10
-cpolys 6321 = T 1
-cpolys 6322 = T 387
-cpolys 6323 = Q 19 15 14
-cpolys 6324 = T 1273
-cpolys 6325 = Q 18 4 2
-cpolys 6326 = T 1029
-cpolys 6327 = Q 22 15 10
-cpolys 6328 = Q 15 6 1
-cpolys 6329 = Q 21 16 1
-cpolys 6330 = T 623
-cpolys 6331 = Q 21 12 1
-cpolys 6332 = T 2781
-cpolys 6333 = Q 22 14 2
-cpolys 6334 = T 1977
-cpolys 6335 = T 368
-cpolys 6336 = Q 22 15 9
-cpolys 6337 = T 2086
-cpolys 6338 = T 459
-cpolys 6339 = Q 17 10 7
-cpolys 6340 = T 1137
-cpolys 6341 = Q 16 14 9
-cpolys 6342 = T 1309
-cpolys 6343 = T 939
-cpolys 6344 = Q 21 15 2
-cpolys 6345 = T 2566
-cpolys 6346 = Q 31 22 16
-cpolys 6347 = Q 11 6 2
-cpolys 6348 = T 75
-cpolys 6349 = Q 8 6 1
-cpolys 6350 = Q 11 7 6
-cpolys 6351 = T 1234
-cpolys 6352 = Q 21 11 4
-cpolys 6353 = T 1025
-cpolys 6354 = T 1155
-cpolys 6355 = Q 30 27 16
-cpolys 6356 = T 1115
-cpolys 6357 = Q 37 27 12
-cpolys 6358 = T 229
-cpolys 6359 = T 305
-cpolys 6360 = Q 13 11 1
-cpolys 6361 = Q 31 17 3
-cpolys 6362 = T 1967
-cpolys 6363 = Q 32 23 14
-cpolys 6364 = T 67
-cpolys 6365 = Q 21 14 5
-cpolys 6366 = T 273
-cpolys 6367 = T 142
-cpolys 6368 = Q 31 9 1
-cpolys 6369 = Q 19 11 10
-cpolys 6370 = T 1147
-cpolys 6371 = Q 30 18 17
-cpolys 6372 = T 135
-cpolys 6373 = Q 21 18 9
-cpolys 6374 = Q 12 9 8
-cpolys 6375 = T 313
-cpolys 6376 = Q 28 27 5
-cpolys 6377 = T 275
-cpolys 6378 = T 2643
-cpolys 6379 = Q 30 10 5
-cpolys 6380 = T 1085
-cpolys 6381 = Q 33 26 3
-cpolys 6382 = T 2061
-cpolys 6383 = T 1013
-cpolys 6384 = Q 34 29 7
-cpolys 6385 = T 364
-cpolys 6386 = T 543
-cpolys 6387 = Q 28 14 4
-cpolys 6388 = T 2731
-cpolys 6389 = Q 19 17 4
-cpolys 6390 = T 581
-cpolys 6391 = T 324
-cpolys 6392 = Q 39 34 10
-cpolys 6393 = T 103
-cpolys 6394 = T 1447
-cpolys 6395 = Q 29 7 4
-cpolys 6396 = T 91
-cpolys 6397 = Q 17 6 4
-cpolys 6398 = Q 12 11 10
-cpolys 6399 = T 146
-cpolys 6400 = Q 37 12 3
-cpolys 6401 = T 1146
-cpolys 6402 = T 947
-cpolys 6403 = Q 15 10 4
-cpolys 6404 = T 1779
-cpolys 6405 = Q 18 10 7
-cpolys 6406 = T 613
-cpolys 6407 = T 231
-cpolys 6408 = Q 31 12 10
-cpolys 6409 = T 72
-cpolys 6410 = Q 18 15 2
-cpolys 6411 = Q 23 18 14
-cpolys 6412 = T 1131
-cpolys 6413 = Q 18 17 10
-cpolys 6414 = Q 34 15 9
-cpolys 6415 = T 663
-cpolys 6416 = Q 29 15 7
-cpolys 6417 = T 19
-cpolys 6418 = T 1095
-cpolys 6419 = Q 9 7 4
-cpolys 6420 = T 903
-cpolys 6421 = Q 24 16 14
-cpolys 6422 = T 621
-cpolys 6423 = Q 26 19 1
-cpolys 6424 = Q 29 18 5
-cpolys 6425 = T 231
-cpolys 6426 = T 207
-cpolys 6427 = Q 35 29 18
-cpolys 6428 = T 791
-cpolys 6429 = Q 18 16 13
-cpolys 6430 = T 1333
-cpolys 6431 = T 3
-cpolys 6432 = Q 26 13 7
-cpolys 6433 = T 810
-cpolys 6434 = T 651
-cpolys 6435 = Q 15 9 4
-cpolys 6436 = T 1141
-cpolys 6437 = Q 23 18 4
-cpolys 6438 = T 425
-cpolys 6439 = T 630
-cpolys 6440 = Q 21 18 14
-cpolys 6441 = T 41
-cpolys 6442 = Q 19 18 5
-cpolys 6443 = Q 25 17 16
-cpolys 6444 = T 1647
-cpolys 6445 = Q 30 10 4
-cpolys 6446 = T 2633
-cpolys 6447 = T 1547
-cpolys 6448 = Q 25 23 8
-cpolys 6449 = T 777
-cpolys 6450 = T 1707
-cpolys 6451 = Q 26 14 13
-cpolys 6452 = T 381
-cpolys 6453 = Q 29 24 14
-cpolys 6454 = T 825
-cpolys 6455 = T 732
-cpolys 6456 = Q 31 25 17
-cpolys 6457 = T 840
-cpolys 6458 = T 119
-cpolys 6459 = Q 25 17 2
-cpolys 6460 = T 2073
-cpolys 6461 = Q 36 15 6
-cpolys 6462 = Q 24 3 2
-cpolys 6463 = T 93
-cpolys 6464 = Q 25 22 6
-cpolys 6465 = T 224
-cpolys 6466 = Q 26 8 7
-cpolys 6467 = Q 7 6 2
-cpolys 6468 = T 217
-cpolys 6469 = Q 24 22 6
-cpolys 6470 = T 477
-cpolys 6471 = T 1910
-cpolys 6472 = Q 31 30 2
-cpolys 6473 = T 1211
-cpolys 6474 = T 563
-cpolys 6475 = Q 18 13 2
-cpolys 6476 = T 1535
-cpolys 6477 = Q 31 18 15
-cpolys 6478 = T 213
-cpolys 6479 = T 84
-cpolys 6480 = Q 11 10 1
-cpolys 6481 = T 538
-cpolys 6482 = Q 17 8 3
-cpolys 6483 = Q 10 5 1
-cpolys 6484 = T 43
-cpolys 6485 = Q 21 8 6
-cpolys 6486 = Q 23 11 1
-cpolys 6487 = T 880
-cpolys 6488 = Q 21 13 7
-cpolys 6489 = T 706
-cpolys 6490 = T 111
-cpolys 6491 = Q 17 16 6
-cpolys 6492 = T 1169
-cpolys 6493 = Q 38 11 4
-cpolys 6494 = Q 29 27 5
-cpolys 6495 = T 283
-cpolys 6496 = Q 21 5 2
-cpolys 6497 = T 1736
-cpolys 6498 = T 2079
-cpolys 6499 = Q 26 9 2
-cpolys 6500 = T 375
-cpolys 6501 = Q 24 21 14
-cpolys 6502 = T 465
-cpolys 6503 = T 330
-cpolys 6504 = Q 23 15 9
-cpolys 6505 = T 1911
-cpolys 6506 = Q 15 7 5
-cpolys 6507 = Q 25 12 9
-cpolys 6508 = Q 20 11 3
-cpolys 6509 = Q 14 12 7
-cpolys 6510 = T 61
-cpolys 6511 = T 2673
-cpolys 6512 = Q 29 27 13
-cpolys 6513 = T 682
-cpolys 6514 = T 2571
-cpolys 6515 = Q 27 26 12
-cpolys 6516 = Q 18 12 3
-cpolys 6517 = Q 24 11 2
-cpolys 6518 = T 513
-cpolys 6519 = T 725
-cpolys 6520 = Q 37 29 11
-cpolys 6521 = T 695
-cpolys 6522 = T 675
-cpolys 6523 = Q 12 6 3
-cpolys 6524 = T 1283
-cpolys 6525 = Q 16 12 10
-cpolys 6526 = T 2137
-cpolys 6527 = T 242
-cpolys 6528 = Q 16 7 2
-cpolys 6529 = T 765
-cpolys 6530 = Q 15 9 5
-cpolys 6531 = Q 17 14 12
-cpolys 6532 = Q 15 10 7
-cpolys 6533 = Q 18 11 9
-cpolys 6534 = T 45
-cpolys 6535 = T 31
-cpolys 6536 = Q 25 10 9
-cpolys 6537 = T 542
-cpolys 6538 = T 31
-cpolys 6539 = Q 12 8 2
-cpolys 6540 = T 333
-cpolys 6541 = Q 14 11 7
-cpolys 6542 = Q 33 29 9
-cpolys 6543 = Q 28 21 7
-cpolys 6544 = Q 19 15 1
-cpolys 6545 = T 1322
-cpolys 6546 = T 279
-cpolys 6547 = Q 12 11 10
-cpolys 6548 = T 945
-cpolys 6549 = Q 34 15 6
-cpolys 6550 = T 2401
-cpolys 6551 = T 941
-cpolys 6552 = Q 27 22 6
-cpolys 6553 = T 265
-cpolys 6554 = T 159
-cpolys 6555 = Q 28 24 22
-cpolys 6556 = T 885
-cpolys 6557 = Q 34 30 17
-cpolys 6558 = T 153
-cpolys 6559 = T 879
-cpolys 6560 = Q 19 13 11
-cpolys 6561 = T 1834
-cpolys 6562 = T 651
-cpolys 6563 = Q 35 30 21
-cpolys 6564 = T 525
-cpolys 6565 = Q 19 15 8
-cpolys 6566 = Q 10 3 1
-cpolys 6567 = T 1112
-cpolys 6568 = Q 19 15 1
-cpolys 6569 = T 1410
-cpolys 6570 = T 1323
-cpolys 6571 = Q 14 13 6
-cpolys 6572 = Q 20 15 11
-cpolys 6573 = Q 17 10 5
-cpolys 6574 = Q 29 15 14
-cpolys 6575 = T 884
-cpolys 6576 = Q 27 25 19
-cpolys 6577 = T 2341
-cpolys 6578 = T 1587
-cpolys 6579 = Q 32 15 6
-cpolys 6580 = T 2577
-cpolys 6581 = Q 10 8 6
-cpolys 6582 = Q 17 13 8
-cpolys 6583 = T 859
-cpolys 6584 = Q 37 23 7
-cpolys 6585 = T 476
-cpolys 6586 = Q 34 32 15
-cpolys 6587 = Q 27 4 2
-cpolys 6588 = T 1617
-cpolys 6589 = Q 30 25 7
-cpolys 6590 = T 957
-cpolys 6591 = T 1999
-cpolys 6592 = Q 45 42 1
-cpolys 6593 = T 279
-cpolys 6594 = T 2679
-cpolys 6595 = Q 33 8 5
-cpolys 6596 = T 665
-cpolys 6597 = Q 18 14 5
-cpolys 6598 = T 885
-cpolys 6599 = T 189
-cpolys 6600 = Q 21 19 16
-cpolys 6601 = T 457
-cpolys 6602 = Q 14 8 3
-cpolys 6603 = Q 30 20 8
-cpolys 6604 = T 1279
-cpolys 6605 = Q 25 15 14
-cpolys 6606 = T 2365
-cpolys 6607 = T 813
-cpolys 6608 = Q 9 4 2
-cpolys 6609 = T 286
-cpolys 6610 = Q 27 26 8
-cpolys 6611 = Q 13 10 3
-cpolys 6612 = T 289
-cpolys 6613 = Q 28 22 15
-cpolys 6614 = T 2105
-cpolys 6615 = T 136
-cpolys 6616 = Q 33 9 3
-cpolys 6617 = T 71
-cpolys 6618 = T 2379
-cpolys 6619 = Q 7 6 1
-cpolys 6620 = T 341
-cpolys 6621 = Q 21 19 6
-cpolys 6622 = T 645
-cpolys 6623 = T 491
-cpolys 6624 = Q 15 14 9
-cpolys 6625 = T 549
-cpolys 6626 = Q 20 3 1
-cpolys 6627 = Q 26 7 5
-cpolys 6628 = T 2259
-cpolys 6629 = Q 11 9 4
-cpolys 6630 = T 1617
-cpolys 6631 = T 823
-cpolys 6632 = Q 27 20 17
-cpolys 6633 = T 535
-cpolys 6634 = T 559
-cpolys 6635 = Q 14 13 9
-cpolys 6636 = T 1189
-cpolys 6637 = Q 29 26 21
-cpolys 6638 = T 3185
-cpolys 6639 = T 2135
-cpolys 6640 = Q 43 32 9
-cpolys 6641 = T 167
-cpolys 6642 = T 1063
-cpolys 6643 = Q 42 25 9
-cpolys 6644 = T 917
-cpolys 6645 = Q 23 18 3
-cpolys 6646 = Q 9 8 5
-cpolys 6647 = T 77
-cpolys 6648 = Q 25 19 16
-cpolys 6649 = T 202
-cpolys 6650 = T 1391
-cpolys 6651 = Q 22 19 14
-cpolys 6652 = T 1143
-cpolys 6653 = Q 8 7 3
-cpolys 6654 = T 1809
-cpolys 6655 = T 54
-cpolys 6656 = Q 19 15 1
-cpolys 6657 = T 839
-cpolys 6658 = Q 31 30 19
-cpolys 6659 = Q 20 16 1
-cpolys 6660 = T 475
-cpolys 6661 = Q 14 12 1
-cpolys 6662 = T 2901
-cpolys 6663 = T 416
-cpolys 6664 = Q 24 15 6
-cpolys 6665 = T 147
-cpolys 6666 = T 999
-cpolys 6667 = Q 13 8 2
-cpolys 6668 = T 221
-cpolys 6669 = Q 16 7 5
-cpolys 6670 = T 673
-cpolys 6671 = T 930
-cpolys 6672 = Q 26 21 5
-cpolys 6673 = T 256
-cpolys 6674 = T 983
-cpolys 6675 = Q 16 10 1
-cpolys 6676 = T 3141
-cpolys 6677 = Q 26 9 7
-cpolys 6678 = T 41
-cpolys 6679 = T 550
-cpolys 6680 = Q 29 7 3
-cpolys 6681 = T 124
-cpolys 6682 = Q 38 21 5
-cpolys 6683 = Q 12 5 3
-cpolys 6684 = T 1275
-cpolys 6685 = Q 18 11 1
-cpolys 6686 = T 617
-cpolys 6687 = T 872
-cpolys 6688 = Q 55 32 9
-cpolys 6689 = T 1764
-cpolys 6690 = T 1911
-cpolys 6691 = Q 15 12 1
-cpolys 6692 = T 2237
-cpolys 6693 = Q 10 6 4
-cpolys 6694 = T 2989
-cpolys 6695 = T 3072
-cpolys 6696 = Q 45 19 7
-cpolys 6697 = T 2613
-cpolys 6698 = Q 18 14 11
-cpolys 6699 = Q 14 12 3
-cpolys 6700 = T 625
-cpolys 6701 = Q 19 8 4
-cpolys 6702 = T 1145
-cpolys 6703 = T 675
-cpolys 6704 = Q 11 10 6
-cpolys 6705 = T 218
-cpolys 6706 = T 1683
-cpolys 6707 = Q 32 15 14
-cpolys 6708 = T 189
-cpolys 6709 = Q 18 12 7
-cpolys 6710 = T 1397
-cpolys 6711 = T 2929
-cpolys 6712 = Q 31 26 2
-cpolys 6713 = T 11
-cpolys 6714 = T 751
-cpolys 6715 = Q 17 6 1
-cpolys 6716 = T 1781
-cpolys 6717 = Q 16 11 7
-cpolys 6718 = Q 14 9 7
-cpolys 6719 = T 455
-cpolys 6720 = Q 12 9 7
-cpolys 6721 = T 210
-cpolys 6722 = T 2387
-cpolys 6723 = Q 21 18 4
-cpolys 6724 = T 1017
-cpolys 6725 = Q 23 3 2
-cpolys 6726 = T 21
-cpolys 6727 = T 397
-cpolys 6728 = Q 21 8 2
-cpolys 6729 = T 631
-cpolys 6730 = T 3
-cpolys 6731 = Q 32 27 6
-cpolys 6732 = T 965
-cpolys 6733 = Q 8 5 3
-cpolys 6734 = Q 21 14 9
-cpolys 6735 = T 1241
-cpolys 6736 = Q 27 14 2
-cpolys 6737 = T 1197
-cpolys 6738 = Q 35 24 5
-cpolys 6739 = Q 29 24 1
-cpolys 6740 = T 41
-cpolys 6741 = Q 18 15 11
-cpolys 6742 = Q 9 4 3
-cpolys 6743 = T 240
-cpolys 6744 = Q 29 21 15
-cpolys 6745 = T 136
-cpolys 6746 = T 1563
-cpolys 6747 = Q 22 21 1
-cpolys 6748 = T 1273
-cpolys 6749 = Q 18 16 4
-cpolys 6750 = T 2781
-cpolys 6751 = T 1104
-cpolys 6752 = Q 11 8 2
-cpolys 6753 = T 35
-cpolys 6754 = T 1483
-cpolys 6755 = Q 30 20 3
-cpolys 6756 = T 225
-cpolys 6757 = T 466
-cpolys 6758 = T 3105
-cpolys 6759 = T 29
-cpolys 6760 = Q 37 15 7
-cpolys 6761 = T 15
-cpolys 6762 = Q 28 4 3
-cpolys 6763 = Q 32 21 11
-cpolys 6764 = T 989
-cpolys 6765 = Q 23 3 2
-cpolys 6766 = Q 17 5 4
-cpolys 6767 = T 300
-cpolys 6768 = Q 18 15 10
-cpolys 6769 = T 97
-cpolys 6770 = Q 34 31 24
-cpolys 6771 = Q 36 13 12
-cpolys 6772 = T 321
-cpolys 6773 = Q 32 20 6
-cpolys 6774 = T 733
-cpolys 6775 = T 1293
-cpolys 6776 = Q 25 11 6
-cpolys 6777 = T 925
-cpolys 6778 = Q 34 33 1
-cpolys 6779 = Q 16 6 2
-cpolys 6780 = T 655
-cpolys 6781 = Q 16 15 4
-cpolys 6782 = T 3321
-cpolys 6783 = T 518
-cpolys 6784 = Q 16 15 1
-cpolys 6785 = T 452
-cpolys 6786 = T 171
-cpolys 6787 = Q 25 5 2
-cpolys 6788 = T 2345
-cpolys 6789 = Q 28 19 9
-cpolys 6790 = Q 22 8 5
-cpolys 6791 = T 107
-cpolys 6792 = Q 27 25 24
-cpolys 6793 = T 571
-cpolys 6794 = T 707
-cpolys 6795 = Q 17 2 1
-cpolys 6796 = T 895
-cpolys 6797 = Q 20 10 6
-cpolys 6798 = T 1029
-cpolys 6799 = T 1240
-cpolys 6800 = Q 26 25 1
-cpolys 6801 = T 140
-cpolys 6802 = Q 29 25 3
-cpolys 6803 = Q 32 21 16
-cpolys 6804 = T 49
-cpolys 6805 = Q 24 20 7
-cpolys 6806 = Q 25 23 16
-cpolys 6807 = T 1568
-cpolys 6808 = Q 37 19 13
-cpolys 6809 = Q 27 10 5
-cpolys 6810 = T 679
-cpolys 6811 = Q 21 20 8
-cpolys 6812 = T 1115
-cpolys 6813 = Q 24 19 16
-cpolys 6814 = Q 32 26 25
-cpolys 6815 = T 518
-cpolys 6816 = Q 22 5 2
-cpolys 6817 = T 682
-cpolys 6818 = T 1571
-cpolys 6819 = Q 21 11 8
-cpolys 6820 = T 747
-cpolys 6821 = Q 19 13 8
-cpolys 6822 = T 1425
-cpolys 6823 = Q 14 5 1
-cpolys 6824 = Q 21 14 10
-cpolys 6825 = T 133
-cpolys 6826 = T 435
-cpolys 6827 = Q 26 12 8
-cpolys 6828 = T 63
-cpolys 6829 = Q 20 16 6
-cpolys 6830 = T 537
-cpolys 6831 = T 115
-cpolys 6832 = Q 35 32 25
-cpolys 6833 = T 35
-cpolys 6834 = Q 23 14 1
-cpolys 6835 = Q 23 4 2
-cpolys 6836 = T 473
-cpolys 6837 = Q 21 17 14
-cpolys 6838 = T 357
-cpolys 6839 = T 96
-cpolys 6840 = Q 14 9 3
-cpolys 6841 = T 427
-cpolys 6842 = Q 18 17 7
-cpolys 6843 = Q 26 9 6
-cpolys 6844 = Q 20 15 5
-cpolys 6845 = Q 26 20 6
-cpolys 6846 = T 2497
-cpolys 6847 = T 2247
-cpolys 6848 = Q 29 22 18
-cpolys 6849 = T 221
-cpolys 6850 = Q 21 7 4
-cpolys 6851 = Q 31 30 4
-cpolys 6852 = T 839
-cpolys 6853 = Q 28 27 15
-cpolys 6854 = Q 21 14 1
-cpolys 6855 = T 254
-cpolys 6856 = Q 30 29 17
-cpolys 6857 = T 386
-cpolys 6858 = T 747
-cpolys 6859 = Q 16 12 9
-cpolys 6860 = T 531
-cpolys 6861 = Q 21 10 3
-cpolys 6862 = T 1405
-cpolys 6863 = T 956
-cpolys 6864 = Q 11 5 2
-cpolys 6865 = T 2494
-cpolys 6866 = T 647
-cpolys 6867 = Q 16 4 2
-cpolys 6868 = T 43
-cpolys 6869 = Q 17 10 1
-cpolys 6870 = Q 27 22 21
-cpolys 6871 = T 1719
-cpolys 6872 = Q 25 13 2
-cpolys 6873 = T 2056
-cpolys 6874 = T 2631
-cpolys 6875 = Q 22 21 4
-cpolys 6876 = T 287
-cpolys 6877 = Q 15 14 2
-cpolys 6878 = Q 21 15 5
-cpolys 6879 = Q 9 6 2
-cpolys 6880 = Q 31 30 19
-cpolys 6881 = T 152
-cpolys 6882 = T 1883
-cpolys 6883 = Q 32 26 25
-cpolys 6884 = T 383
-cpolys 6885 = Q 22 21 12
-cpolys 6886 = T 565
-cpolys 6887 = T 495
-cpolys 6888 = Q 24 11 9
-cpolys 6889 = T 652
-cpolys 6890 = Q 16 15 8
-cpolys 6891 = Q 30 15 10
-cpolys 6892 = T 421
-cpolys 6893 = Q 20 12 6
-cpolys 6894 = Q 12 9 8
-cpolys 6895 = T 256
-cpolys 6896 = Q 29 17 11
-cpolys 6897 = Q 27 18 8
-cpolys 6898 = T 439
-cpolys 6899 = Q 6 5 2
-cpolys 6900 = T 915
-cpolys 6901 = Q 6 4 1
-cpolys 6902 = T 645
-cpolys 6903 = T 2981
-cpolys 6904 = Q 36 13 11
-cpolys 6905 = T 2513
-cpolys 6906 = T 1667
-cpolys 6907 = Q 23 12 2
-cpolys 6908 = T 1613
-cpolys 6909 = Q 36 35 8
-cpolys 6910 = T 1953
-cpolys 6911 = T 1031
-cpolys 6912 = Q 25 15 12
-cpolys 6913 = T 414
-cpolys 6914 = Q 16 11 4
-cpolys 6915 = Q 18 15 7
-cpolys 6916 = Q 13 4 1
-cpolys 6917 = Q 22 13 8
-cpolys 6918 = T 1653
-cpolys 6919 = Q 15 14 2
-cpolys 6920 = Q 8 3 1
-cpolys 6921 = T 1046
-cpolys 6922 = Q 25 15 13
-cpolys 6923 = Q 17 9 2
-cpolys 6924 = T 93
-cpolys 6925 = Q 24 9 7
-cpolys 6926 = Q 29 9 3
-cpolys 6927 = T 653
-cpolys 6928 = Q 8 7 5
-cpolys 6929 = T 3216
-cpolys 6930 = T 699
-cpolys 6931 = Q 21 14 13
-cpolys 6932 = T 627
-cpolys 6933 = Q 35 26 4
-cpolys 6934 = Q 15 10 9
-cpolys 6935 = T 678
-cpolys 6936 = Q 37 31 30
-cpolys 6937 = T 582
-cpolys 6938 = T 963
-cpolys 6939 = Q 16 12 6
-cpolys 6940 = T 399
-cpolys 6941 = Q 27 12 11
-cpolys 6942 = T 1949
-cpolys 6943 = T 211
-cpolys 6944 = Q 23 21 8
-cpolys 6945 = Q 17 3 2
-cpolys 6946 = Q 23 16 14
-cpolys 6947 = Q 25 19 18
-cpolys 6948 = T 63
-cpolys 6949 = Q 16 5 2
-cpolys 6950 = Q 11 9 3
-cpolys 6951 = T 434
-cpolys 6952 = Q 32 21 19
-cpolys 6953 = T 1820
-cpolys 6954 = T 735
-cpolys 6955 = Q 13 7 4
-cpolys 6956 = T 1727
-cpolys 6957 = Q 24 10 3
-cpolys 6958 = T 2113
-cpolys 6959 = T 1070
-cpolys 6960 = Q 14 9 3
-cpolys 6961 = T 570
-cpolys 6962 = Q 16 11 1
-cpolys 6963 = Q 24 20 6
-cpolys 6964 = T 13
-cpolys 6965 = Q 18 8 7
-cpolys 6966 = T 249
-cpolys 6967 = T 2269
-cpolys 6968 = Q 35 32 17
-cpolys 6969 = T 1073
-cpolys 6970 = T 1867
-cpolys 6971 = Q 28 20 6
-cpolys 6972 = T 455
-cpolys 6973 = Q 36 34 14
-cpolys 6974 = T 369
-cpolys 6975 = T 992
-cpolys 6976 = Q 19 18 9
-cpolys 6977 = T 285
-cpolys 6978 = Q 23 18 3
-cpolys 6979 = Q 11 8 6
-cpolys 6980 = T 485
-cpolys 6981 = Q 17 16 11
-cpolys 6982 = Q 21 16 8
-cpolys 6983 = T 168
-cpolys 6984 = Q 8 3 2
-cpolys 6985 = T 439
-cpolys 6986 = T 579
-cpolys 6987 = Q 21 6 4
-cpolys 6988 = T 445
-cpolys 6989 = Q 15 12 2
-cpolys 6990 = T 1673
-cpolys 6991 = T 510
-cpolys 6992 = Q 27 11 9
-cpolys 6993 = T 166
-cpolys 6994 = Q 28 12 3
-cpolys 6995 = Q 25 12 4
-cpolys 6996 = T 1025
-cpolys 6997 = Q 27 17 4
-cpolys 6998 = T 1241
-cpolys 6999 = T 623
-cpolys 7000 = Q 27 26 11
-cpolys 7001 = T 1631
-cpolys 7002 = T 3375
-cpolys 7003 = Q 16 6 5
-cpolys 7004 = T 291
-cpolys 7005 = Q 14 11 4
-cpolys 7006 = T 981
-cpolys 7007 = T 914
-cpolys 7008 = Q 33 25 6
-cpolys 7009 = T 1932
-cpolys 7010 = Q 14 13 6
-cpolys 7011 = Q 5 2 1
-cpolys 7012 = T 273
-cpolys 7013 = Q 8 5 2
-cpolys 7014 = T 633
-cpolys 7015 = T 1483
-cpolys 7016 = Q 23 10 7
-cpolys 7017 = T 175
-cpolys 7018 = T 1695
-cpolys 7019 = Q 33 14 13
-cpolys 7020 = T 117
-cpolys 7021 = Q 23 6 4
-cpolys 7022 = T 1337
-cpolys 7023 = T 242
-cpolys 7024 = Q 22 15 10
-cpolys 7025 = T 1701
-cpolys 7026 = T 195
-cpolys 7027 = Q 20 9 2
-cpolys 7028 = Q 25 16 2
-cpolys 7029 = Q 29 23 16
-cpolys 7030 = T 793
-cpolys 7031 = T 1029
-cpolys 7032 = Q 19 13 9
-cpolys 7033 = T 16
-cpolys 7034 = T 2679
-cpolys 7035 = Q 29 9 8
-cpolys 7036 = T 1353
-cpolys 7037 = Q 26 24 20
-cpolys 7038 = T 2961
-cpolys 7039 = T 669
-cpolys 7040 = Q 19 18 7
-cpolys 7041 = T 587
-cpolys 7042 = T 2871
-cpolys 7043 = Q 15 12 6
-cpolys 7044 = T 23
-cpolys 7045 = Q 19 6 3
-cpolys 7046 = T 1961
-cpolys 7047 = T 238
-cpolys 7048 = Q 39 17 4
-cpolys 7049 = T 794
-cpolys 7050 = T 1379
-cpolys 7051 = Q 7 6 3
-cpolys 7052 = T 3471
-cpolys 7053 = Q 13 6 1
-cpolys 7054 = Q 17 11 1
-cpolys 7055 = T 803
-cpolys 7056 = Q 27 24 10
-cpolys 7057 = T 937
-cpolys 7058 = T 1103
-cpolys 7059 = Q 31 17 4
-cpolys 7060 = T 765
-cpolys 7061 = Q 24 23 1
-cpolys 7062 = T 2597
-cpolys 7063 = T 265
-cpolys 7064 = Q 11 5 2
-cpolys 7065 = T 599
-cpolys 7066 = Q 21 14 11
-cpolys 7067 = Q 19 11 10
-cpolys 7068 = T 549
-cpolys 7069 = Q 28 17 14
-cpolys 7070 = T 1217
-cpolys 7071 = T 137
-cpolys 7072 = Q 37 26 17
-cpolys 7073 = T 2202
-cpolys 7074 = T 259
-cpolys 7075 = Q 31 26 20
-cpolys 7076 = T 677
-cpolys 7077 = T 674
-cpolys 7078 = Q 11 10 2
-cpolys 7079 = T 351
-cpolys 7080 = Q 27 18 16
-cpolys 7081 = T 333
-cpolys 7082 = T 423
-cpolys 7083 = Q 26 22 2
-cpolys 7084 = T 345
-cpolys 7085 = Q 20 15 14
-cpolys 7086 = Q 22 6 3
-cpolys 7087 = T 1245
-cpolys 7088 = Q 32 5 2
-cpolys 7089 = T 2519
-cpolys 7090 = Q 21 15 1
-cpolys 7091 = Q 9 7 4
-cpolys 7092 = T 1929
-cpolys 7093 = Q 22 18 2
-cpolys 7094 = Q 23 13 12
-cpolys 7095 = T 67
-cpolys 7096 = Q 27 17 13
-cpolys 7097 = T 936
-cpolys 7098 = T 2695
-cpolys 7099 = Q 16 4 1
-cpolys 7100 = T 921
-cpolys 7101 = Q 8 7 1
-cpolys 7102 = Q 28 21 8
-cpolys 7103 = T 63
-cpolys 7104 = Q 15 10 4
-cpolys 7105 = T 1954
-cpolys 7106 = T 3123
-cpolys 7107 = Q 8 2 1
-cpolys 7108 = T 235
-cpolys 7109 = Q 26 21 8
-cpolys 7110 = T 41
-cpolys 7111 = T 1665
-cpolys 7112 = Q 35 5 2
-cpolys 7113 = T 1618
-cpolys 7114 = Q 13 12 3
-cpolys 7115 = Q 34 9 5
-cpolys 7116 = T 3417
-cpolys 7117 = Q 27 26 10
-cpolys 7118 = T 1113
-cpolys 7119 = T 935
-cpolys 7120 = Q 17 15 5
-cpolys 7121 = T 953
-cpolys 7122 = Q 35 13 2
-cpolys 7123 = Q 26 22 6
-cpolys 7124 = T 89
-cpolys 7125 = Q 11 10 5
-cpolys 7126 = T 2785
-cpolys 7127 = T 42
-cpolys 7128 = Q 19 13 2
-cpolys 7129 = T 130
-cpolys 7130 = Q 35 24 21
-cpolys 7131 = Q 21 10 7
-cpolys 7132 = T 273
-cpolys 7133 = Q 36 34 10
-cpolys 7134 = T 729
-cpolys 7135 = T 553
-cpolys 7136 = Q 16 3 2
-cpolys 7137 = T 337
-cpolys 7138 = Q 20 7 6
-cpolys 7139 = Q 26 21 11
-cpolys 7140 = T 225
-cpolys 7141 = Q 26 9 1
-cpolys 7142 = Q 27 20 15
-cpolys 7143 = T 2426
-cpolys 7144 = Q 33 13 3
-cpolys 7145 = T 1127
-cpolys 7146 = T 259
-cpolys 7147 = Q 20 17 9
-cpolys 7148 = T 935
-cpolys 7149 = Q 9 7 6
-cpolys 7150 = T 33
-cpolys 7151 = T 660
-cpolys 7152 = Q 37 23 16
-cpolys 7153 = T 301
-cpolys 7154 = Q 15 14 8
-cpolys 7155 = Q 34 21 18
-cpolys 7156 = T 1117
-cpolys 7157 = Q 20 18 16
-cpolys 7158 = Q 33 23 12
-cpolys 7159 = T 1332
-cpolys 7160 = Q 27 26 9
-cpolys 7161 = T 49
-cpolys 7162 = T 1647
-cpolys 7163 = Q 7 3 2
-cpolys 7164 = T 33
-cpolys 7165 = Q 21 17 2
-cpolys 7166 = T 3521
-cpolys 7167 = T 3529
-cpolys 7168 = Q 13 10 6
-cpolys 7169 = T 1110
-cpolys 7170 = T 1887
-cpolys 7171 = Q 22 18 3
-cpolys 7172 = T 2549
-cpolys 7173 = Q 28 26 19
-cpolys 7174 = Q 16 13 4
-cpolys 7175 = T 584
-cpolys 7176 = Q 33 31 21
-cpolys 7177 = T 918
-cpolys 7178 = Q 16 7 6
-cpolys 7179 = Q 30 20 15
-cpolys 7180 = T 415
-cpolys 7181 = Q 24 13 11
-cpolys 7182 = T 245
-cpolys 7183 = T 30
-cpolys 7184 = Q 33 27 2
-cpolys 7185 = T 1064
-cpolys 7186 = Q 19 10 1
-cpolys 7187 = Q 18 14 12
-cpolys 7188 = Q 23 19 7
-cpolys 7189 = Q 18 14 8
-cpolys 7190 = T 897
-cpolys 7191 = T 1201
-cpolys 7192 = Q 29 14 6
-cpolys 7193 = T 2412
-cpolys 7194 = T 1763
-cpolys 7195 = Q 32 30 7
-cpolys 7196 = T 1607
-cpolys 7197 = Q 17 14 12
-cpolys 7198 = Q 11 2 1
-cpolys 7199 = T 21
-cpolys 7200 = Q 29 23 3
-cpolys 7201 = T 153
-cpolys 7202 = T 1631
-cpolys 7203 = T 686
-cpolys 7204 = T 1695
-cpolys 7205 = Q 21 5 2
-cpolys 7206 = T 2349
-cpolys 7207 = T 246
-cpolys 7208 = Q 29 23 21
-cpolys 7209 = T 460
-cpolys 7210 = T 3111
-cpolys 7211 = Q 29 8 6
-cpolys 7212 = Q 29 26 4
-cpolys 7213 = Q 25 15 8
-cpolys 7214 = Q 28 7 2
-cpolys 7215 = T 19
-cpolys 7216 = Q 15 8 1
-cpolys 7217 = T 891
-cpolys 7218 = T 3263
-cpolys 7219 = Q 23 6 5
-cpolys 7220 = T 2975
-cpolys 7221 = Q 13 12 10
-cpolys 7222 = T 2733
-cpolys 7223 = T 245
-cpolys 7224 = Q 15 12 10
-cpolys 7225 = T 333
-cpolys 7226 = T 2807
-cpolys 7227 = Q 29 22 7
-cpolys 7228 = T 1165
-cpolys 7229 = Q 19 4 2
-cpolys 7230 = T 2421
-cpolys 7231 = T 2185
-cpolys 7232 = Q 35 12 9
-cpolys 7233 = T 1435
-cpolys 7234 = Q 29 22 18
-cpolys 7235 = Q 19 18 7
-cpolys 7236 = T 75
-cpolys 7237 = Q 21 10 2
-cpolys 7238 = Q 19 14 6
-cpolys 7239 = T 1610
-cpolys 7240 = Q 33 14 2
-cpolys 7241 = T 308
-cpolys 7242 = T 87
-cpolys 7243 = Q 25 10 1
-cpolys 7244 = T 497
-cpolys 7245 = Q 26 23 9
-cpolys 7246 = T 2505
-cpolys 7247 = T 726
-cpolys 7248 = Q 17 7 4
-cpolys 7249 = T 274
-cpolys 7250 = T 2427
-cpolys 7251 = Q 19 14 13
-cpolys 7252 = T 1885
-cpolys 7253 = Q 32 13 7
-cpolys 7254 = T 933
-cpolys 7255 = T 283
-cpolys 7256 = Q 22 21 7
-cpolys 7257 = T 3472
-cpolys 7258 = T 2731
-cpolys 7259 = Q 38 19 1
-cpolys 7260 = T 121
-cpolys 7261 = Q 28 3 2
-cpolys 7262 = Q 32 13 12
-cpolys 7263 = T 256
-cpolys 7264 = Q 41 36 19
-cpolys 7265 = T 776
-cpolys 7266 = T 139
-cpolys 7267 = Q 32 17 6
-cpolys 7268 = Q 14 4 3
-cpolys 7269 = Q 33 32 30
-cpolys 7270 = T 829
-cpolys 7271 = T 1325
-cpolys 7272 = Q 23 10 4
-cpolys 7273 = T 789
-cpolys 7274 = Q 38 31 18
-cpolys 7275 = Q 8 2 1
-cpolys 7276 = T 1621
-cpolys 7277 = Q 24 23 7
-cpolys 7278 = T 1741
-cpolys 7279 = T 3247
-cpolys 7280 = Q 37 6 4
-cpolys 7281 = T 179
-cpolys 7282 = Q 26 8 7
-cpolys 7283 = Q 34 22 12
-cpolys 7284 = T 625
-cpolys 7285 = Q 29 18 5
-cpolys 7286 = T 1793
-cpolys 7287 = T 1349
-cpolys 7288 = Q 25 23 17
-cpolys 7289 = T 1253
-cpolys 7290 = T 1431
-cpolys 7291 = Q 29 24 1
-cpolys 7292 = T 3033
-cpolys 7293 = Q 34 14 8
-cpolys 7294 = Q 22 13 10
-cpolys 7295 = T 1961
-cpolys 7296 = Q 37 7 2
-cpolys 7297 = T 570
-cpolys 7298 = Q 15 13 11
-cpolys 7299 = Q 26 11 3
-cpolys 7300 = T 925
-cpolys 7301 = Q 23 22 7
-cpolys 7302 = T 1521
-cpolys 7303 = T 3280
-cpolys 7304 = Q 37 30 17
-cpolys 7305 = T 602
-cpolys 7306 = T 7
-cpolys 7307 = Q 19 15 2
-cpolys 7308 = T 287
-cpolys 7309 = Q 23 15 2
-cpolys 7310 = T 3557
-cpolys 7311 = T 341
-cpolys 7312 = Q 25 24 3
-cpolys 7313 = T 45
-cpolys 7314 = T 2787
-cpolys 7315 = Q 25 10 4
-cpolys 7316 = T 1415
-cpolys 7317 = Q 20 19 4
-cpolys 7318 = T 2625
-cpolys 7319 = T 330
-cpolys 7320 = Q 35 28 10
-cpolys 7321 = T 202
-cpolys 7322 = T 1587
-cpolys 7323 = Q 26 11 2
-cpolys 7324 = T 523
-cpolys 7325 = Q 35 29 6
-cpolys 7326 = T 381
-cpolys 7327 = T 2947
-cpolys 7328 = Q 41 30 26
-cpolys 7329 = T 70
-cpolys 7330 = Q 11 10 9
-cpolys 7331 = Q 28 19 6
-cpolys 7332 = T 643
-cpolys 7333 = Q 26 21 5
-cpolys 7334 = T 237
-cpolys 7335 = T 1421
-cpolys 7336 = Q 34 21 5
-cpolys 7337 = T 828
-cpolys 7338 = T 1351
-cpolys 7339 = Q 14 5 1
-cpolys 7340 = T 311
-cpolys 7341 = Q 29 5 2
-cpolys 7342 = T 577
-cpolys 7343 = T 170
-cpolys 7344 = Q 33 28 3
-cpolys 7345 = T 1344
-cpolys 7346 = T 671
-cpolys 7347 = Q 27 26 2
-cpolys 7348 = T 2863
-cpolys 7349 = Q 12 6 2
-cpolys 7350 = T 573
-cpolys 7351 = T 601
-cpolys 7352 = Q 20 5 3
-cpolys 7353 = T 410
-cpolys 7354 = T 2443
-cpolys 7355 = Q 27 26 7
-cpolys 7356 = T 1179
-cpolys 7357 = Q 30 16 8
-cpolys 7358 = Q 20 15 6
-cpolys 7359 = T 2864
-cpolys 7360 = Q 23 18 2
-cpolys 7361 = T 155
-cpolys 7362 = T 355
-cpolys 7363 = Q 34 24 19
-cpolys 7364 = T 377
-cpolys 7365 = Q 26 20 5
-cpolys 7366 = T 397
-cpolys 7367 = T 213
-cpolys 7368 = Q 19 13 11
-cpolys 7369 = T 1041
-cpolys 7370 = T 1683
-cpolys 7371 = Q 28 16 9
-cpolys 7372 = T 1429
-cpolys 7373 = Q 11 8 6
-cpolys 7374 = T 829
-cpolys 7375 = T 172
-cpolys 7376 = Q 41 22 16
-cpolys 7377 = T 407
-cpolys 7378 = T 523
-cpolys 7379 = Q 22 8 4
-cpolys 7380 = T 105
-cpolys 7381 = Q 32 10 2
-cpolys 7382 = T 2537
-cpolys 7383 = T 20
-cpolys 7384 = Q 31 26 9
-cpolys 7385 = T 912
-cpolys 7386 = T 751
-cpolys 7387 = Q 23 20 10
-cpolys 7388 = T 629
-cpolys 7389 = Q 22 17 13
-cpolys 7390 = Q 13 12 10
-cpolys 7391 = T 35
-cpolys 7392 = Q 33 27 21
-cpolys 7393 = T 1407
-cpolys 7394 = T 1127
-cpolys 7395 = Q 8 4 2
-cpolys 7396 = Q 29 16 2
-cpolys 7397 = Q 28 26 21
-cpolys 7398 = T 145
-cpolys 7399 = T 2715
-cpolys 7400 = Q 19 9 5
-cpolys 7401 = T 1814
-cpolys 7402 = T 871
-cpolys 7403 = Q 30 20 14
-cpolys 7404 = T 297
-cpolys 7405 = Q 17 14 6
-cpolys 7406 = Q 27 20 1
-cpolys 7407 = Q 27 21 17
-cpolys 7408 = Q 13 3 1
-cpolys 7409 = T 854
-cpolys 7410 = T 2179
-cpolys 7411 = Q 24 18 16
-cpolys 7412 = T 1797
-cpolys 7413 = Q 17 6 2
-cpolys 7414 = Q 13 12 2
-cpolys 7415 = Q 10 9 5
-cpolys 7416 = Q 35 23 9
-cpolys 7417 = T 634
-cpolys 7418 = T 867
-cpolys 7419 = Q 32 29 2
-cpolys 7420 = Q 26 25 5
-cpolys 7421 = Q 26 14 2
-cpolys 7422 = T 2961
-cpolys 7423 = T 285
-cpolys 7424 = Q 18 13 7
-cpolys 7425 = T 371
-cpolys 7426 = T 1371
-cpolys 7427 = Q 30 17 1
-cpolys 7428 = T 343
-cpolys 7429 = Q 30 10 4
-cpolys 7430 = Q 11 9 6
-cpolys 7431 = T 65
-cpolys 7432 = Q 30 19 7
-cpolys 7433 = T 420
-cpolys 7434 = T 2295
-cpolys 7435 = Q 13 5 2
-cpolys 7436 = T 315
-cpolys 7437 = Q 31 20 19
-cpolys 7438 = T 3285
-cpolys 7439 = T 2505
-cpolys 7440 = Q 22 21 15
-cpolys 7441 = T 1053
-cpolys 7442 = Q 10 6 5
-cpolys 7443 = Q 23 12 6
-cpolys 7444 = T 679
-cpolys 7445 = Q 12 5 2
-cpolys 7446 = T 1217
-cpolys 7447 = T 1
-cpolys 7448 = Q 21 20 14
-cpolys 7449 = T 625
-cpolys 7450 = T 379
-cpolys 7451 = Q 16 14 9
-cpolys 7452 = T 1701
-cpolys 7453 = Q 30 29 7
-cpolys 7454 = Q 24 13 5
-cpolys 7455 = T 284
-cpolys 7456 = Q 27 8 1
-cpolys 7457 = Q 12 9 2
-cpolys 7458 = T 3127
-cpolys 7459 = Q 40 32 14
-cpolys 7460 = T 1535
-cpolys 7461 = Q 20 19 7
-cpolys 7462 = T 345
-cpolys 7463 = T 2939
-cpolys 7464 = Q 21 18 14
-cpolys 7465 = T 277
-cpolys 7466 = T 2087
-cpolys 7467 = Q 25 20 4
-cpolys 7468 = T 789
-cpolys 7469 = Q 30 26 22
-cpolys 7470 = Q 17 8 3
-cpolys 7471 = T 400
-cpolys 7472 = Q 23 13 7
-cpolys 7473 = T 457
-cpolys 7474 = Q 23 17 15
-cpolys 7475 = Q 24 10 8
-cpolys 7476 = T 423
-cpolys 7477 = Q 23 16 2
-cpolys 7478 = T 1797
-cpolys 7479 = T 1069
-cpolys 7480 = Q 32 15 2
-cpolys 7481 = T 887
-cpolys 7482 = Q 18 4 3
-cpolys 7483 = Q 25 18 2
-cpolys 7484 = T 3305
-cpolys 7485 = Q 26 8 1
-cpolys 7486 = Q 22 19 16
-cpolys 7487 = T 2940
-cpolys 7488 = Q 21 16 6
-cpolys 7489 = T 2644
-cpolys 7490 = T 2843
-cpolys 7491 = Q 10 9 7
-cpolys 7492 = T 1015
-cpolys 7493 = Q 20 10 3
-cpolys 7494 = Q 20 9 8
-cpolys 7495 = T 241
-cpolys 7496 = Q 23 21 12
-cpolys 7497 = T 49
-cpolys 7498 = Q 33 15 12
-cpolys 7499 = Q 27 14 9
-cpolys 7500 = T 125
-cpolys 7501 = Q 21 13 2
-cpolys 7502 = Q 20 17 8
-cpolys 7503 = T 628
-cpolys 7504 = Q 45 17 2
-cpolys 7505 = T 1451
-cpolys 7506 = T 135
-cpolys 7507 = Q 34 14 9
-cpolys 7508 = T 3503
-cpolys 7509 = Q 21 10 4
-cpolys 7510 = Q 26 7 2
-cpolys 7511 = T 51
-cpolys 7512 = Q 22 21 3
-cpolys 7513 = T 2697
-cpolys 7514 = Q 38 21 5
-cpolys 7515 = Q 18 17 11
-cpolys 7516 = Q 27 25 18
-cpolys 7517 = Q 20 19 10
-cpolys 7518 = T 3653
-cpolys 7519 = T 15
-cpolys 7520 = Q 19 9 7
-cpolys 7521 = T 1501
-cpolys 7522 = T 2331
-cpolys 7523 = Q 35 22 1
-cpolys 7524 = T 75
-cpolys 7525 = Q 17 11 4
-cpolys 7526 = T 533
-cpolys 7527 = T 1507
-cpolys 7528 = Q 18 13 1
-cpolys 7529 = T 953
-cpolys 7530 = T 307
-cpolys 7531 = Q 13 10 3
-cpolys 7532 = T 705
-cpolys 7533 = Q 11 8 7
-cpolys 7534 = T 2349
-cpolys 7535 = T 2726
-cpolys 7536 = Q 42 21 14
-cpolys 7537 = T 1377
-cpolys 7538 = T 735
-cpolys 7539 = Q 26 19 10
-cpolys 7540 = T 2127
-cpolys 7541 = Q 28 10 2
-cpolys 7542 = T 549
-cpolys 7543 = T 1173
-cpolys 7544 = Q 23 13 7
-cpolys 7545 = T 1679
-cpolys 7546 = Q 15 8 5
-cpolys 7547 = Q 24 22 11
-cpolys 7548 = T 1689
-cpolys 7549 = Q 22 16 12
-cpolys 7550 = Q 27 26 9
-cpolys 7551 = T 145
-cpolys 7552 = Q 17 8 3
-cpolys 7553 = T 492
-cpolys 7554 = Q 12 11 6
-cpolys 7555 = Q 26 13 2
-cpolys 7556 = T 2835
-cpolys 7557 = Q 18 16 12
-cpolys 7558 = T 1501
-cpolys 7559 = T 185
-cpolys 7560 = Q 41 21 3
-cpolys 7561 = T 846
-cpolys 7562 = T 1547
-cpolys 7563 = Q 29 8 7
-cpolys 7564 = T 1845
-cpolys 7565 = Q 24 22 13
-cpolys 7566 = T 209
-cpolys 7567 = T 151
-cpolys 7568 = Q 15 5 3
-cpolys 7569 = T 3409
-cpolys 7570 = T 3303
-cpolys 7571 = Q 16 14 7
-cpolys 7572 = T 2413
-cpolys 7573 = Q 12 7 6
-cpolys 7574 = T 197
-cpolys 7575 = T 2174
-cpolys 7576 = Q 41 40 11
-cpolys 7577 = T 846
-cpolys 7578 = T 423
-cpolys 7579 = Q 14 11 3
-cpolys 7580 = T 761
-cpolys 7581 = Q 23 21 14
-cpolys 7582 = Q 13 6 2
-cpolys 7583 = T 653
-cpolys 7584 = Q 51 46 10
-cpolys 7585 = T 268
-cpolys 7586 = T 3251
-cpolys 7587 = Q 15 9 4
-cpolys 7588 = T 655
-cpolys 7589 = Q 15 10 7
-cpolys 7590 = T 869
-cpolys 7591 = T 1236
-cpolys 7592 = Q 45 10 1
-cpolys 7593 = T 1210
-cpolys 7594 = T 3471
-cpolys 7595 = Q 34 32 13
-cpolys 7596 = T 55
-cpolys 7597 = Q 32 11 7
-cpolys 7598 = T 1469
-cpolys 7599 = T 2066
-cpolys 7600 = Q 19 18 2
-cpolys 7601 = T 2555
-cpolys 7602 = T 555
-cpolys 7603 = Q 6 5 2
-cpolys 7604 = T 1257
-cpolys 7605 = Q 28 15 3
-cpolys 7606 = Q 24 9 7
-cpolys 7607 = T 111
-cpolys 7608 = Q 39 25 10
-cpolys 7609 = T 495
-cpolys 7610 = Q 18 11 2
-cpolys 7611 = Q 32 27 6
-cpolys 7612 = T 1671
-cpolys 7613 = Q 25 8 6
-cpolys 7614 = T 945
-cpolys 7615 = Q 19 13 7
-cpolys 7616 = Q 31 21 14
-cpolys 7617 = Q 18 5 3
-cpolys 7618 = Q 22 17 6
-cpolys 7619 = Q 29 18 6
-cpolys 7620 = T 203
-cpolys 7621 = Q 32 29 19
-cpolys 7622 = T 581
-cpolys 7623 = T 637
-cpolys 7624 = Q 9 2 1
-cpolys 7625 = T 474
-cpolys 7626 = T 291
-cpolys 7627 = Q 40 15 2
-cpolys 7628 = T 3773
-cpolys 7629 = Q 35 10 7
-cpolys 7630 = T 2833
-cpolys 7631 = T 92
-cpolys 7632 = Q 54 3 2
-cpolys 7633 = Q 24 14 7
-cpolys 7634 = T 2963
-cpolys 7635 = Q 27 11 2
-cpolys 7636 = T 733
-cpolys 7637 = Q 13 10 8
-cpolys 7638 = T 2673
-cpolys 7639 = T 3729
-cpolys 7640 = Q 29 3 2
-cpolys 7641 = T 925
-cpolys 7642 = T 663
-cpolys 7643 = Q 16 5 1
-cpolys 7644 = T 161
-cpolys 7645 = Q 28 15 10
-cpolys 7646 = T 1233
-cpolys 7647 = T 1105
-cpolys 7648 = Q 37 33 10
-cpolys 7649 = T 2222
-cpolys 7650 = T 199
-cpolys 7651 = Q 24 16 13
-cpolys 7652 = T 2165
-cpolys 7653 = Q 21 14 11
-cpolys 7654 = Q 20 14 1
-cpolys 7655 = T 3629
-cpolys 7656 = Q 30 13 7
-cpolys 7657 = T 1069
-cpolys 7658 = T 3627
-cpolys 7659 = Q 17 13 10
-cpolys 7660 = T 2287
-cpolys 7661 = Q 30 20 4
-cpolys 7662 = T 2473
-cpolys 7663 = T 1203
-cpolys 7664 = Q 30 23 5
-cpolys 7665 = T 97
-cpolys 7666 = T 1351
-cpolys 7667 = Q 27 26 7
-cpolys 7668 = T 77
-cpolys 7669 = Q 30 6 3
-cpolys 7670 = Q 13 11 4
-cpolys 7671 = T 769
-cpolys 7672 = Q 39 5 1
-cpolys 7673 = T 120
-cpolys 7674 = T 1891
-cpolys 7675 = Q 9 6 1
-cpolys 7676 = Q 21 14 11
-cpolys 7677 = Q 38 25 11
-cpolys 7678 = T 2325
-cpolys 7679 = T 1497
-cpolys 7680 = Q 27 9 3
-cpolys 7681 = T 1500
-cpolys 7682 = T 479
-cpolys 7683 = Q 23 14 7
-cpolys 7684 = T 1419
-cpolys 7685 = Q 10 9 8
-cpolys 7686 = T 581
-cpolys 7687 = T 867
-cpolys 7688 = Q 35 16 6
-cpolys 7689 = T 728
-cpolys 7690 = Q 23 19 11
-cpolys 7691 = Q 36 29 2
-cpolys 7692 = T 1683
-cpolys 7693 = Q 30 9 4
-cpolys 7694 = T 2685
-cpolys 7695 = T 119
-cpolys 7696 = Q 17 16 15
-cpolys 7697 = T 282
-cpolys 7698 = T 111
-cpolys 7699 = Q 10 6 3
-cpolys 7700 = T 177
-cpolys 7701 = Q 20 14 8
-cpolys 7702 = T 541
-cpolys 7703 = T 2786
-cpolys 7704 = Q 15 12 10
-cpolys 7705 = T 1962
-cpolys 7706 = T 831
-cpolys 7707 = Q 19 18 15
-cpolys 7708 = T 13
-cpolys 7709 = Q 18 4 2
-cpolys 7710 = T 3853
-cpolys 7711 = T 3084
-cpolys 7712 = Q 27 22 5
-cpolys 7713 = T 1060
-cpolys 7714 = T 367
-cpolys 7715 = Q 22 16 14
-cpolys 7716 = T 1157
-cpolys 7717 = Q 7 6 1
-cpolys 7718 = Q 11 5 3
-cpolys 7719 = T 1993
-cpolys 7720 = Q 27 25 4
-cpolys 7721 = T 1382
-cpolys 7722 = T 15
-cpolys 7723 = Q 30 21 9
-cpolys 7724 = T 1967
-cpolys 7725 = Q 23 22 17
-cpolys 7726 = Q 30 23 7
-cpolys 7727 = T 1007
-cpolys 7728 = Q 21 6 3
-cpolys 7729 = T 594
-cpolys 7730 = T 1979
-cpolys 7731 = Q 11 10 1
-cpolys 7732 = T 49
-cpolys 7733 = Q 15 8 3
-cpolys 7734 = T 2089
-cpolys 7735 = T 717
-cpolys 7736 = Q 22 11 3
-cpolys 7737 = Q 13 5 1
-cpolys 7738 = T 3499
-cpolys 7739 = Q 48 33 29
-cpolys 7740 = T 47
-cpolys 7741 = Q 32 22 11
-cpolys 7742 = T 377
-cpolys 7743 = T 3007
-cpolys 7744 = Q 33 28 27
-cpolys 7745 = T 1364
-cpolys 7746 = Q 22 19 10
-cpolys 7747 = Q 28 26 12
-cpolys 7748 = T 1155
-cpolys 7749 = Q 28 25 2
-cpolys 7750 = T 721
-cpolys 7751 = T 273
-cpolys 7752 = Q 35 30 2
-cpolys 7753 = T 1459
-cpolys 7754 = Q 31 7 5
-cpolys 7755 = Q 16 7 2
-cpolys 7756 = Q 29 6 4
-cpolys 7757 = Q 17 10 7
-cpolys 7758 = T 1633
-cpolys 7759 = T 42
-cpolys 7760 = Q 32 23 21
-cpolys 7761 = T 2074
-cpolys 7762 = T 231
-cpolys 7763 = Q 14 10 6
-cpolys 7764 = T 499
-cpolys 7765 = Q 18 17 1
-cpolys 7766 = T 1341
-cpolys 7767 = T 410
-cpolys 7768 = Q 27 18 15
-cpolys 7769 = T 2933
-cpolys 7770 = T 1943
-cpolys 7771 = Q 38 35 27
-cpolys 7772 = T 2879
-cpolys 7773 = Q 30 19 18
-cpolys 7774 = T 3585
-cpolys 7775 = T 243
-cpolys 7776 = Q 41 39 36
-cpolys 7777 = T 150
-cpolys 7778 = Q 24 23 3
-cpolys 7779 = Q 40 22 14
-cpolys 7780 = T 325
-cpolys 7781 = Q 24 22 5
-cpolys 7782 = Q 25 17 1
-cpolys 7783 = T 118
-cpolys 7784 = Q 7 4 2
-cpolys 7785 = T 818
-cpolys 7786 = Q 16 15 9
-cpolys 7787 = Q 26 18 7
-cpolys 7788 = T 435
-cpolys 7789 = Q 17 13 2
-cpolys 7790 = T 1533
-cpolys 7791 = T 749
-cpolys 7792 = Q 47 31 29
-cpolys 7793 = T 233
-cpolys 7794 = T 675
-cpolys 7795 = Q 38 33 8
-cpolys 7796 = T 1841
-cpolys 7797 = Q 14 10 1
-cpolys 7798 = Q 29 22 3
-cpolys 7799 = T 137
-cpolys 7800 = Q 11 10 5
-cpolys 7801 = T 558
-cpolys 7802 = T 2103
-cpolys 7803 = Q 19 14 2
-cpolys 7804 = Q 9 8 2
-cpolys 7805 = Q 23 14 5
-cpolys 7806 = Q 17 12 6
-cpolys 7807 = T 1533
-cpolys 7808 = Q 25 24 10
-cpolys 7809 = T 2233
-cpolys 7810 = T 699
-cpolys 7811 = Q 34 23 18
-cpolys 7812 = T 413
-cpolys 7813 = Q 38 30 28
-cpolys 7814 = T 2121
-cpolys 7815 = T 994
-cpolys 7816 = Q 20 3 2
-cpolys 7817 = T 47
-cpolys 7818 = T 1291
-cpolys 7819 = Q 8 5 3
-cpolys 7820 = T 35
-cpolys 7821 = Q 14 10 8
-cpolys 7822 = T 2929
-cpolys 7823 = T 458
-cpolys 7824 = Q 39 36 14
-cpolys 7825 = T 966
-cpolys 7826 = T 3483
-cpolys 7827 = Q 31 28 6
-cpolys 7828 = T 163
-cpolys 7829 = Q 15 14 8
-cpolys 7830 = T 1281
-cpolys 7831 = T 825
-cpolys 7832 = Q 37 19 3
-cpolys 7833 = T 613
-cpolys 7834 = Q 16 15 9
-cpolys 7835 = Q 28 20 10
-cpolys 7836 = Q 23 20 7
-cpolys 7837 = Q 30 23 1
-cpolys 7838 = T 3789
-cpolys 7839 = T 374
-cpolys 7840 = Q 33 29 23
-cpolys 7841 = T 2829
-cpolys 7842 = Q 29 10 4
-cpolys 7843 = Q 16 9 6
-cpolys 7844 = Q 23 10 7
-cpolys 7845 = Q 32 31 7
-cpolys 7846 = Q 23 22 2
-cpolys 7847 = T 270
-cpolys 7848 = Q 34 31 21
-cpolys 7849 = T 967
-cpolys 7850 = T 3591
-cpolys 7851 = Q 28 13 5
-cpolys 7852 = T 2235
-cpolys 7853 = Q 30 28 26
-cpolys 7854 = T 213
-cpolys 7855 = T 1087
-cpolys 7856 = Q 12 3 2
-cpolys 7857 = T 215
-cpolys 7858 = T 3643
-cpolys 7859 = Q 22 3 2
-cpolys 7860 = T 2505
-cpolys 7861 = Q 20 16 2
-cpolys 7862 = Q 17 13 10
-cpolys 7863 = T 1568
-cpolys 7864 = Q 19 13 1
-cpolys 7865 = T 654
-cpolys 7866 = T 79
-cpolys 7867 = Q 40 35 21
-cpolys 7868 = T 1227
-cpolys 7869 = Q 17 6 2
-cpolys 7870 = T 981
-cpolys 7871 = T 2462
-cpolys 7872 = Q 27 22 18
-cpolys 7873 = T 154
-cpolys 7874 = T 855
-cpolys 7875 = Q 28 21 13
-cpolys 7876 = T 3165
-cpolys 7877 = Q 18 7 4
-cpolys 7878 = T 129
-cpolys 7879 = Q 24 19 8
-cpolys 7880 = Q 25 19 17
-cpolys 7881 = Q 26 9 6
-cpolys 7882 = Q 17 15 10
-cpolys 7883 = Q 17 16 6
-cpolys 7884 = T 215
-cpolys 7885 = Q 35 30 13
-cpolys 7886 = Q 25 15 13
-cpolys 7887 = T 664
-cpolys 7888 = Q 12 9 7
-cpolys 7889 = T 2400
-cpolys 7890 = T 531
-cpolys 7891 = Q 18 5 1
-cpolys 7892 = T 1113
-cpolys 7893 = Q 20 5 2
-cpolys 7894 = Q 21 16 13
-cpolys 7895 = T 197
-cpolys 7896 = Q 45 39 7
-cpolys 7897 = T 940
-cpolys 7898 = Q 29 8 2
-cpolys 7899 = Q 11 10 2
-cpolys 7900 = T 1681
-cpolys 7901 = Q 17 13 10
-cpolys 7902 = T 2729
-cpolys 7903 = T 612
-cpolys 7904 = Q 45 34 25
-cpolys 7905 = T 1612
-cpolys 7906 = Q 15 11 1
-cpolys 7907 = Q 20 10 6
-cpolys 7908 = T 1333
-cpolys 7909 = Q 20 2 1
-cpolys 7910 = T 221
-cpolys 7911 = T 197
-cpolys 7912 = Q 7 3 2
-cpolys 7913 = T 1466
-cpolys 7914 = Q 29 11 4
-cpolys 7915 = Q 32 22 6
-cpolys 7916 = Q 25 12 4
-cpolys 7917 = Q 27 26 23
-cpolys 7918 = Q 19 6 1
-cpolys 7919 = T 756
-cpolys 7920 = Q 20 19 5
-cpolys 7921 = T 2206
-cpolys 7922 = T 1335
-cpolys 7923 = Q 26 21 14
-cpolys 7924 = T 1089
-cpolys 7925 = Q 10 3 2
-cpolys 7926 = T 1653
-cpolys 7927 = T 321
-cpolys 7928 = Q 23 15 5
-cpolys 7929 = T 1178
-cpolys 7930 = Q 17 10 5
-cpolys 7931 = Q 27 24 17
-cpolys 7932 = T 515
-cpolys 7933 = Q 15 11 10
-cpolys 7934 = T 137
-cpolys 7935 = T 133
-cpolys 7936 = Q 40 23 21
-cpolys 7937 = T 617
-cpolys 7938 = T 891
-cpolys 7939 = Q 11 4 2
-cpolys 7940 = T 795
-cpolys 7941 = Q 15 14 2
-cpolys 7942 = T 1057
-cpolys 7943 = T 80
-cpolys 7944 = Q 14 7 1
-cpolys 7945 = T 2967
-cpolys 7946 = T 51
-cpolys 7947 = Q 18 13 10
-cpolys 7948 = T 3001
-cpolys 7949 = Q 28 17 7
-cpolys 7950 = Q 38 27 6
-cpolys 7951 = T 498
-cpolys 7952 = Q 19 13 2
-cpolys 7953 = T 413
-cpolys 7954 = Q 23 21 20
-cpolys 7955 = Q 16 11 1
-cpolys 7956 = T 1557
-cpolys 7957 = Q 26 14 1
-cpolys 7958 = T 1121
-cpolys 7959 = T 424
-cpolys 7960 = Q 19 13 12
-cpolys 7961 = T 1412
-cpolys 7962 = T 1463
-cpolys 7963 = Q 11 7 2
-cpolys 7964 = T 1253
-cpolys 7965 = Q 36 31 15
-cpolys 7966 = T 1153
-cpolys 7967 = T 483
-cpolys 7968 = Q 27 13 12
-cpolys 7969 = T 1054
-cpolys 7970 = Q 29 19 3
-cpolys 7971 = Q 18 16 15
-cpolys 7972 = T 1695
-cpolys 7973 = Q 21 14 3
-cpolys 7974 = Q 13 12 10
-cpolys 7975 = T 387
-cpolys 7976 = Q 44 5 3
-cpolys 7977 = T 1249
-cpolys 7978 = Q 14 4 3
-cpolys 7979 = Q 24 2 1
-cpolys 7980 = T 15
-cpolys 7981 = Q 20 15 14
-cpolys 7982 = Q 25 8 4
-cpolys 7983 = T 2678
-cpolys 7984 = Q 37 18 2
-cpolys 7985 = T 504
-cpolys 7986 = Q 28 10 3
-cpolys 7987 = Q 7 6 1
-cpolys 7988 = T 1679
-cpolys 7989 = Q 24 22 12
-cpolys 7990 = T 1041
-cpolys 7991 = T 2160
-cpolys 7992 = Q 26 25 17
-cpolys 7993 = T 2073
-cpolys 7994 = T 2423
-cpolys 7995 = Q 17 12 8
-cpolys 7996 = T 2581
-cpolys 7997 = Q 16 3 2
-cpolys 7998 = T 1989
-cpolys 7999 = T 952
-cpolys 8000 = Q 16 3 1
-cpolys 8001 = T 127
-cpolys 8002 = Q 12 4 3
-cpolys 8003 = Q 26 21 2
-cpolys 8004 = T 3087
-cpolys 8005 = Q 18 16 11
-cpolys 8006 = T 2201
-cpolys 8007 = T 554
-cpolys 8008 = Q 23 22 17
-cpolys 8009 = T 3159
-cpolys 8010 = T 687
-cpolys 8011 = Q 20 16 5
-cpolys 8012 = T 1541
-cpolys 8013 = Q 28 26 20
-cpolys 8014 = T 1753
-cpolys 8015 = T 776
-cpolys 8016 = Q 31 30 25
-cpolys 8017 = T 141
-cpolys 8018 = Q 18 15 9
-cpolys 8019 = Q 39 33 16
-cpolys 8020 = T 1713
-cpolys 8021 = Q 32 18 3
-cpolys 8022 = T 917
-cpolys 8023 = Q 16 11 9
-cpolys 8024 = Q 21 14 11
-cpolys 8025 = T 229
-cpolys 8026 = T 1843
-cpolys 8027 = Q 11 10 9
-cpolys 8028 = T 279
-cpolys 8029 = Q 33 19 16
-cpolys 8030 = T 53
-cpolys 8031 = Q 13 12 3
-cpolys 8032 = Q 19 15 13
-cpolys 8033 = T 2240
-cpolys 8034 = T 695
-cpolys 8035 = Q 30 24 4
-cpolys 8036 = T 131
-cpolys 8037 = Q 34 33 30
-cpolys 8038 = Q 13 9 8
-cpolys 8039 = T 98
-cpolys 8040 = Q 39 13 7
-cpolys 8041 = T 1305
-cpolys 8042 = Q 15 8 5
-cpolys 8043 = Q 25 17 16
-cpolys 8044 = T 3627
-cpolys 8045 = Q 18 8 3
-cpolys 8046 = T 1389
-cpolys 8047 = T 1444
-cpolys 8048 = Q 30 23 3
-cpolys 8049 = T 1009
-cpolys 8050 = Q 31 12 11
-cpolys 8051 = Q 24 15 5
-cpolys 8052 = Q 11 9 2
-cpolys 8053 = Q 20 19 12
-cpolys 8054 = T 1025
-cpolys 8055 = T 1069
-cpolys 8056 = Q 27 16 5
-cpolys 8057 = T 960
-cpolys 8058 = T 1115
-cpolys 8059 = Q 34 21 6
-cpolys 8060 = T 297
-cpolys 8061 = Q 10 7 2
-cpolys 8062 = T 2449
-cpolys 8063 = T 273
-cpolys 8064 = Q 27 23 9
-cpolys 8065 = T 253
-cpolys 8066 = Q 32 27 15
-cpolys 8067 = Q 42 29 17
-cpolys 8068 = T 1603
-cpolys 8069 = Q 15 14 4
-cpolys 8070 = T 413
-cpolys 8071 = T 358
-cpolys 8072 = Q 23 11 6
-cpolys 8073 = T 883
-cpolys 8074 = Q 28 26 3
-cpolys 8075 = Q 29 24 16
-cpolys 8076 = T 1731
-cpolys 8077 = Q 30 27 18
-cpolys 8078 = T 669
-cpolys 8079 = T 1523
-cpolys 8080 = Q 39 14 11
-cpolys 8081 = T 768
-cpolys 8082 = T 239
-cpolys 8083 = Q 31 17 6
-cpolys 8084 = T 2519
-cpolys 8085 = Q 31 22 13
-cpolys 8086 = T 1597
-cpolys 8087 = T 989
-cpolys 8088 = Q 25 10 8
-cpolys 8089 = T 967
-cpolys 8090 = T 3759
-cpolys 8091 = Q 16 9 1
-cpolys 8092 = T 351
-cpolys 8093 = Q 20 5 3
-cpolys 8094 = T 2889
-cpolys 8095 = T 907
-cpolys 8096 = Q 32 11 2
-cpolys 8097 = T 2513
-cpolys 8098 = T 2667
-cpolys 8099 = Q 28 25 23
-cpolys 8100 = T 9
-cpolys 8101 = Q 15 6 4
-cpolys 8102 = Q 31 2 1
-cpolys 8103 = T 2333
-cpolys 8104 = Q 30 23 17
-cpolys 8105 = T 1611
-cpolys 8106 = T 771
-cpolys 8107 = Q 25 16 1
-cpolys 8108 = T 627
-cpolys 8109 = Q 15 9 4
-cpolys 8110 = T 217
-cpolys 8111 = T 1130
-cpolys 8112 = Q 15 12 2
-cpolys 8113 = T 3058
-cpolys 8114 = T 1667
-cpolys 8115 = Q 20 17 5
-cpolys 8116 = T 1057
-cpolys 8117 = Q 32 15 14
-cpolys 8118 = Q 21 15 1
-cpolys 8119 = T 10
-cpolys 8120 = Q 8 3 2
-cpolys 8121 = T 3494
-cpolys 8122 = Q 19 12 4
-cpolys 8123 = Q 47 22 18
-cpolys 8124 = T 269
-cpolys 8125 = Q 26 18 10
-cpolys 8126 = Q 28 25 15
-cpolys 8127 = T 218
-cpolys 8128 = Q 25 24 19
-cpolys 8129 = T 548
-cpolys 8130 = T 719
-cpolys 8131 = Q 25 7 6
-cpolys 8132 = Q 9 5 4
-cpolys 8133 = Q 30 19 18
-cpolys 8134 = T 25
-cpolys 8135 = T 468
-cpolys 8136 = Q 11 3 2
-cpolys 8137 = T 739
-cpolys 8138 = T 1043
-cpolys 8139 = Q 24 12 10
-cpolys 8140 = T 1683
-cpolys 8141 = Q 32 8 6
-cpolys 8142 = Q 29 28 20
-cpolys 8143 = T 1890
-cpolys 8144 = Q 28 27 17
-cpolys 8145 = T 728
-cpolys 8146 = T 1911
-cpolys 8147 = Q 22 8 1
-cpolys 8148 = T 133
-cpolys 8149 = Q 18 8 4
-cpolys 8150 = T 89
-cpolys 8151 = T 3841
-cpolys 8152 = Q 29 25 14
-cpolys 8153 = T 1020
-cpolys 8154 = T 995
-cpolys 8155 = Q 18 10 5
-cpolys 8156 = T 3641
-cpolys 8157 = Q 19 16 14
-cpolys 8158 = Q 23 17 7
-cpolys 8159 = T 1026
-cpolys 8160 = Q 52 45 10
-cpolys 8161 = T 292
-cpolys 8162 = T 1391
-cpolys 8163 = Q 29 28 25
-cpolys 8164 = T 471
-cpolys 8165 = Q 29 26 9
-cpolys 8166 = T 381
-cpolys 8167 = T 2553
-cpolys 8168 = Q 25 16 6
-cpolys 8169 = T 481
-cpolys 8170 = Q 17 6 5
-cpolys 8171 = Q 21 17 8
-cpolys 8172 = T 539
-cpolys 8173 = Q 11 8 7
-cpolys 8174 = Q 21 9 8
-cpolys 8175 = T 661
-cpolys 8176 = Q 43 32 21
-cpolys 8177 = T 905
-cpolys 8178 = T 2611
-cpolys 8179 = Q 24 21 13
-cpolys 8180 = T 185
-cpolys 8181 = Q 9 6 4
-cpolys 8182 = T 1477
-cpolys 8183 = T 1139
-cpolys 8184 = Q 32 27 6
-cpolys 8185 = T 777
-cpolys 8186 = Q 10 7 3
-cpolys 8187 = Q 29 22 16
-cpolys 8188 = T 1155
-cpolys 8189 = Q 41 10 4
-cpolys 8190 = T 1869
-cpolys 8191 = T 714
-cpolys 8192 = Q 9 5 2
-cpolys 8193 = T 1055
-cpolys 8194 = T 3847
-cpolys 8195 = Q 15 14 4
-cpolys 8196 = T 2477
-cpolys 8197 = Q 21 8 2
-cpolys 8198 = T 657
-cpolys 8199 = T 2758
-cpolys 8200 = Q 18 15 3
-cpolys 8201 = T 365
-cpolys 8202 = Q 15 12 11
-cpolys 8203 = Q 33 28 23
-cpolys 8204 = T 1727
-cpolys 8205 = Q 21 18 13
-cpolys 8206 = Q 16 14 9
-cpolys 8207 = T 5
-cpolys 8208 = Q 19 13 11
-cpolys 8209 = T 943
-cpolys 8210 = T 3507
-cpolys 8211 = Q 34 18 13
-cpolys 8212 = T 1773
-cpolys 8213 = Q 24 10 4
-cpolys 8214 = Q 21 16 3
-cpolys 8215 = T 469
-cpolys 8216 = Q 27 24 17
-cpolys 8217 = T 94
-cpolys 8218 = T 1443
-cpolys 8219 = Q 29 27 10
-cpolys 8220 = T 327
-cpolys 8221 = Q 24 22 11
-cpolys 8222 = T 2345
-cpolys 8223 = T 308
-cpolys 8224 = Q 39 36 25
-cpolys 8225 = T 2588
-cpolys 8226 = T 447
-cpolys 8227 = Q 25 18 12
-cpolys 8228 = Q 23 18 6
-cpolys 8229 = Q 36 29 3
-cpolys 8230 = T 2149
-cpolys 8231 = T 3564
-cpolys 8232 = Q 22 15 9
-cpolys 8233 = T 1407
-cpolys 8234 = T 215
-cpolys 8235 = Q 38 36 21
-cpolys 8236 = T 351
-cpolys 8237 = Q 23 18 11
-cpolys 8238 = Q 15 5 3
-cpolys 8239 = T 1462
-cpolys 8240 = Q 14 13 7
-cpolys 8241 = T 1694
-cpolys 8242 = Q 36 35 2
-cpolys 8243 = Q 35 14 2
-cpolys 8244 = T 343
-cpolys 8245 = Q 18 16 14
-cpolys 8246 = T 173
-cpolys 8247 = T 2050
-cpolys 8248 = Q 25 15 13
-cpolys 8249 = Q 20 11 9
-cpolys 8250 = T 3399
-cpolys 8251 = Q 13 10 3
-cpolys 8252 = T 2861
-cpolys 8253 = Q 9 5 2
-cpolys 8254 = T 3157
-cpolys 8255 = T 1496
-cpolys 8256 = Q 32 21 14
-cpolys 8257 = T 1530
-cpolys 8258 = T 1407
-cpolys 8259 = Q 21 15 4
-cpolys 8260 = T 225
-cpolys 8261 = Q 20 17 14
-cpolys 8262 = T 693
-cpolys 8263 = T 2232
-cpolys 8264 = Q 15 6 3
-cpolys 8265 = T 161
-cpolys 8266 = Q 12 7 6
-cpolys 8267 = Q 21 16 2
-cpolys 8268 = T 477
-cpolys 8269 = Q 24 13 2
-cpolys 8270 = Q 21 17 4
-cpolys 8271 = T 44
-cpolys 8272 = Q 32 25 23
-cpolys 8273 = T 3500
-cpolys 8274 = T 419
-cpolys 8275 = Q 35 10 9
-cpolys 8276 = T 915
-cpolys 8277 = Q 30 8 3
-cpolys 8278 = T 193
-cpolys 8279 = T 2439
-cpolys 8280 = Q 30 19 9
-cpolys 8281 = T 226
-cpolys 8282 = T 351
-cpolys 8283 = Q 25 23 4
-cpolys 8284 = T 2197
-cpolys 8285 = Q 47 42 24
-cpolys 8286 = T 3957
-cpolys 8287 = T 1755
-cpolys 8288 = Q 27 5 4
-cpolys 8289 = T 98
-cpolys 8290 = Q 43 24 14
-cpolys 8291 = Q 28 26 19
-cpolys 8292 = T 637
-cpolys 8293 = Q 14 12 8
-cpolys 8294 = Q 21 12 11
-cpolys 8295 = T 938
-cpolys 8296 = Q 37 19 6
-cpolys 8297 = T 2846
-cpolys 8298 = Q 21 14 11
-cpolys 8299 = Q 29 28 8
-cpolys 8300 = T 185
-cpolys 8301 = Q 27 13 10
-cpolys 8302 = T 1305
-cpolys 8303 = T 3789
-cpolys 8304 = Q 32 17 15
-cpolys 8305 = T 417
-cpolys 8306 = Q 17 12 9
-cpolys 8307 = Q 19 17 10
-cpolys 8308 = Q 16 9 8
-cpolys 8309 = Q 28 26 10
-cpolys 8310 = T 3333
-cpolys 8311 = T 1470
-cpolys 8312 = Q 45 44 30
-cpolys 8313 = T 4117
-cpolys 8314 = Q 18 15 9
-cpolys 8315 = Q 20 15 2
-cpolys 8316 = T 405
-cpolys 8317 = Q 30 28 19
-cpolys 8318 = Q 21 16 10
-cpolys 8319 = T 458
-cpolys 8320 = Q 41 39 5
-cpolys 8321 = T 2985
-cpolys 8322 = Q 7 5 2
-cpolys 8323 = Q 35 12 10
-cpolys 8324 = T 1149
-cpolys 8325 = Q 31 14 10
-cpolys 8326 = Q 14 5 4
-cpolys 8327 = T 596
-cpolys 8328 = Q 37 23 14
-cpolys 8329 = T 775
-cpolys 8330 = T 1107
-cpolys 8331 = Q 37 34 10
-cpolys 8332 = T 651
-cpolys 8333 = Q 26 18 14
-cpolys 8334 = T 3285
-cpolys 8335 = T 129
-cpolys 8336 = Q 33 10 2
-cpolys 8337 = T 643
-cpolys 8338 = Q 16 15 7
-cpolys 8339 = Q 13 12 7
-cpolys 8340 = T 553
-cpolys 8341 = Q 50 48 19
-cpolys 8342 = T 2921
-cpolys 8343 = T 1667
-cpolys 8344 = Q 27 15 1
-cpolys 8345 = T 777
-cpolys 8346 = Q 26 25 10
-cpolys 8347 = Q 29 7 6
-cpolys 8348 = T 1737
-cpolys 8349 = Q 29 22 7
-cpolys 8350 = T 3177
-cpolys 8351 = T 170
-cpolys 8352 = Q 35 18 14
-cpolys 8353 = T 2548
-cpolys 8354 = T 1515
-cpolys 8355 = Q 18 6 5
-cpolys 8356 = Q 22 18 13
-cpolys 8357 = Q 22 12 5
-cpolys 8358 = T 677
-cpolys 8359 = T 1905
-cpolys 8360 = Q 15 14 5
-cpolys 8361 = Q 24 20 8
-cpolys 8362 = T 655
-cpolys 8363 = Q 20 3 2
-cpolys 8364 = T 2443
-cpolys 8365 = Q 22 12 4
-cpolys 8366 = T 2381
-cpolys 8367 = T 154
-cpolys 8368 = Q 35 17 4
-cpolys 8369 = Q 29 15 1
-cpolys 8370 = T 1643
-cpolys 8371 = Q 13 8 2
-cpolys 8372 = T 17
-cpolys 8373 = Q 14 5 2
-cpolys 8374 = T 4125
-cpolys 8375 = T 2316
-cpolys 8376 = Q 45 39 17
-cpolys 8377 = T 2035
-cpolys 8378 = T 3851
-cpolys 8379 = Q 26 15 8
-cpolys 8380 = T 1815
-cpolys 8381 = Q 22 15 5
-cpolys 8382 = Q 32 22 13
-cpolys 8383 = Q 23 13 8
-cpolys 8384 = Q 19 4 2
-cpolys 8385 = T 2369
-cpolys 8386 = T 907
-cpolys 8387 = Q 14 12 3
-cpolys 8388 = T 691
-cpolys 8389 = Q 39 16 13
-cpolys 8390 = T 3797
-cpolys 8391 = T 1336
-cpolys 8392 = Q 17 11 1
-cpolys 8393 = T 312
-cpolys 8394 = Q 30 10 3
-cpolys 8395 = Q 18 12 4
-cpolys 8396 = Q 17 14 11
-cpolys 8397 = Q 25 6 1
-cpolys 8398 = T 3481
-cpolys 8399 = T 4191
-cpolys 8400 = Q 29 28 11
-cpolys 8401 = T 1105
-cpolys 8402 = T 287
-cpolys 8403 = Q 22 6 1
-cpolys 8404 = T 805
-cpolys 8405 = Q 32 22 16
-cpolys 8406 = Q 30 9 1
-cpolys 8407 = T 1557
-cpolys 8408 = Q 20 9 2
-cpolys 8409 = T 2506
-cpolys 8410 = Q 33 17 5
-cpolys 8411 = Q 30 27 5
-cpolys 8412 = T 1049
-cpolys 8413 = Q 26 25 24
-cpolys 8414 = T 3197
-cpolys 8415 = T 1061
-cpolys 8416 = Q 40 33 22
-cpolys 8417 = T 2240
-cpolys 8418 = T 2187
-cpolys 8419 = Q 15 10 1
-cpolys 8420 = T 2751
-cpolys 8421 = Q 27 26 20
-cpolys 8422 = Q 33 22 9
-cpolys 8423 = T 168
-cpolys 8424 = Q 33 31 28
-cpolys 8425 = T 3
-cpolys 8426 = T 1539
-cpolys 8427 = Q 14 13 8
-cpolys 8428 = T 129
-cpolys 8429 = Q 35 14 6
-cpolys 8430 = T 361
-cpolys 8431 = T 97
-cpolys 8432 = Q 17 15 13
-cpolys 8433 = T 1255
-cpolys 8434 = T 1459
-cpolys 8435 = Q 33 28 26
-cpolys 8436 = T 401
-cpolys 8437 = Q 34 27 15
-cpolys 8438 = Q 17 10 7
-cpolys 8439 = T 43
-cpolys 8440 = Q 18 9 6
-cpolys 8441 = T 992
-cpolys 8442 = T 1863
-cpolys 8443 = Q 16 12 6
-cpolys 8444 = T 905
-cpolys 8445 = Q 38 6 5
-cpolys 8446 = T 3201
-cpolys 8447 = T 213
-cpolys 8448 = Q 21 17 6
-cpolys 8449 = T 25
-cpolys 8450 = Q 38 36 7
-cpolys 8451 = Q 13 5 2
-cpolys 8452 = Q 11 8 6
-cpolys 8453 = Q 14 11 5
-cpolys 8454 = Q 21 6 4
-cpolys 8455 = T 412
-cpolys 8456 = Q 15 13 8
-cpolys 8457 = T 230
-cpolys 8458 = Q 19 10 6
-cpolys 8459 = Q 10 9 7
-cpolys 8460 = T 127
-cpolys 8461 = Q 24 22 14
-cpolys 8462 = Q 33 32 31
-cpolys 8463 = T 397
-cpolys 8464 = Q 34 15 5
-cpolys 8465 = T 936
-cpolys 8466 = T 451
-cpolys 8467 = Q 31 24 21
-cpolys 8468 = Q 15 11 3
-cpolys 8469 = Q 26 14 13
-cpolys 8470 = T 1713
-cpolys 8471 = T 827
-cpolys 8472 = Q 30 21 5
-cpolys 8473 = T 2398
-cpolys 8474 = Q 37 6 1
-cpolys 8475 = Q 6 4 1
-cpolys 8476 = T 85
-cpolys 8477 = Q 46 34 26
-cpolys 8478 = T 405
-cpolys 8479 = T 1425
-cpolys 8480 = Q 21 6 3
-cpolys 8481 = T 641
-cpolys 8482 = T 331
-cpolys 8483 = Q 26 19 10
-cpolys 8484 = T 1421
-cpolys 8485 = Q 23 10 5
-cpolys 8486 = Q 22 21 19
-cpolys 8487 = T 4112
-cpolys 8488 = Q 13 6 3
-cpolys 8489 = T 3096
-cpolys 8490 = Q 26 16 13
-cpolys 8491 = Q 35 32 25
-cpolys 8492 = T 497
-cpolys 8493 = Q 33 26 23
-cpolys 8494 = Q 10 7 4
-cpolys 8495 = T 122
-cpolys 8496 = Q 25 19 3
-cpolys 8497 = T 540
-cpolys 8498 = Q 15 14 11
-cpolys 8499 = Q 28 18 15
-cpolys 8500 = T 753
-cpolys 8501 = Q 37 36 31
-cpolys 8502 = T 3157
-cpolys 8503 = T 91
-cpolys 8504 = Q 35 24 10
-cpolys 8505 = T 109
-cpolys 8506 = T 3555
-cpolys 8507 = Q 31 6 5
-cpolys 8508 = T 1207
-cpolys 8509 = Q 19 16 15
-cpolys 8510 = T 2709
-cpolys 8511 = T 4177
-cpolys 8512 = Q 33 27 4
-cpolys 8513 = T 3044
-cpolys 8514 = Q 19 14 8
-cpolys 8515 = Q 27 10 7
-cpolys 8516 = T 1221
-cpolys 8517 = Q 14 8 5
-cpolys 8518 = T 721
-cpolys 8519 = T 36
-cpolys 8520 = Q 28 15 13
-cpolys 8521 = T 2646
-cpolys 8522 = T 3603
-cpolys 8523 = Q 21 18 5
-cpolys 8524 = T 1575
-cpolys 8525 = Q 36 19 2
-cpolys 8526 = T 637
-cpolys 8527 = T 435
-cpolys 8528 = Q 15 4 2
-cpolys 8529 = T 2296
-cpolys 8530 = T 2019
-cpolys 8531 = Q 18 2 1
-cpolys 8532 = T 787
-cpolys 8533 = Q 23 20 4
-cpolys 8534 = Q 27 7 1
-cpolys 8535 = T 2996
-cpolys 8536 = Q 19 10 3
-cpolys 8537 = T 242
-cpolys 8538 = Q 20 11 4
-cpolys 8539 = Q 12 9 4
-cpolys 8540 = T 465
-cpolys 8541 = Q 26 9 5
-cpolys 8542 = Q 30 28 9
-cpolys 8543 = T 969
-cpolys 8544 = Q 31 5 2
-cpolys 8545 = T 1944
-cpolys 8546 = Q 19 11 10
-cpolys 8547 = Q 21 13 10
-cpolys 8548 = T 519
-cpolys 8549 = Q 41 23 6
-cpolys 8550 = T 893
-cpolys 8551 = T 639
-cpolys 8552 = Q 29 10 1
-cpolys 8553 = T 4171
-cpolys 8554 = Q 33 17 7
-cpolys 8555 = Q 14 13 7
-cpolys 8556 = T 2011
-cpolys 8557 = Q 30 23 17
-cpolys 8558 = T 4193
-cpolys 8559 = T 2161
-cpolys 8560 = Q 21 13 3
-cpolys 8561 = Q 15 5 1
-cpolys 8562 = T 939
-cpolys 8563 = Q 13 5 2
-cpolys 8564 = T 801
-cpolys 8565 = Q 33 14 11
-cpolys 8566 = T 2581
-cpolys 8567 = Q 24 16 11
-cpolys 8568 = Q 28 25 10
-cpolys 8569 = T 1429
-cpolys 8570 = Q 37 10 3
-cpolys 8571 = Q 12 8 2
-cpolys 8572 = T 1081
-cpolys 8573 = Q 22 14 4
-cpolys 8574 = Q 22 13 2
-cpolys 8575 = T 457
-cpolys 8576 = Q 19 9 1
-cpolys 8577 = T 439
-cpolys 8578 = Q 30 7 4
-cpolys 8579 = Q 13 11 6
-cpolys 8580 = T 143
-cpolys 8581 = Q 8 7 3
-cpolys 8582 = T 1817
-cpolys 8583 = T 3448
-cpolys 8584 = Q 32 15 13
-cpolys 8585 = T 137
-cpolys 8586 = T 407
-cpolys 8587 = Q 34 8 2
-cpolys 8588 = T 29
-cpolys 8589 = Q 15 12 10
-cpolys 8590 = Q 27 23 17
-cpolys 8591 = T 431
-cpolys 8592 = Q 23 5 4
-cpolys 8593 = T 94
-cpolys 8594 = Q 21 20 5
-cpolys 8595 = Q 17 13 10
-cpolys 8596 = Q 13 7 6
-cpolys 8597 = Q 33 27 26
-cpolys 8598 = Q 23 14 1
-cpolys 8599 = T 2385
-cpolys 8600 = Q 21 14 3
-cpolys 8601 = T 734
-cpolys 8602 = T 1431
-cpolys 8603 = Q 16 9 1
-cpolys 8604 = T 1381
-cpolys 8605 = Q 30 23 7
-cpolys 8606 = Q 19 17 7
-cpolys 8607 = T 203
-cpolys 8608 = Q 47 44 33
-cpolys 8609 = T 434
-cpolys 8610 = Q 21 17 14
-cpolys 8611 = Q 25 18 1
-cpolys 8612 = T 287
-cpolys 8613 = Q 24 15 14
-cpolys 8614 = T 1585
-cpolys 8615 = T 3713
-cpolys 8616 = Q 22 19 11
-cpolys 8617 = T 1150
-cpolys 8618 = T 1947
-cpolys 8619 = Q 29 28 5
-cpolys 8620 = T 1197
-cpolys 8621 = Q 22 10 2
-cpolys 8622 = Q 33 24 19
-cpolys 8623 = T 1483
-cpolys 8624 = Q 4 3 2
-cpolys 8625 = T 256
-cpolys 8626 = T 103
-cpolys 8627 = Q 38 15 11
-cpolys 8628 = Q 25 24 7
-cpolys 8629 = Q 33 16 11
-cpolys 8630 = Q 20 6 3
-cpolys 8631 = T 857
-cpolys 8632 = Q 41 32 3
-cpolys 8633 = T 3234
-cpolys 8634 = Q 19 14 8
-cpolys 8635 = Q 23 14 13
-cpolys 8636 = T 2345
-cpolys 8637 = Q 20 13 7
-cpolys 8638 = T 3961
-cpolys 8639 = T 441
-cpolys 8640 = Q 23 10 4
-cpolys 8641 = T 81
-cpolys 8642 = Q 15 11 6
-cpolys 8643 = Q 26 18 2
-cpolys 8644 = T 103
-cpolys 8645 = Q 17 14 12
-cpolys 8646 = T 4293
-cpolys 8647 = T 145
-cpolys 8648 = Q 31 17 6
-cpolys 8649 = T 280
-cpolys 8650 = T 783
-cpolys 8651 = Q 26 11 3
-cpolys 8652 = T 833
-cpolys 8653 = Q 26 18 10
-cpolys 8654 = T 2529
-cpolys 8655 = T 2863
-cpolys 8656 = Q 39 14 4
-cpolys 8657 = T 884
-cpolys 8658 = T 3323
-cpolys 8659 = Q 14 9 4
-cpolys 8660 = T 1157
-cpolys 8661 = Q 30 7 1
-cpolys 8662 = Q 31 22 18
-cpolys 8663 = T 2306
-cpolys 8664 = Q 29 19 11
-cpolys 8665 = T 2416
-cpolys 8666 = T 2111
-cpolys 8667 = Q 22 21 18
-cpolys 8668 = T 1839
-cpolys 8669 = Q 20 12 3
-cpolys 8670 = T 1061
-cpolys 8671 = T 1329
-cpolys 8672 = Q 29 23 12
-cpolys 8673 = T 28
-cpolys 8674 = T 3403
-cpolys 8675 = Q 18 17 10
-cpolys 8676 = T 927
-cpolys 8677 = Q 13 11 6
-cpolys 8678 = Q 25 19 15
-cpolys 8679 = T 1370
-cpolys 8680 = Q 32 7 2
-cpolys 8681 = T 1175
-cpolys 8682 = T 947
-cpolys 8683 = Q 19 18 11
-cpolys 8684 = T 3815
-cpolys 8685 = Q 31 9 6
-cpolys 8686 = T 2653
-cpolys 8687 = Q 21 18 3
-cpolys 8688 = Q 25 20 7
-cpolys 8689 = T 855
-cpolys 8690 = Q 24 14 11
-cpolys 8691 = Q 40 17 5
-cpolys 8692 = T 1095
-cpolys 8693 = Q 32 24 15
-cpolys 8694 = T 1809
-cpolys 8695 = T 2283
-cpolys 8696 = Q 25 20 6
-cpolys 8697 = T 164
-cpolys 8698 = T 2583
-cpolys 8699 = Q 26 20 3
-cpolys 8700 = T 1295
-cpolys 8701 = Q 33 5 2
-cpolys 8702 = Q 24 17 15
-cpolys 8703 = T 281
-cpolys 8704 = Q 39 20 2
-cpolys 8705 = T 59
-cpolys 8706 = Q 25 22 6
-cpolys 8707 = Q 8 6 1
-cpolys 8708 = T 417
-cpolys 8709 = Q 19 16 10
-cpolys 8710 = Q 26 25 18
-cpolys 8711 = T 360
-cpolys 8712 = Q 30 13 3
-cpolys 8713 = T 1785
-cpolys 8714 = T 231
-cpolys 8715 = Q 33 32 8
-cpolys 8716 = Q 36 22 21
-cpolys 8717 = Q 37 18 16
-cpolys 8718 = T 3465
-cpolys 8719 = T 7
-cpolys 8720 = Q 27 17 5
-cpolys 8721 = T 467
-cpolys 8722 = T 1551
-cpolys 8723 = Q 32 12 2
-cpolys 8724 = T 2279
-cpolys 8725 = Q 25 9 6
-cpolys 8726 = Q 21 19 8
-cpolys 8727 = T 748
-cpolys 8728 = Q 13 7 1
-cpolys 8729 = T 68
-cpolys 8730 = T 959
-cpolys 8731 = Q 30 26 16
-cpolys 8732 = T 525
-cpolys 8733 = Q 40 32 31
-cpolys 8734 = T 2817
-cpolys 8735 = T 1326
-cpolys 8736 = Q 35 33 24
-cpolys 8737 = T 3235
-cpolys 8738 = Q 28 18 11
-cpolys 8739 = Q 28 20 2
-cpolys 8740 = T 2835
-cpolys 8741 = Q 32 27 21
-cpolys 8742 = T 1053
-cpolys 8743 = T 90
-cpolys 8744 = Q 45 12 11
-cpolys 8745 = T 79
-cpolys 8746 = T 4183
-cpolys 8747 = Q 18 14 7
-cpolys 8748 = T 63
-cpolys 8749 = Q 29 22 6
-cpolys 8750 = T 53
-cpolys 8751 = T 1922
-cpolys 8752 = Q 30 29 11
-cpolys 8753 = T 693
-cpolys 8754 = T 2871
-cpolys 8755 = Q 25 24 14
-cpolys 8756 = T 1181
-cpolys 8757 = Q 35 26 12
-cpolys 8758 = Q 17 8 4
-cpolys 8759 = T 3675
-cpolys 8760 = Q 27 9 4
-cpolys 8761 = Q 27 25 15
-cpolys 8762 = T 2159
-cpolys 8763 = Q 18 17 5
-cpolys 8764 = Q 10 3 1
-cpolys 8765 = Q 14 9 3
-cpolys 8766 = T 1677
-cpolys 8767 = T 70
-cpolys 8768 = Q 27 10 8
-cpolys 8769 = T 188
-cpolys 8770 = T 603
-cpolys 8771 = Q 37 4 2
-cpolys 8772 = T 37
-cpolys 8773 = Q 20 5 3
-cpolys 8774 = Q 30 29 11
-cpolys 8775 = T 508
-cpolys 8776 = Q 26 19 9
-cpolys 8777 = T 257
-cpolys 8778 = Q 16 5 2
-cpolys 8779 = Q 45 5 2
-cpolys 8780 = T 495
-cpolys 8781 = Q 34 10 1
-cpolys 8782 = Q 33 10 4
-cpolys 8783 = T 860
-cpolys 8784 = Q 26 25 7
-cpolys 8785 = T 1597
-cpolys 8786 = Q 30 18 3
-cpolys 8787 = Q 49 45 22
-cpolys 8788 = Q 22 15 13
-cpolys 8789 = Q 27 7 2
-cpolys 8790 = Q 17 2 1
-cpolys 8791 = T 463
-cpolys 8792 = Q 24 9 2
-cpolys 8793 = T 272
-cpolys 8794 = Q 14 7 2
-cpolys 8795 = Q 12 5 3
-cpolys 8796 = T 1585
-cpolys 8797 = Q 26 18 7
-cpolys 8798 = T 1301
-cpolys 8799 = T 656
-cpolys 8800 = Q 25 14 6
-cpolys 8801 = T 309
-cpolys 8802 = T 2139
-cpolys 8803 = Q 31 21 4
-cpolys 8804 = T 549
-cpolys 8805 = Q 42 16 9
-cpolys 8806 = T 1773
-cpolys 8807 = T 3569
-cpolys 8808 = Q 15 9 6
-cpolys 8809 = T 1089
-cpolys 8810 = Q 24 17 7
-cpolys 8811 = Q 22 8 2
-cpolys 8812 = T 2295
-cpolys 8813 = Q 37 4 2
-cpolys 8814 = T 1497
-cpolys 8815 = T 1174
-cpolys 8816 = Q 17 8 6
-cpolys 8817 = T 1654
-cpolys 8818 = Q 29 11 9
-cpolys 8819 = Q 15 13 4
-cpolys 8820 = T 147
-cpolys 8821 = Q 28 24 23
-cpolys 8822 = Q 32 28 25
-cpolys 8823 = T 1028
-cpolys 8824 = Q 19 14 6
-cpolys 8825 = T 303
-cpolys 8826 = T 4275
-cpolys 8827 = Q 30 17 10
-cpolys 8828 = T 1133
-cpolys 8829 = Q 15 9 8
-cpolys 8830 = T 3889
-cpolys 8831 = T 891
-cpolys 8832 = Q 15 9 6
-cpolys 8833 = T 328
-cpolys 8834 = T 683
-cpolys 8835 = Q 20 16 5
-cpolys 8836 = T 1171
-cpolys 8837 = Q 20 10 6
-cpolys 8838 = T 1653
-cpolys 8839 = T 285
-cpolys 8840 = Q 33 22 16
-cpolys 8841 = T 539
-cpolys 8842 = T 4143
-cpolys 8843 = Q 33 20 17
-cpolys 8844 = T 355
-cpolys 8845 = Q 31 24 2
-cpolys 8846 = Q 21 20 12
-cpolys 8847 = T 1100
-cpolys 8848 = Q 33 4 3
-cpolys 8849 = T 2324
-cpolys 8850 = T 1191
-cpolys 8851 = Q 33 14 4
-cpolys 8852 = T 1697
-cpolys 8853 = Q 23 17 16
-cpolys 8854 = Q 12 5 1
-cpolys 8855 = T 138
-cpolys 8856 = Q 14 5 2
-cpolys 8857 = T 2493
-cpolys 8858 = Q 29 23 17
-cpolys 8859 = Q 35 30 27
-cpolys 8860 = T 3577
-cpolys 8861 = Q 18 16 10
-cpolys 8862 = T 49
-cpolys 8863 = T 1099
-cpolys 8864 = Q 37 12 7
-cpolys 8865 = T 2713
-cpolys 8866 = Q 29 16 5
-cpolys 8867 = Q 32 9 5
-cpolys 8868 = T 623
-cpolys 8869 = Q 34 19 7
-cpolys 8870 = T 1029
-cpolys 8871 = T 2422
-cpolys 8872 = Q 51 4 2
-cpolys 8873 = T 689
-cpolys 8874 = T 2239
-cpolys 8875 = Q 19 18 1
-cpolys 8876 = T 381
-cpolys 8877 = Q 21 13 10
-cpolys 8878 = T 3949
-cpolys 8879 = T 2369
-cpolys 8880 = Q 36 9 6
-cpolys 8881 = T 990
-cpolys 8882 = Q 17 11 6
-cpolys 8883 = Q 28 27 10
-cpolys 8884 = T 2121
-cpolys 8885 = Q 30 26 20
-cpolys 8886 = T 469
-cpolys 8887 = T 1107
-cpolys 8888 = Q 43 13 9
-cpolys 8889 = T 1216
-cpolys 8890 = T 2007
-cpolys 8891 = Q 10 9 4
-cpolys 8892 = T 249
-cpolys 8893 = Q 27 7 6
-cpolys 8894 = Q 17 6 5
-cpolys 8895 = T 958
-cpolys 8896 = Q 41 10 6
-cpolys 8897 = T 1439
-cpolys 8898 = T 287
-cpolys 8899 = Q 29 2 1
-cpolys 8900 = T 2285
-cpolys 8901 = Q 17 12 2
-cpolys 8902 = Q 10 9 2
-cpolys 8903 = T 222
-cpolys 8904 = Q 40 25 10
-cpolys 8905 = T 433
-cpolys 8906 = Q 35 16 13
-cpolys 8907 = Q 22 21 16
-cpolys 8908 = T 3031
-cpolys 8909 = Q 22 17 9
-cpolys 8910 = T 1749
-cpolys 8911 = T 963
-cpolys 8912 = Q 18 17 1
-cpolys 8913 = T 158
-cpolys 8914 = Q 16 4 3
-cpolys 8915 = Q 11 6 5
-cpolys 8916 = T 2259
-cpolys 8917 = Q 28 21 3
-cpolys 8918 = Q 16 10 9
-cpolys 8919 = T 2479
-cpolys 8920 = Q 33 32 31
-cpolys 8921 = T 6
-cpolys 8922 = T 787
-cpolys 8923 = Q 11 8 6
-cpolys 8924 = T 797
-cpolys 8925 = Q 22 11 7
-cpolys 8926 = T 853
-cpolys 8927 = T 1425
-cpolys 8928 = Q 35 29 2
-cpolys 8929 = T 358
-cpolys 8930 = T 83
-cpolys 8931 = Q 17 6 5
-cpolys 8932 = T 507
-cpolys 8933 = Q 24 10 4
-cpolys 8934 = T 1125
-cpolys 8935 = T 861
-cpolys 8936 = Q 17 3 1
-cpolys 8937 = T 3733
-cpolys 8938 = T 2295
-cpolys 8939 = Q 22 21 14
-cpolys 8940 = T 529
-cpolys 8941 = Q 36 35 31
-cpolys 8942 = Q 21 16 13
-cpolys 8943 = T 3635
-cpolys 8944 = Q 39 34 1
-cpolys 8945 = T 563
-cpolys 8946 = T 967
-cpolys 8947 = Q 28 20 6
-cpolys 8948 = T 2637
-cpolys 8949 = Q 29 22 13
-cpolys 8950 = Q 9 5 1
-cpolys 8951 = T 506
-cpolys 8952 = Q 27 14 2
-cpolys 8953 = T 25
-cpolys 8954 = Q 25 23 1
-cpolys 8955 = Q 18 13 1
-cpolys 8956 = T 4231
-cpolys 8957 = Q 16 10 3
-cpolys 8958 = T 1029
-cpolys 8959 = T 225
-cpolys 8960 = Q 12 7 5
-cpolys 8961 = T 176
-cpolys 8962 = T 691
-cpolys 8963 = Q 30 26 10
-cpolys 8964 = T 939
-cpolys 8965 = Q 30 7 5
-cpolys 8966 = T 1233
-cpolys 8967 = T 2744
-cpolys 8968 = Q 29 11 10
-cpolys 8969 = T 435
-cpolys 8970 = T 2191
-cpolys 8971 = Q 23 5 4
-cpolys 8972 = T 1619
-cpolys 8973 = Q 24 19 12
-cpolys 8974 = T 981
-cpolys 8975 = T 1128
-cpolys 8976 = Q 23 8 2
-cpolys 8977 = T 966
-cpolys 8978 = Q 18 17 5
-cpolys 8979 = Q 29 22 16
-cpolys 8980 = T 3093
-cpolys 8981 = Q 22 2 1
-cpolys 8982 = T 169
-cpolys 8983 = T 345
-cpolys 8984 = Q 9 8 6
-cpolys 8985 = T 2674
-cpolys 8986 = T 495
-cpolys 8987 = Q 16 12 10
-cpolys 8988 = T 1513
-cpolys 8989 = Q 15 7 2
-cpolys 8990 = T 333
-cpolys 8991 = T 2020
-cpolys 8992 = Q 35 6 2
-cpolys 8993 = T 2079
-cpolys 8994 = T 1051
-cpolys 8995 = Q 19 16 13
-cpolys 8996 = Q 25 16 12
-cpolys 8997 = Q 33 22 1
-cpolys 8998 = Q 23 10 2
-cpolys 8999 = T 1386
-cpolys 9000 = Q 28 19 17
-cpolys 9001 = T 1599
-cpolys 9002 = T 3995
-cpolys 9003 = Q 37 20 10
-cpolys 9004 = T 649
-cpolys 9005 = Q 19 14 4
-cpolys 9006 = T 1477
-cpolys 9007 = T 222
-cpolys 9008 = Q 31 17 7
-cpolys 9009 = T 29
-cpolys 9010 = Q 17 12 1
-cpolys 9011 = Q 31 14 10
-cpolys 9012 = T 1053
-cpolys 9013 = Q 32 9 7
-cpolys 9014 = T 1217
-cpolys 9015 = Q 12 3 1
-cpolys 9016 = Q 23 21 8
-cpolys 9017 = T 155
-cpolys 9018 = T 1327
-cpolys 9019 = Q 26 22 15
-cpolys 9020 = T 287
-cpolys 9021 = Q 28 22 10
-cpolys 9022 = T 861
-cpolys 9023 = T 4350
-cpolys 9024 = Q 32 29 11
-cpolys 9025 = T 744
-cpolys 9026 = T 35
-cpolys 9027 = Q 23 14 3
-cpolys 9028 = T 2935
-cpolys 9029 = Q 36 26 1
-cpolys 9030 = Q 32 8 1
-cpolys 9031 = T 714
-cpolys 9032 = Q 45 19 1
-cpolys 9033 = T 1615
-cpolys 9034 = T 2095
-cpolys 9035 = Q 30 22 5
-cpolys 9036 = T 449
-cpolys 9037 = Q 28 14 5
-cpolys 9038 = Q 21 9 8
-cpolys 9039 = T 1741
-cpolys 9040 = Q 9 6 4
-cpolys 9041 = T 813
-cpolys 9042 = T 103
-cpolys 9043 = Q 27 26 23
-cpolys 9044 = T 2819
-cpolys 9045 = Q 33 8 6
-cpolys 9046 = Q 36 30 15
-cpolys 9047 = T 287
-cpolys 9048 = Q 23 16 10
-cpolys 9049 = T 2490
-cpolys 9050 = T 1319
-cpolys 9051 = Q 17 10 7
-cpolys 9052 = T 2725
-cpolys 9053 = Q 21 15 12
-cpolys 9054 = T 609
-cpolys 9055 = T 946
-cpolys 9056 = Q 11 3 2
-cpolys 9057 = T 2345
-cpolys 9058 = T 235
-cpolys 9059 = Q 24 15 6
-cpolys 9060 = T 151
-cpolys 9061 = Q 26 18 7
-cpolys 9062 = T 3929
-cpolys 9063 = T 2320
-cpolys 9064 = Q 33 4 2
-cpolys 9065 = T 2022
-cpolys 9066 = Q 15 6 1
-cpolys 9067 = Q 9 2 1
-cpolys 9068 = T 2565
-cpolys 9069 = Q 36 31 12
-cpolys 9070 = Q 23 13 3
-cpolys 9071 = T 2276
-cpolys 9072 = Q 45 38 6
-cpolys 9073 = Q 20 16 5
-cpolys 9074 = T 207
-cpolys 9075 = Q 30 17 15
-cpolys 9076 = T 2395
-cpolys 9077 = Q 16 6 4
-cpolys 9078 = T 2681
-cpolys 9079 = T 2179
-cpolys 9080 = Q 17 10 7
-cpolys 9081 = T 190
-cpolys 9082 = Q 19 17 14
-cpolys 9083 = Q 31 18 5
-cpolys 9084 = T 1699
-cpolys 9085 = Q 26 13 5
-cpolys 9086 = T 2445
-cpolys 9087 = Q 23 19 7
-cpolys 9088 = Q 33 31 1
-cpolys 9089 = T 440
-cpolys 9090 = Q 18 7 3
-cpolys 9091 = Q 20 9 7
-cpolys 9092 = T 29
-cpolys 9093 = Q 11 8 4
-cpolys 9094 = T 2769
-cpolys 9095 = T 2546
-cpolys 9096 = Q 27 26 11
-cpolys 9097 = T 1260
-cpolys 9098 = Q 25 15 14
-cpolys 9099 = Q 16 9 1
-cpolys 9100 = T 55
-cpolys 9101 = Q 14 8 6
-cpolys 9102 = Q 15 14 2
-cpolys 9103 = T 4200
-cpolys 9104 = Q 47 33 24
-cpolys 9105 = T 1493
-cpolys 9106 = T 1723
-cpolys 9107 = Q 28 13 6
-cpolys 9108 = T 575
-cpolys 9109 = Q 9 5 2
-cpolys 9110 = Q 32 17 8
-cpolys 9111 = T 487
-cpolys 9112 = Q 9 7 5
-cpolys 9113 = T 3563
-cpolys 9114 = T 539
-cpolys 9115 = Q 30 9 7
-cpolys 9116 = T 1841
-cpolys 9117 = Q 18 16 7
-cpolys 9118 = Q 21 11 10
-cpolys 9119 = T 917
-cpolys 9120 = Q 35 25 5
-cpolys 9121 = T 249
-cpolys 9122 = Q 47 29 23
-cpolys 9123 = Q 15 13 10
-cpolys 9124 = Q 23 17 12
-cpolys 9125 = Q 26 12 10
-cpolys 9126 = T 181
-cpolys 9127 = T 1120
-cpolys 9128 = Q 39 25 22
-cpolys 9129 = T 23
-cpolys 9130 = T 2991
-cpolys 9131 = Q 7 5 4
-cpolys 9132 = T 207
-cpolys 9133 = Q 26 9 4
-cpolys 9134 = T 1545
-cpolys 9135 = T 944
-cpolys 9136 = Q 21 14 1
-cpolys 9137 = T 2163
-cpolys 9138 = T 2671
-cpolys 9139 = Q 10 3 1
-cpolys 9140 = T 1365
-cpolys 9141 = Q 36 7 1
-cpolys 9142 = T 4545
-cpolys 9143 = T 1268
-cpolys 9144 = Q 35 25 4
-cpolys 9145 = T 546
-cpolys 9146 = Q 12 2 1
-cpolys 9147 = Q 31 16 2
-cpolys 9148 = T 1921
-cpolys 9149 = Q 30 28 7
-cpolys 9150 = T 469
-cpolys 9151 = T 1330
-cpolys 9152 = Q 33 29 7
-cpolys 9153 = T 682
-cpolys 9154 = T 3087
-cpolys 9155 = Q 25 11 6
-cpolys 9156 = T 281
-cpolys 9157 = Q 30 10 7
-cpolys 9158 = T 809
-cpolys 9159 = T 3470
-cpolys 9160 = Q 22 15 3
-cpolys 9161 = T 1046
-cpolys 9162 = T 2807
-cpolys 9163 = Q 20 7 6
-cpolys 9164 = T 1913
-cpolys 9165 = Q 13 12 3
-cpolys 9166 = Q 19 10 3
-cpolys 9167 = Q 12 3 2
-cpolys 9168 = Q 15 10 4
-cpolys 9169 = T 229
-cpolys 9170 = T 1103
-cpolys 9171 = Q 38 5 4
-cpolys 9172 = Q 33 26 8
-cpolys 9173 = Q 31 17 12
-cpolys 9174 = Q 29 23 8
-cpolys 9175 = T 2806
-cpolys 9176 = Q 43 37 30
-cpolys 9177 = T 884
-cpolys 9178 = Q 19 17 8
-cpolys 9179 = Q 10 6 5
-cpolys 9180 = T 1153
-cpolys 9181 = Q 23 13 6
-cpolys 9182 = T 1769
-cpolys 9183 = Q 30 13 1
-cpolys 9184 = Q 33 26 14
-cpolys 9185 = T 207
-cpolys 9186 = T 3159
-cpolys 9187 = Q 20 18 4
-cpolys 9188 = T 4305
-cpolys 9189 = Q 26 14 8
-cpolys 9190 = T 2217
-cpolys 9191 = T 3936
-cpolys 9192 = Q 21 18 13
-cpolys 9193 = T 1216
-cpolys 9194 = Q 16 10 5
-cpolys 9195 = Q 14 13 1
-cpolys 9196 = Q 31 12 5
-cpolys 9197 = Q 14 12 5
-cpolys 9198 = T 1365
-cpolys 9199 = T 109
-cpolys 9200 = Q 31 24 2
-cpolys 9201 = T 146
-cpolys 9202 = T 211
-cpolys 9203 = Q 28 20 6
-cpolys 9204 = T 645
-cpolys 9205 = Q 14 11 3
-cpolys 9206 = T 4085
-cpolys 9207 = T 397
-cpolys 9208 = Q 35 10 9
-cpolys 9209 = T 2181
-cpolys 9210 = T 2603
-cpolys 9211 = Q 36 19 17
-cpolys 9212 = T 3839
-cpolys 9213 = Q 38 7 5
-cpolys 9214 = T 397
-cpolys 9215 = T 1217
-cpolys 9216 = Q 21 14 8
-cpolys 9217 = T 1956
-cpolys 9218 = T 2919
-cpolys 9219 = Q 30 6 4
-cpolys 9220 = T 1875
-cpolys 9221 = Q 33 26 5
-cpolys 9222 = Q 33 23 11
-cpolys 9223 = T 1023
-cpolys 9224 = Q 35 21 7
-cpolys 9225 = T 181
-cpolys 9226 = T 4315
-cpolys 9227 = Q 38 29 3
-cpolys 9228 = T 145
-cpolys 9229 = Q 20 19 17
-cpolys 9230 = Q 17 12 8
-cpolys 9231 = T 3899
-cpolys 9232 = Q 49 18 8
-cpolys 9233 = T 545
-cpolys 9234 = T 315
-cpolys 9235 = Q 23 22 2
-cpolys 9236 = Q 22 14 9
-cpolys 9237 = Q 18 16 12
-cpolys 9238 = T 49
-cpolys 9239 = T 1629
-cpolys 9240 = Q 17 11 7
-cpolys 9241 = T 909
-cpolys 9242 = T 239
-cpolys 9243 = Q 5 2 1
-cpolys 9244 = T 441
-cpolys 9245 = Q 43 35 18
-cpolys 9246 = Q 27 18 3
-cpolys 9247 = T 48
-cpolys 9248 = Q 37 18 13
-cpolys 9249 = T 1663
-cpolys 9250 = T 531
-cpolys 9251 = Q 8 3 2
-cpolys 9252 = T 327
-cpolys 9253 = Q 42 28 10
-cpolys 9254 = Q 24 17 13
-cpolys 9255 = T 298
-cpolys 9256 = Q 19 6 4
-cpolys 9257 = T 1364
-cpolys 9258 = T 3843
-cpolys 9259 = Q 22 16 6
-cpolys 9260 = T 2729
-cpolys 9261 = Q 30 18 10
-cpolys 9262 = T 1549
-cpolys 9263 = T 3173
-cpolys 9264 = Q 39 17 14
-cpolys 9265 = T 1123
-cpolys 9266 = Q 23 14 6
-cpolys 9267 = Q 23 8 5
-cpolys 9268 = T 3183
-cpolys 9269 = Q 42 18 14
-cpolys 9270 = T 837
-cpolys 9271 = T 1488
-cpolys 9272 = Q 13 4 3
-cpolys 9273 = T 502
-cpolys 9274 = T 1219
-cpolys 9275 = Q 10 6 2
-cpolys 9276 = T 135
-cpolys 9277 = Q 11 3 2
-cpolys 9278 = T 2145
-cpolys 9279 = T 1526
-cpolys 9280 = Q 23 7 2
-cpolys 9281 = T 2049
-cpolys 9282 = T 2307
-cpolys 9283 = Q 20 7 6
-cpolys 9284 = T 1883
-cpolys 9285 = Q 29 6 5
-cpolys 9286 = Q 25 20 14
-cpolys 9287 = T 2520
-cpolys 9288 = Q 49 43 18
-cpolys 9289 = T 358
-cpolys 9290 = T 1731
-cpolys 9291 = Q 8 5 1
-cpolys 9292 = T 3087
-cpolys 9293 = Q 20 18 3
-cpolys 9294 = T 3373
-cpolys 9295 = T 2149
-cpolys 9296 = Q 29 17 15
-cpolys 9297 = T 1838
-cpolys 9298 = T 2139
-cpolys 9299 = Q 22 21 1
-cpolys 9300 = T 135
-cpolys 9301 = Q 35 25 18
-cpolys 9302 = T 605
-cpolys 9303 = T 208
-cpolys 9304 = Q 27 13 9
-cpolys 9305 = T 3344
-cpolys 9306 = T 675
-cpolys 9307 = Q 31 25 4
-cpolys 9308 = T 1559
-cpolys 9309 = Q 19 16 10
-cpolys 9310 = T 3141
-cpolys 9311 = T 2657
-cpolys 9312 = Q 21 19 16
-cpolys 9313 = T 924
-cpolys 9314 = Q 27 23 12
-cpolys 9315 = Q 26 21 8
-cpolys 9316 = T 1233
-cpolys 9317 = Q 23 20 2
-cpolys 9318 = Q 18 6 3
-cpolys 9319 = T 477
-cpolys 9320 = Q 55 22 8
-cpolys 9321 = T 2627
-cpolys 9322 = T 4027
-cpolys 9323 = Q 18 4 1
-cpolys 9324 = T 665
-cpolys 9325 = Q 18 16 1
-cpolys 9326 = Q 35 23 20
-cpolys 9327 = T 4165
-cpolys 9328 = Q 21 14 8
-cpolys 9329 = T 2910
-cpolys 9330 = T 4263
-cpolys 9331 = Q 31 30 2
-cpolys 9332 = T 2081
-cpolys 9333 = Q 26 14 8
-cpolys 9334 = T 3141
-cpolys 9335 = T 1176
-cpolys 9336 = Q 17 5 3
-cpolys 9337 = T 546
-cpolys 9338 = Q 23 8 5
-cpolys 9339 = Q 23 14 1
-cpolys 9340 = T 1339
-cpolys 9341 = Q 19 18 14
-cpolys 9342 = Q 19 10 8
-cpolys 9343 = T 2700
-cpolys 9344 = Q 51 44 5
-cpolys 9345 = T 353
-cpolys 9346 = Q 18 10 3
-cpolys 9347 = Q 16 14 7
-cpolys 9348 = Q 19 9 3
-cpolys 9349 = Q 25 18 2
-cpolys 9350 = T 1221
-cpolys 9351 = T 56
-cpolys 9352 = Q 31 26 15
-cpolys 9353 = T 3221
-cpolys 9354 = Q 16 7 4
-cpolys 9355 = Q 22 16 4
-cpolys 9356 = T 1773
-cpolys 9357 = Q 35 34 2
-cpolys 9358 = T 453
-cpolys 9359 = T 1227
-cpolys 9360 = Q 28 23 1
-cpolys 9361 = T 369
-cpolys 9362 = Q 23 13 1
-cpolys 9363 = Q 26 21 17
-cpolys 9364 = T 3297
-cpolys 9365 = Q 21 20 7
-cpolys 9366 = T 2245
-cpolys 9367 = T 3172
-cpolys 9368 = Q 38 7 1
-cpolys 9369 = T 116
-cpolys 9370 = T 2311
-cpolys 9371 = Q 28 21 17
-cpolys 9372 = T 269
-cpolys 9373 = Q 28 10 4
-cpolys 9374 = Q 18 9 2
-cpolys 9375 = T 4459
-cpolys 9376 = Q 23 5 1
-cpolys 9377 = T 914
-cpolys 9378 = T 1347
-cpolys 9379 = Q 14 9 5
-cpolys 9380 = T 561
-cpolys 9381 = Q 19 9 6
-cpolys 9382 = T 3297
-cpolys 9383 = T 1124
-cpolys 9384 = Q 17 11 6
-cpolys 9385 = T 523
-cpolys 9386 = T 3863
-cpolys 9387 = Q 31 30 9
-cpolys 9388 = Q 24 7 3
-cpolys 9389 = Q 20 7 3
-cpolys 9390 = T 2601
-cpolys 9391 = T 1239
-cpolys 9392 = Q 29 24 11
-cpolys 9393 = T 623
-cpolys 9394 = T 3471
-cpolys 9395 = Q 17 15 4
-cpolys 9396 = T 369
-cpolys 9397 = Q 32 14 7
-cpolys 9398 = T 2769
-cpolys 9399 = T 1295
-cpolys 9400 = Q 18 13 1
-cpolys 9401 = T 429
-cpolys 9402 = T 267
-cpolys 9403 = Q 30 8 1
-cpolys 9404 = T 2009
-cpolys 9405 = Q 18 4 1
-cpolys 9406 = Q 28 27 7
-cpolys 9407 = T 260
-cpolys 9408 = Q 28 15 6
-cpolys 9409 = T 405
-cpolys 9410 = Q 32 11 8
-cpolys 9411 = Q 24 22 1
-cpolys 9412 = Q 11 9 2
-cpolys 9413 = Q 11 10 9
-cpolys 9414 = T 673
-cpolys 9415 = T 1678
-cpolys 9416 = Q 19 11 6
-cpolys 9417 = T 218
-cpolys 9418 = T 823
-cpolys 9419 = Q 30 19 13
-cpolys 9420 = T 2701
-cpolys 9421 = Q 14 9 5
-cpolys 9422 = Q 22 10 9
-cpolys 9423 = T 1280
-cpolys 9424 = Q 22 9 6
-cpolys 9425 = T 699
-cpolys 9426 = Q 21 6 5
-cpolys 9427 = Q 23 18 8
-cpolys 9428 = Q 21 17 7
-cpolys 9429 = Q 21 9 2
-cpolys 9430 = Q 37 18 5
-cpolys 9431 = T 3113
-cpolys 9432 = Q 52 43 25
-cpolys 9433 = T 42
-cpolys 9434 = Q 19 14 12
-cpolys 9435 = Q 7 5 4
-cpolys 9436 = T 225
-cpolys 9437 = Q 14 12 1
-cpolys 9438 = Q 15 13 6
-cpolys 9439 = T 105
-cpolys 9440 = Q 25 22 14
-cpolys 9441 = T 479
-cpolys 9442 = T 4611
-cpolys 9443 = Q 30 19 2
-cpolys 9444 = T 3513
-cpolys 9445 = Q 34 14 12
-cpolys 9446 = Q 12 5 3
-cpolys 9447 = T 458
-cpolys 9448 = Q 23 21 20
-cpolys 9449 = T 584
-cpolys 9450 = T 1431
-cpolys 9451 = Q 13 12 3
-cpolys 9452 = Q 18 14 13
-cpolys 9453 = Q 32 29 23
-cpolys 9454 = T 4189
-cpolys 9455 = T 2807
-cpolys 9456 = Q 35 19 5
-cpolys 9457 = T 4
-cpolys 9458 = Q 25 16 6
-cpolys 9459 = Q 36 18 13
-cpolys 9460 = Q 20 17 1
-cpolys 9461 = Q 32 28 6
-cpolys 9462 = Q 34 14 5
-cpolys 9463 = T 327
-cpolys 9464 = Q 37 18 13
-cpolys 9465 = T 197
-cpolys 9466 = Q 23 14 1
-cpolys 9467 = Q 27 14 7
-cpolys 9468 = T 1695
-cpolys 9469 = Q 28 22 18
-cpolys 9470 = T 2289
-cpolys 9471 = T 1459
-cpolys 9472 = Q 45 40 15
-cpolys 9473 = T 656
-cpolys 9474 = Q 23 20 7
-cpolys 9475 = Q 29 25 2
-cpolys 9476 = T 2583
-cpolys 9477 = Q 26 11 7
-cpolys 9478 = T 909
-cpolys 9479 = T 200
-cpolys 9480 = Q 18 9 2
-cpolys 9481 = T 4060
-cpolys 9482 = Q 19 12 4
-cpolys 9483 = Q 20 10 5
-cpolys 9484 = T 853
-cpolys 9485 = Q 23 22 9
-cpolys 9486 = T 945
-cpolys 9487 = T 211
-cpolys 9488 = Q 25 12 7
-cpolys 9489 = T 2089
-cpolys 9490 = T 999
-cpolys 9491 = Q 19 6 5
-cpolys 9492 = T 373
-cpolys 9493 = Q 38 22 3
-cpolys 9494 = T 477
-cpolys 9495 = Q 23 20 18
-cpolys 9496 = Q 29 17 15
-cpolys 9497 = T 2301
-cpolys 9498 = Q 41 17 10
-cpolys 9499 = Q 29 20 10
-cpolys 9500 = T 1175
-cpolys 9501 = Q 29 26 4
-cpolys 9502 = T 621
-cpolys 9503 = T 99
-cpolys 9504 = Q 19 15 6
-cpolys 9505 = Q 15 10 1
-cpolys 9506 = Q 12 7 5
-cpolys 9507 = Q 29 28 14
-cpolys 9508 = T 1141
-cpolys 9509 = Q 13 9 2
-cpolys 9510 = T 2349
-cpolys 9511 = T 399
-cpolys 9512 = Q 39 17 16
-cpolys 9513 = T 686
-cpolys 9514 = Q 28 21 9
-cpolys 9515 = Q 18 9 2
-cpolys 9516 = T 903
-cpolys 9517 = Q 32 18 11
-cpolys 9518 = T 1797
-cpolys 9519 = T 1573
-cpolys 9520 = Q 13 5 2
-cpolys 9521 = T 116
-cpolys 9522 = T 243
-cpolys 9523 = Q 8 4 2
-cpolys 9524 = T 3207
-cpolys 9525 = Q 30 27 2
-cpolys 9526 = Q 16 10 1
-cpolys 9527 = T 1650
-cpolys 9528 = Q 37 33 22
-cpolys 9529 = T 43
-cpolys 9530 = T 1623
-cpolys 9531 = Q 32 14 2
-cpolys 9532 = T 2103
-cpolys 9533 = Q 36 31 5
-cpolys 9534 = T 1193
-cpolys 9535 = T 1119
-cpolys 9536 = Q 31 26 6
-cpolys 9537 = T 565
-cpolys 9538 = Q 24 9 3
-cpolys 9539 = Q 38 27 13
-cpolys 9540 = T 3059
-cpolys 9541 = Q 31 21 14
-cpolys 9542 = T 1185
-cpolys 9543 = T 533
-cpolys 9544 = Q 43 32 9
-cpolys 9545 = T 539
-cpolys 9546 = T 47
-cpolys 9547 = Q 12 8 2
-cpolys 9548 = T 335
-cpolys 9549 = Q 37 34 32
-cpolys 9550 = Q 19 15 11
-cpolys 9551 = T 126
-cpolys 9552 = Q 11 4 1
-cpolys 9553 = T 1498
-cpolys 9554 = Q 29 28 15
-cpolys 9555 = Q 24 22 10
-cpolys 9556 = Q 21 9 1
-cpolys 9557 = Q 27 20 1
-cpolys 9558 = T 2041
-cpolys 9559 = T 702
-cpolys 9560 = Q 27 13 2
-cpolys 9561 = T 3059
-cpolys 9562 = T 687
-cpolys 9563 = Q 25 9 2
-cpolys 9564 = T 387
-cpolys 9565 = Q 6 5 4
-cpolys 9566 = T 1901
-cpolys 9567 = T 1883
-cpolys 9568 = Q 49 26 14
-cpolys 9569 = T 60
-cpolys 9570 = T 487
-cpolys 9571 = Q 24 16 5
-cpolys 9572 = Q 31 19 9
-cpolys 9573 = Q 8 6 5
-cpolys 9574 = Q 38 37 8
-cpolys 9575 = T 888
-cpolys 9576 = Q 29 25 7
-cpolys 9577 = T 1668
-cpolys 9578 = T 1503
-cpolys 9579 = Q 34 33 6
-cpolys 9580 = T 1771
-cpolys 9581 = Q 12 7 4
-cpolys 9582 = T 3177
-cpolys 9583 = T 790
-cpolys 9584 = Q 36 29 27
-cpolys 9585 = T 2524
-cpolys 9586 = T 1867
-cpolys 9587 = Q 36 29 22
-cpolys 9588 = T 525
-cpolys 9589 = Q 28 22 15
-cpolys 9590 = T 2061
-cpolys 9591 = T 841
-cpolys 9592 = Q 15 8 1
-cpolys 9593 = T 284
-cpolys 9594 = T 499
-cpolys 9595 = Q 28 18 15
-cpolys 9596 = Q 18 11 5
-cpolys 9597 = Q 28 25 22
-cpolys 9598 = T 4309
-cpolys 9599 = T 14
-cpolys 9600 = Q 19 6 4
-cpolys 9601 = T 963
-cpolys 9602 = Q 21 5 2
-cpolys 9603 = Q 19 10 4
-cpolys 9604 = Q 13 11 9
-cpolys 9605 = Q 37 26 12
-cpolys 9606 = Q 15 12 1
-cpolys 9607 = T 262
-cpolys 9608 = Q 14 13 1
-cpolys 9609 = T 1526
-cpolys 9610 = T 2883
-cpolys 9611 = Q 14 6 5
-cpolys 9612 = T 93
-cpolys 9613 = Q 32 16 3
-cpolys 9614 = T 4577
-cpolys 9615 = T 361
-cpolys 9616 = Q 25 8 2
-cpolys 9617 = T 1385
-cpolys 9618 = Q 16 3 1
-cpolys 9619 = Q 29 14 10
-cpolys 9620 = T 557
-cpolys 9621 = Q 29 20 11
-cpolys 9622 = T 2145
-cpolys 9623 = T 2429
-cpolys 9624 = Q 31 17 7
-cpolys 9625 = T 508
-cpolys 9626 = Q 7 6 1
-cpolys 9627 = Q 25 19 18
-cpolys 9628 = T 31
-cpolys 9629 = Q 16 15 10
-cpolys 9630 = T 37
-cpolys 9631 = T 295
-cpolys 9632 = Q 30 23 5
-cpolys 9633 = T 2333
-cpolys 9634 = T 3075
-cpolys 9635 = Q 26 21 10
-cpolys 9636 = T 515
-cpolys 9637 = Q 21 18 6
-cpolys 9638 = Q 21 19 13
-cpolys 9639 = T 700
-cpolys 9640 = Q 33 7 3
-cpolys 9641 = T 3287
-cpolys 9642 = T 3591
-cpolys 9643 = Q 18 14 11
-cpolys 9644 = T 1671
-cpolys 9645 = Q 9 7 6
-cpolys 9646 = Q 31 30 17
-cpolys 9647 = T 1227
-cpolys 9648 = Q 31 24 21
-cpolys 9649 = T 657
-cpolys 9650 = Q 32 18 11
-cpolys 9651 = Q 22 14 4
-cpolys 9652 = T 2733
-cpolys 9653 = Q 22 15 2
-cpolys 9654 = T 1969
-cpolys 9655 = T 3558
-cpolys 9656 = Q 19 16 2
-cpolys 9657 = T 1192
-cpolys 9658 = T 3691
-cpolys 9659 = Q 15 14 8
-cpolys 9660 = T 57
-cpolys 9661 = Q 22 14 6
-cpolys 9662 = Q 22 9 8
-cpolys 9663 = T 446
-cpolys 9664 = Q 35 21 1
-cpolys 9665 = T 2763
-cpolys 9666 = T 435
-cpolys 9667 = Q 34 22 6
-cpolys 9668 = T 225
-cpolys 9669 = Q 29 27 24
-cpolys 9670 = Q 35 34 3
-cpolys 9671 = T 1086
-cpolys 9672 = Q 17 9 3
-cpolys 9673 = T 3538
-cpolys 9674 = T 759
-cpolys 9675 = Q 44 25 23
-cpolys 9676 = T 3367
-cpolys 9677 = Q 30 27 12
-cpolys 9678 = T 4277
-cpolys 9679 = T 864
-cpolys 9680 = Q 25 6 2
-cpolys 9681 = T 910
-cpolys 9682 = T 3175
-cpolys 9683 = Q 46 37 21
-cpolys 9684 = T 2405
-cpolys 9685 = Q 17 14 4
-cpolys 9686 = T 2333
-cpolys 9687 = T 2054
-cpolys 9688 = Q 20 9 2
-cpolys 9689 = T 84
-cpolys 9690 = T 1503
-cpolys 9691 = Q 17 14 1
-cpolys 9692 = T 3381
-cpolys 9693 = Q 10 6 3
-cpolys 9694 = Q 50 18 17
-cpolys 9695 = T 207
-cpolys 9696 = Q 36 27 21
-cpolys 9697 = T 1201
-cpolys 9698 = Q 38 27 24
-cpolys 9699 = Q 30 6 1
-cpolys 9700 = T 565
-cpolys 9701 = Q 23 12 3
-cpolys 9702 = T 1533
-cpolys 9703 = Q 13 7 1
-cpolys 9704 = Q 7 3 2
-cpolys 9705 = T 1802
-cpolys 9706 = Q 22 15 11
-cpolys 9707 = Q 26 15 1
-cpolys 9708 = T 1753
-cpolys 9709 = Q 16 13 10
-cpolys 9710 = Q 30 15 9
-cpolys 9711 = T 917
-cpolys 9712 = Q 27 19 17
-cpolys 9713 = T 2933
-cpolys 9714 = T 1227
-cpolys 9715 = Q 27 10 6
-cpolys 9716 = T 263
-cpolys 9717 = Q 9 6 2
-cpolys 9718 = Q 46 29 11
-cpolys 9719 = T 3492
-cpolys 9720 = Q 37 4 2
-cpolys 9721 = T 171
-cpolys 9722 = Q 12 11 8
-cpolys 9723 = Q 32 29 25
-cpolys 9724 = Q 30 28 15
-cpolys 9725 = Q 14 8 5
-cpolys 9726 = Q 29 28 23
-cpolys 9727 = T 760
-cpolys 9728 = Q 30 5 2
-cpolys 9729 = T 938
-cpolys 9730 = T 663
-cpolys 9731 = Q 16 12 10
-cpolys 9732 = T 3747
-cpolys 9733 = Q 22 21 8
-cpolys 9734 = T 4125
-cpolys 9735 = T 2086
-cpolys 9736 = Q 15 7 6
-cpolys 9737 = T 275
-cpolys 9738 = T 3663
-cpolys 9739 = Q 15 14 2
-cpolys 9740 = T 3015
-cpolys 9741 = Q 11 8 1
-cpolys 9742 = Q 30 18 15
-cpolys 9743 = T 869
-cpolys 9744 = Q 36 9 2
-cpolys 9745 = T 2361
-cpolys 9746 = T 2559
-cpolys 9747 = Q 26 8 1
-cpolys 9748 = T 889
-cpolys 9749 = Q 20 7 6
-cpolys 9750 = T 833
-cpolys 9751 = T 1093
-cpolys 9752 = Q 42 17 3
-cpolys 9753 = T 1078
-cpolys 9754 = T 3891
-cpolys 9755 = Q 6 5 1
-cpolys 9756 = T 1701
-cpolys 9757 = Q 22 14 6
-cpolys 9758 = T 1557
-cpolys 9759 = T 706
-cpolys 9760 = Q 56 49 47
-cpolys 9761 = T 2588
-cpolys 9762 = T 4455
-cpolys 9763 = Q 30 18 1
-cpolys 9764 = Q 25 13 9
-cpolys 9765 = Q 28 17 11
-cpolys 9766 = T 585
-cpolys 9767 = T 1668
-cpolys 9768 = Q 41 23 22
-cpolys 9769 = T 1390
-cpolys 9770 = T 1091
-cpolys 9771 = Q 29 8 1
-cpolys 9772 = T 741
-cpolys 9773 = Q 32 10 6
-cpolys 9774 = T 401
-cpolys 9775 = T 537
-cpolys 9776 = Q 24 19 1
-cpolys 9777 = T 773
-cpolys 9778 = Q 24 18 15
-cpolys 9779 = Q 40 21 20
-cpolys 9780 = T 711
-cpolys 9781 = Q 40 28 15
-cpolys 9782 = T 161
-cpolys 9783 = T 88
-cpolys 9784 = Q 38 37 9
-cpolys 9785 = T 2036
-cpolys 9786 = T 4147
-cpolys 9787 = Q 20 13 9
-cpolys 9788 = T 2007
-cpolys 9789 = Q 17 8 2
-cpolys 9790 = T 177
-cpolys 9791 = T 390
-cpolys 9792 = Q 27 26 21
-cpolys 9793 = T 339
-cpolys 9794 = Q 24 15 6
-cpolys 9795 = Q 26 5 4
-cpolys 9796 = T 321
-cpolys 9797 = Q 35 32 2
-cpolys 9798 = T 2677
-cpolys 9799 = T 139
-cpolys 9800 = Q 42 41 10
-cpolys 9801 = T 284
-cpolys 9802 = Q 12 10 3
-cpolys 9803 = Q 18 10 2
-cpolys 9804 = T 1165
-cpolys 9805 = Q 22 21 18
-cpolys 9806 = Q 30 9 8
-cpolys 9807 = T 337
-cpolys 9808 = Q 43 32 21
-cpolys 9809 = Q 19 15 10
-cpolys 9810 = T 711
-cpolys 9811 = Q 41 28 27
-cpolys 9812 = Q 31 30 22
-cpolys 9813 = Q 26 17 12
-cpolys 9814 = T 1545
-cpolys 9815 = Q 27 26 8
-cpolys 9816 = Q 46 33 22
-cpolys 9817 = T 4420
-cpolys 9818 = Q 30 19 10
-cpolys 9819 = Q 18 4 3
-cpolys 9820 = T 105
-cpolys 9821 = Q 34 23 18
-cpolys 9822 = T 305
-cpolys 9823 = T 144
-cpolys 9824 = Q 13 10 3
-cpolys 9825 = T 2563
-cpolys 9826 = Q 22 10 7
-cpolys 9827 = Q 13 12 5
-cpolys 9828 = T 207
-cpolys 9829 = Q 4 3 1
-cpolys 9830 = T 1541
-cpolys 9831 = T 1159
-cpolys 9832 = Q 39 37 25
-cpolys 9833 = T 104
-cpolys 9834 = Q 32 25 7
-cpolys 9835 = Q 32 29 1
-cpolys 9836 = Q 18 13 10
-cpolys 9837 = Q 35 16 2
-cpolys 9838 = Q 25 19 12
-cpolys 9839 = T 389
-cpolys 9840 = Q 49 47 13
-cpolys 9841 = T 1788
-cpolys 9842 = Q 35 28 24
-cpolys 9843 = Q 18 12 2
-cpolys 9844 = T 565
-cpolys 9845 = Q 38 18 11
-cpolys 9846 = T 2349
-cpolys 9847 = T 3537
-cpolys 9848 = Q 25 23 10
-cpolys 9849 = T 329
-cpolys 9850 = Q 19 16 4
-cpolys 9851 = Q 11 6 5
-cpolys 9852 = T 3379
-cpolys 9853 = Q 18 11 10
-cpolys 9854 = T 317
-cpolys 9855 = T 803
-cpolys 9856 = Q 36 15 1
-cpolys 9857 = T 4386
-cpolys 9858 = T 4235
-cpolys 9859 = Q 34 28 1
-cpolys 9860 = T 2997
-cpolys 9861 = Q 33 18 16
-cpolys 9862 = Q 13 10 3
-cpolys 9863 = T 1809
-cpolys 9864 = Q 35 32 21
-cpolys 9865 = T 2604
-cpolys 9866 = Q 34 27 14
-cpolys 9867 = Q 26 8 2
-cpolys 9868 = T 339
-cpolys 9869 = Q 23 8 6
-cpolys 9870 = T 2681
-cpolys 9871 = T 903
-cpolys 9872 = Q 13 11 3
-cpolys 9873 = T 3842
-cpolys 9874 = T 4279
-cpolys 9875 = Q 19 18 2
-cpolys 9876 = T 183
-cpolys 9877 = Q 19 16 15
-cpolys 9878 = T 573
-cpolys 9879 = T 1181
-cpolys 9880 = Q 35 28 5
-cpolys 9881 = Q 27 7 5
-cpolys 9882 = T 747
-cpolys 9883 = Q 35 34 11
-cpolys 9884 = T 389
-cpolys 9885 = Q 38 15 3
-cpolys 9886 = T 3673
-cpolys 9887 = T 710
-cpolys 9888 = Q 33 6 4
-cpolys 9889 = T 2019
-cpolys 9890 = T 2583
-cpolys 9891 = Q 46 38 7
-cpolys 9892 = Q 31 4 1
-cpolys 9893 = Q 32 28 18
-cpolys 9894 = Q 27 7 1
-cpolys 9895 = T 787
-cpolys 9896 = Q 39 38 26
-cpolys 9897 = T 430
-cpolys 9898 = Q 23 13 5
-cpolys 9899 = Q 34 21 13
-cpolys 9900 = T 11
-cpolys 9901 = Q 10 4 3
-cpolys 9902 = Q 27 19 10
-cpolys 9903 = T 40
-cpolys 9904 = Q 21 10 2
-cpolys 9905 = T 219
-cpolys 9906 = T 2027
-cpolys 9907 = Q 10 7 1
-cpolys 9908 = T 2699
-cpolys 9909 = Q 11 10 7
-cpolys 9910 = Q 27 16 15
-cpolys 9911 = T 483
-cpolys 9912 = Q 42 35 15
-cpolys 9913 = T 1899
-cpolys 9914 = T 95
-cpolys 9915 = Q 29 17 8
-cpolys 9916 = T 4483
-cpolys 9917 = Q 32 9 6
-cpolys 9918 = T 381
-cpolys 9919 = T 1185
-cpolys 9920 = Q 49 18 14
-cpolys 9921 = T 901
-cpolys 9922 = T 2691
-cpolys 9923 = Q 37 33 26
-cpolys 9924 = Q 30 29 26
-cpolys 9925 = Q 12 9 7
-cpolys 9926 = T 1445
-cpolys 9927 = T 1987
-cpolys 9928 = Q 39 38 31
-cpolys 9929 = T 1382
-cpolys 9930 = T 331
-cpolys 9931 = Q 34 10 3
-cpolys 9932 = T 2397
-cpolys 9933 = Q 23 6 2
-cpolys 9934 = Q 34 7 3
-cpolys 9935 = T 2216
-cpolys 9936 = Q 22 21 1
-cpolys 9937 = T 451
-cpolys 9938 = Q 25 19 9
-cpolys 9939 = Q 32 26 17
-cpolys 9940 = T 2059
-cpolys 9941 = Q 29 12 10
-cpolys 9942 = T 133
-cpolys 9943 = T 3069
-cpolys 9944 = Q 15 14 6
-cpolys 9945 = T 1882
-cpolys 9946 = T 2355
-cpolys 9947 = Q 23 17 8
-cpolys 9948 = T 1535
-cpolys 9949 = Q 32 24 10
-cpolys 9950 = T 2453
-cpolys 9951 = T 1334
-cpolys 9952 = Q 31 30 11
-cpolys 9953 = T 539
-cpolys 9954 = T 343
-cpolys 9955 = Q 9 8 5
-cpolys 9956 = T 851
-cpolys 9957 = Q 25 11 4
-cpolys 9958 = Q 17 14 4
-cpolys 9959 = T 381
-cpolys 9960 = Q 30 15 10
-cpolys 9961 = T 2707
-cpolys 9962 = Q 20 14 3
-cpolys 9963 = Q 34 29 20
-cpolys 9964 = T 2691
-cpolys 9965 = Q 34 24 23
-cpolys 9966 = T 1701
-cpolys 9967 = T 4399
-cpolys 9968 = Q 36 3 2
-cpolys 9969 = T 295
-cpolys 9970 = T 2587
-cpolys 9971 = Q 11 8 5
-cpolys 9972 = T 519
-cpolys 9973 = Q 27 24 12
-cpolys 9974 = T 2045
-cpolys 9975 = T 124
-cpolys 9976 = Q 21 19 5
-cpolys 9977 = T 2954
-cpolys 9978 = T 1483
-cpolys 9979 = Q 26 10 2
-cpolys 9980 = T 707
-cpolys 9981 = Q 30 27 22
-cpolys 9982 = T 993
-cpolys 9983 = T 785
-cpolys 9984 = Q 27 10 7
-cpolys 9985 = T 1974
-cpolys 9986 = T 1143
-cpolys 9987 = Q 14 11 10
-cpolys 9988 = T 3129
-cpolys 9989 = Q 21 20 6
-cpolys 9990 = T 573
-cpolys 9991 = T 495
-cpolys 9992 = Q 7 4 2
-cpolys 9993 = T 121
-cpolys 9994 = Q 29 22 3
-cpolys 9995 = Q 41 40 31
-cpolys 9996 = T 1447
-cpolys 9997 = Q 26 10 6
-cpolys 9998 = T 4013
-cpolys 9999 = T 2951
-cpolys 10000 = Q 19 13 9
-cpolys x = error $ "The CMAC polynomial for the value" ++ show x ++ "hasn't been precomputed"
+cpolys i
+ | i < 2 || i > 10000 = error $ "The CMAC polynomial for the value" ++ show i ++ "hasn't been precomputed"
+ | otherwise = cpolysArr ! i
+
+cpolysArr = array (2,10000) [(2, T 1), (3, T 1), (4, T 1), (5, T 2),
+ (6, T 1), (7, T 1), (8, Q 4 3 1), (9, T 1),
+ (10, T 3), (11, T 2), (12, T 3), (13, Q 4 3 1),
+ (14, T 5), (15, T 1), (16, Q 5 3 1), (17, T 3),
+ (18, T 3), (19, Q 5 2 1), (20, T 3), (21, T 2),
+ (22, T 1), (23, T 5), (24, Q 4 3 1), (25, T 3),
+ (26, Q 4 3 1), (27, Q 5 2 1), (28, T 1), (29, T 2),
+ (30, T 1), (31, T 3), (32, Q 7 3 2), (33, T 10),
+ (34, T 7), (35, T 2), (36, T 9), (37, Q 6 4 1),
+ (38, Q 6 5 1), (39, T 4), (40, Q 5 4 3), (41, T 3),
+ (42, T 7), (43, Q 6 4 3), (44, T 5), (45, Q 4 3 1),
+ (46, T 1), (47, T 5), (48, Q 5 3 2), (49, T 9),
+ (50, Q 4 3 2), (51, Q 6 3 1), (52, T 3),
+ (53, Q 6 2 1), (54, T 9), (55, T 7), (56, Q 7 4 2),
+ (57, T 4), (58, T 19), (59, Q 7 4 2), (60, T 1),
+ (61, Q 5 2 1), (62, T 29), (63, T 1),
+ (64, Q 4 3 1), (65, T 18), (66, T 3),
+ (67, Q 5 2 1), (68, T 9), (69, Q 6 5 2),
+ (70, Q 5 3 1), (71, T 6), (72, Q 10 9 3),
+ (73, T 25), (74, T 35), (75, Q 6 3 1), (76, T 21),
+ (77, Q 6 5 2), (78, Q 6 5 3), (79, T 9),
+ (80, Q 9 4 2), (81, T 4), (82, Q 8 3 1),
+ (83, Q 7 4 2), (84, T 5), (85, Q 8 2 1),
+ (86, T 21), (87, T 13), (88, Q 7 6 2), (89, T 38),
+ (90, T 27), (91, Q 8 5 1), (92, T 21), (93, T 2),
+ (94, T 21), (95, T 11), (96, Q 10 9 6), (97, T 6),
+ (98, T 11), (99, Q 6 3 1), (100, T 15),
+ (101, Q 7 6 1), (102, T 29), (103, T 9),
+ (104, Q 4 3 1), (105, T 4), (106, T 15),
+ (107, Q 9 7 4), (108, T 17), (109, Q 5 4 2),
+ (110, T 33), (111, T 10), (112, Q 5 4 3),
+ (113, T 9), (114, Q 5 3 2), (115, Q 8 7 5),
+ (116, Q 4 2 1), (117, Q 5 2 1), (118, T 33),
+ (119, T 8), (120, Q 4 3 1), (121, T 18),
+ (122, Q 6 2 1), (123, T 2), (124, T 19),
+ (125, Q 7 6 5), (126, T 21), (127, T 1),
+ (128, Q 7 2 1), (129, T 5), (130, T 3),
+ (131, Q 8 3 2), (132, T 17), (133, Q 9 8 2),
+ (134, T 57), (135, T 11), (136, Q 5 3 2),
+ (137, T 21), (138, Q 8 7 1), (139, Q 8 5 3),
+ (140, T 15), (141, Q 10 4 1), (142, T 21),
+ (143, Q 5 3 2), (144, Q 7 4 2), (145, T 52),
+ (146, T 71), (147, T 14), (148, T 27),
+ (149, Q 10 9 7), (150, T 53), (151, T 3),
+ (152, Q 6 3 2), (153, T 1), (154, T 15),
+ (155, T 62), (156, T 9), (157, Q 6 5 2),
+ (158, Q 8 6 5), (159, T 31), (160, Q 5 3 2),
+ (161, T 18), (162, T 27), (163, Q 7 6 3),
+ (164, Q 10 8 7), (165, Q 9 8 3), (166, T 37),
+ (167, T 6), (168, Q 15 3 2), (169, T 34),
+ (170, T 11), (171, Q 6 5 2), (172, T 1),
+ (173, Q 8 5 2), (174, T 13), (175, T 6),
+ (176, Q 11 3 2), (177, T 8), (178, T 31),
+ (179, Q 4 2 1), (180, T 3), (181, Q 7 6 1),
+ (182, T 81), (183, T 56), (184, Q 9 8 7),
+ (185, T 24), (186, T 11), (187, Q 7 6 5),
+ (188, Q 6 5 2), (189, Q 6 5 2), (190, Q 8 7 6),
+ (191, T 9), (192, Q 7 2 1), (193, T 15),
+ (194, T 87), (195, Q 8 3 2), (196, T 3),
+ (197, Q 9 4 2), (198, T 9), (199, T 34),
+ (200, Q 5 3 2), (201, T 14), (202, T 55),
+ (203, Q 8 7 1), (204, T 27), (205, Q 9 5 2),
+ (206, Q 10 9 5), (207, T 43), (208, Q 9 3 1),
+ (209, T 6), (210, T 7), (211, Q 11 10 8),
+ (212, T 105), (213, Q 6 5 2), (214, T 73),
+ (215, T 23), (216, Q 7 3 1), (217, T 45),
+ (218, T 11), (219, Q 8 4 1), (220, T 7),
+ (221, Q 8 6 2), (222, Q 5 4 2), (223, T 33),
+ (224, Q 9 8 3), (225, T 32), (226, Q 10 7 3),
+ (227, Q 10 9 4), (228, T 113), (229, Q 10 4 1),
+ (230, Q 8 7 6), (231, T 26), (232, Q 9 4 2),
+ (233, T 74), (234, T 31), (235, Q 9 6 1),
+ (236, T 5), (237, Q 7 4 1), (238, T 73),
+ (239, T 36), (240, Q 8 5 3), (241, T 70),
+ (242, T 95), (243, Q 8 5 1), (244, T 111),
+ (245, Q 6 4 1), (246, Q 11 2 1), (247, T 82),
+ (248, Q 15 14 10), (249, T 35), (250, T 103),
+ (251, Q 7 4 2), (252, T 15), (253, T 46),
+ (254, Q 7 2 1), (255, T 52), (256, Q 10 5 2),
+ (257, T 12), (258, T 71), (259, Q 10 6 2),
+ (260, T 15), (261, Q 7 6 4), (262, Q 9 8 4),
+ (263, T 93), (264, Q 9 6 2), (265, T 42),
+ (266, T 47), (267, Q 8 6 3), (268, T 25),
+ (269, Q 7 6 1), (270, T 53), (271, T 58),
+ (272, Q 9 3 2), (273, T 23), (274, T 67),
+ (275, Q 11 10 9), (276, T 63), (277, Q 12 6 3),
+ (278, T 5), (279, T 5), (280, Q 9 5 2),
+ (281, T 93), (282, T 35), (283, Q 12 7 5),
+ (284, T 53), (285, Q 10 7 5), (286, T 69),
+ (287, T 71), (288, Q 11 10 1), (289, T 21),
+ (290, Q 5 3 2), (291, Q 12 11 5), (292, T 37),
+ (293, Q 11 6 1), (294, T 33), (295, T 48),
+ (296, Q 7 3 2), (297, T 5), (298, Q 11 8 4),
+ (299, Q 11 6 4), (300, T 5), (301, Q 9 5 2),
+ (302, T 41), (303, T 1), (304, Q 11 2 1),
+ (305, T 102), (306, Q 7 3 1), (307, Q 8 4 2),
+ (308, T 15), (309, Q 10 6 4), (310, T 93),
+ (311, Q 7 5 3), (312, Q 9 7 4), (313, T 79),
+ (314, T 15), (315, Q 10 9 1), (316, T 63),
+ (317, Q 7 4 2), (318, T 45), (319, T 36),
+ (320, Q 4 3 1), (321, T 31), (322, T 67),
+ (323, Q 10 3 1), (324, T 51), (325, Q 10 5 2),
+ (326, Q 10 3 1), (327, T 34), (328, Q 8 3 1),
+ (329, T 50), (330, T 99), (331, Q 10 6 2),
+ (332, T 89), (333, T 2), (334, Q 5 2 1),
+ (335, Q 10 7 2), (336, Q 7 4 1), (337, T 55),
+ (338, Q 4 3 1), (339, Q 16 10 7), (340, T 45),
+ (341, Q 10 8 6), (342, T 125), (343, T 75),
+ (344, Q 7 2 1), (345, T 22), (346, T 63),
+ (347, Q 11 10 3), (348, T 103), (349, Q 6 5 2),
+ (350, T 53), (351, T 34), (352, Q 13 11 6),
+ (353, T 69), (354, T 99), (355, Q 6 5 1),
+ (356, Q 10 9 7), (357, Q 11 10 2), (358, T 57),
+ (359, T 68), (360, Q 5 3 2), (361, Q 7 4 1),
+ (362, T 63), (363, Q 8 5 3), (364, T 9),
+ (365, Q 9 6 5), (366, T 29), (367, T 21),
+ (368, Q 7 3 2), (369, T 91), (370, T 139),
+ (371, Q 8 3 2), (372, T 111), (373, Q 8 7 2),
+ (374, Q 8 6 5), (375, T 16), (376, Q 8 7 5),
+ (377, T 41), (378, T 43), (379, Q 10 8 5),
+ (380, T 47), (381, Q 5 2 1), (382, T 81),
+ (383, T 90), (384, Q 12 3 2), (385, T 6),
+ (386, T 83), (387, Q 8 7 1), (388, T 159),
+ (389, Q 10 9 5), (390, T 9), (391, T 28),
+ (392, Q 13 10 6), (393, T 7), (394, T 135),
+ (395, Q 11 6 5), (396, T 25), (397, Q 12 7 6),
+ (398, Q 7 6 2), (399, T 26), (400, Q 5 3 2),
+ (401, T 152), (402, T 171), (403, Q 9 8 5),
+ (404, T 65), (405, Q 13 8 2), (406, T 141),
+ (407, T 71), (408, Q 5 3 2), (409, T 87),
+ (410, Q 10 4 3), (411, Q 12 10 3), (412, T 147),
+ (413, Q 10 7 6), (414, T 13), (415, T 102),
+ (416, Q 9 5 2), (417, T 107), (418, T 199),
+ (419, Q 15 5 4), (420, T 7), (421, Q 5 4 2),
+ (422, T 149), (423, T 25), (424, Q 9 7 2),
+ (425, T 12), (426, T 63), (427, Q 11 6 5),
+ (428, T 105), (429, Q 10 8 7), (430, Q 14 6 1),
+ (431, T 120), (432, Q 13 4 3), (433, T 33),
+ (434, Q 12 11 5), (435, Q 12 9 5), (436, T 165),
+ (437, Q 6 2 1), (438, T 65), (439, T 49),
+ (440, Q 4 3 1), (441, T 7), (442, Q 7 5 2),
+ (443, Q 10 6 1), (444, T 81), (445, Q 7 6 4),
+ (446, T 105), (447, T 73), (448, Q 11 6 4),
+ (449, T 134), (450, T 47), (451, Q 16 10 1),
+ (452, Q 6 5 4), (453, Q 15 6 4), (454, Q 8 6 1),
+ (455, T 38), (456, Q 18 9 6), (457, T 16),
+ (458, T 203), (459, Q 12 5 2), (460, T 19),
+ (461, Q 7 6 1), (462, T 73), (463, T 93),
+ (464, Q 19 18 13), (465, T 31), (466, Q 14 11 6),
+ (467, Q 11 6 1), (468, T 27), (469, Q 9 5 2),
+ (470, T 9), (471, T 1), (472, Q 11 3 2),
+ (473, T 200), (474, T 191), (475, Q 9 8 4),
+ (476, T 9), (477, Q 16 15 7), (478, T 121),
+ (479, T 104), (480, Q 15 9 6), (481, T 138),
+ (482, Q 9 6 5), (483, Q 9 6 4), (484, T 105),
+ (485, Q 17 16 6), (486, T 81), (487, T 94),
+ (488, Q 4 3 1), (489, T 83), (490, T 219),
+ (491, Q 11 6 3), (492, T 7), (493, Q 10 5 3),
+ (494, T 17), (495, T 76), (496, Q 16 5 2),
+ (497, T 78), (498, T 155), (499, Q 11 6 5),
+ (500, T 27), (501, Q 5 4 2), (502, Q 8 5 4),
+ (503, T 3), (504, Q 15 14 6), (505, T 156),
+ (506, T 23), (507, Q 13 6 3), (508, T 9),
+ (509, Q 8 7 3), (510, T 69), (511, T 10),
+ (512, Q 8 5 2), (513, T 26), (514, T 67),
+ (515, Q 14 7 4), (516, T 21), (517, Q 12 10 2),
+ (518, T 33), (519, T 79), (520, Q 15 11 2),
+ (521, T 32), (522, T 39), (523, Q 13 6 2),
+ (524, T 167), (525, Q 6 4 1), (526, T 97),
+ (527, T 47), (528, Q 11 6 2), (529, T 42),
+ (530, Q 10 7 3), (531, Q 10 5 4), (532, T 1),
+ (533, Q 4 3 2), (534, T 161), (535, Q 8 6 2),
+ (536, Q 7 5 3), (537, T 94), (538, T 195),
+ (539, Q 10 5 4), (540, T 9), (541, Q 13 10 4),
+ (542, Q 8 6 1), (543, T 16), (544, Q 8 3 1),
+ (545, T 122), (546, Q 8 2 1), (547, Q 13 7 4),
+ (548, Q 10 5 3), (549, Q 16 4 3), (550, T 193),
+ (551, T 135), (552, Q 19 16 9), (553, T 39),
+ (554, Q 10 8 7), (555, Q 10 9 4), (556, T 153),
+ (557, Q 7 6 5), (558, T 73), (559, T 34),
+ (560, Q 11 9 6), (561, T 71), (562, Q 11 4 2),
+ (563, Q 14 7 3), (564, T 163), (565, Q 11 6 1),
+ (566, T 153), (567, T 28), (568, Q 15 7 6),
+ (569, T 77), (570, T 67), (571, Q 10 5 2),
+ (572, Q 12 8 1), (573, Q 10 6 4), (574, T 13),
+ (575, T 146), (576, Q 13 4 3), (577, T 25),
+ (578, Q 23 22 16), (579, Q 12 9 7), (580, T 237),
+ (581, Q 13 7 6), (582, T 85), (583, T 130),
+ (584, Q 14 13 3), (585, T 88), (586, Q 7 5 2),
+ (587, Q 11 6 1), (588, T 35), (589, Q 10 4 3),
+ (590, T 93), (591, Q 9 6 4), (592, Q 13 6 3),
+ (593, T 86), (594, T 19), (595, Q 9 2 1),
+ (596, T 273), (597, Q 14 12 9), (598, Q 7 6 1),
+ (599, T 30), (600, Q 9 5 2), (601, T 201),
+ (602, T 215), (603, Q 6 4 3), (604, T 105),
+ (605, Q 10 7 5), (606, T 165), (607, T 105),
+ (608, Q 19 13 6), (609, T 31), (610, T 127),
+ (611, Q 10 4 2), (612, T 81), (613, Q 19 10 4),
+ (614, T 45), (615, T 211), (616, Q 19 10 3),
+ (617, T 200), (618, T 295), (619, Q 9 8 5),
+ (620, T 9), (621, Q 12 6 5), (622, T 297),
+ (623, T 68), (624, Q 11 6 5), (625, T 133),
+ (626, T 251), (627, Q 13 8 4), (628, T 223),
+ (629, Q 6 5 2), (630, Q 7 4 2), (631, T 307),
+ (632, Q 9 2 1), (633, T 101), (634, T 39),
+ (635, Q 14 10 4), (636, T 217), (637, Q 14 9 1),
+ (638, Q 6 5 1), (639, T 16), (640, Q 14 3 2),
+ (641, T 11), (642, T 119), (643, Q 11 3 2),
+ (644, Q 11 6 5), (645, Q 11 8 4), (646, T 249),
+ (647, T 5), (648, Q 13 3 1), (649, T 37),
+ (650, T 3), (651, T 14), (652, T 93),
+ (653, Q 10 8 7), (654, T 33), (655, T 88),
+ (656, Q 7 5 4), (657, T 38), (658, T 55),
+ (659, Q 15 4 2), (660, T 11), (661, Q 12 11 4),
+ (662, T 21), (663, T 107), (664, Q 11 9 8),
+ (665, T 33), (666, Q 10 7 2), (667, Q 18 7 3),
+ (668, T 147), (669, Q 5 4 2), (670, T 153),
+ (671, T 15), (672, Q 11 6 5), (673, T 28),
+ (674, Q 11 7 4), (675, Q 6 3 1), (676, T 31),
+ (677, Q 8 4 3), (678, Q 15 5 3), (679, T 66),
+ (680, Q 23 16 9), (681, Q 11 9 3), (682, T 171),
+ (683, Q 11 6 1), (684, T 209), (685, Q 4 3 1),
+ (686, T 197), (687, T 13), (688, Q 19 14 6),
+ (689, T 14), (690, T 79), (691, Q 13 6 2),
+ (692, T 299), (693, Q 15 8 2), (694, T 169),
+ (695, T 177), (696, Q 23 10 2), (697, T 267),
+ (698, T 215), (699, Q 15 10 1), (700, T 75),
+ (701, Q 16 4 2), (702, T 37), (703, Q 12 7 1),
+ (704, Q 8 3 2), (705, T 17), (706, Q 12 11 8),
+ (707, Q 15 8 5), (708, T 15), (709, Q 4 3 1),
+ (710, Q 13 12 4), (711, T 92), (712, Q 5 4 3),
+ (713, T 41), (714, T 23), (715, Q 7 4 1),
+ (716, T 183), (717, Q 16 7 1), (718, T 165),
+ (719, T 150), (720, Q 9 6 4), (721, T 9),
+ (722, T 231), (723, Q 16 10 4), (724, T 207),
+ (725, Q 9 6 5), (726, T 5), (727, T 180),
+ (728, Q 4 3 2), (729, T 58), (730, T 147),
+ (731, Q 8 6 2), (732, T 343), (733, Q 8 7 2),
+ (734, Q 11 6 1), (735, T 44), (736, Q 13 8 6),
+ (737, T 5), (738, T 347), (739, Q 18 16 8),
+ (740, T 135), (741, Q 9 8 3), (742, T 85),
+ (743, T 90), (744, Q 13 11 1), (745, T 258),
+ (746, T 351), (747, Q 10 6 4), (748, T 19),
+ (749, Q 7 6 1), (750, T 309), (751, T 18),
+ (752, Q 13 10 3), (753, T 158), (754, T 19),
+ (755, Q 12 10 1), (756, T 45), (757, Q 7 6 1),
+ (758, T 233), (759, T 98), (760, Q 11 6 5),
+ (761, T 3), (762, T 83), (763, Q 16 14 9),
+ (764, Q 6 5 3), (765, Q 9 7 4), (766, Q 22 19 9),
+ (767, T 168), (768, Q 19 17 4), (769, T 120),
+ (770, Q 14 5 2), (771, Q 17 15 6), (772, T 7),
+ (773, Q 10 8 6), (774, T 185), (775, T 93),
+ (776, Q 15 14 7), (777, T 29), (778, T 375),
+ (779, Q 10 8 3), (780, T 13), (781, Q 17 16 2),
+ (782, T 329), (783, T 68), (784, Q 13 9 6),
+ (785, T 92), (786, Q 12 10 3), (787, Q 7 6 3),
+ (788, Q 17 10 3), (789, Q 5 2 1), (790, Q 9 6 1),
+ (791, T 30), (792, Q 9 7 3), (793, T 253),
+ (794, T 143), (795, Q 7 4 1), (796, Q 9 4 1),
+ (797, Q 12 10 4), (798, T 53), (799, T 25),
+ (800, Q 9 7 1), (801, T 217), (802, Q 15 13 9),
+ (803, Q 14 9 2), (804, T 75), (805, Q 8 7 2),
+ (806, T 21), (807, T 7), (808, Q 14 3 2),
+ (809, T 15), (810, T 159), (811, Q 12 10 8),
+ (812, T 29), (813, Q 10 3 1), (814, T 21),
+ (815, T 333), (816, Q 11 8 2), (817, T 52),
+ (818, T 119), (819, Q 16 9 7), (820, T 123),
+ (821, Q 15 11 2), (822, T 17), (823, T 9),
+ (824, Q 11 6 4), (825, T 38), (826, T 255),
+ (827, Q 12 10 7), (828, T 189), (829, Q 4 3 1),
+ (830, Q 17 10 7), (831, T 49), (832, Q 13 5 2),
+ (833, T 149), (834, T 15), (835, Q 14 7 5),
+ (836, Q 10 9 2), (837, Q 8 6 5), (838, T 61),
+ (839, T 54), (840, Q 11 5 1), (841, T 144),
+ (842, T 47), (843, Q 11 10 7), (844, T 105),
+ (845, T 2), (846, T 105), (847, T 136),
+ (848, Q 11 4 1), (849, T 253), (850, T 111),
+ (851, Q 13 10 5), (852, T 159), (853, Q 10 7 1),
+ (854, Q 7 5 3), (855, T 29), (856, Q 19 10 3),
+ (857, T 119), (858, T 207), (859, Q 17 15 4),
+ (860, T 35), (861, T 14), (862, T 349),
+ (863, Q 6 3 2), (864, Q 21 10 6), (865, T 1),
+ (866, T 75), (867, Q 9 5 2), (868, T 145),
+ (869, Q 11 7 6), (870, T 301), (871, T 378),
+ (872, Q 13 3 1), (873, T 352), (874, Q 12 7 4),
+ (875, Q 12 8 1), (876, T 149), (877, Q 6 5 4),
+ (878, Q 12 9 8), (879, T 11), (880, Q 15 7 5),
+ (881, T 78), (882, T 99), (883, Q 17 16 12),
+ (884, T 173), (885, Q 8 7 1), (886, Q 13 9 8),
+ (887, T 147), (888, Q 19 18 10), (889, T 127),
+ (890, T 183), (891, Q 12 4 1), (892, T 31),
+ (893, Q 11 8 6), (894, T 173), (895, T 12),
+ (896, Q 7 5 3), (897, T 113), (898, T 207),
+ (899, Q 18 15 5), (900, T 1), (901, Q 13 7 6),
+ (902, T 21), (903, T 35), (904, Q 12 7 2),
+ (905, T 117), (906, T 123), (907, Q 12 10 2),
+ (908, T 143), (909, Q 14 4 1), (910, Q 15 9 7),
+ (911, T 204), (912, Q 7 5 1), (913, T 91),
+ (914, Q 4 2 1), (915, Q 8 6 3), (916, T 183),
+ (917, Q 12 10 7), (918, T 77), (919, T 36),
+ (920, Q 14 9 6), (921, T 221), (922, Q 7 6 5),
+ (923, Q 16 14 13), (924, T 31), (925, Q 16 15 7),
+ (926, T 365), (927, T 403), (928, Q 10 3 2),
+ (929, Q 11 4 3), (930, T 31), (931, Q 10 9 4),
+ (932, T 177), (933, Q 16 6 1), (934, Q 22 6 5),
+ (935, T 417), (936, Q 15 13 12), (937, T 217),
+ (938, T 207), (939, Q 7 5 4), (940, Q 10 7 1),
+ (941, Q 11 6 1), (942, T 45), (943, T 24),
+ (944, Q 12 11 9), (945, T 77), (946, Q 21 20 13),
+ (947, Q 9 6 5), (948, T 189), (949, Q 8 3 2),
+ (950, Q 13 12 10), (951, T 260), (952, Q 16 9 7),
+ (953, T 168), (954, T 131), (955, Q 7 6 3),
+ (956, T 305), (957, Q 10 9 6), (958, Q 13 9 4),
+ (959, T 143), (960, Q 12 9 3), (961, T 18),
+ (962, Q 15 8 5), (963, Q 20 9 6), (964, T 103),
+ (965, Q 15 4 2), (966, T 201), (967, T 36),
+ (968, Q 9 5 2), (969, T 31), (970, Q 11 7 2),
+ (971, Q 6 2 1), (972, T 7), (973, Q 13 6 4),
+ (974, Q 9 8 7), (975, T 19), (976, Q 17 10 6),
+ (977, T 15), (978, Q 9 3 1), (979, T 178),
+ (980, Q 8 7 6), (981, Q 12 6 5), (982, T 177),
+ (983, T 230), (984, Q 24 9 3), (985, T 222),
+ (986, T 3), (987, Q 16 13 12), (988, T 121),
+ (989, Q 10 4 2), (990, T 161), (991, T 39),
+ (992, Q 17 15 13), (993, T 62), (994, T 223),
+ (995, Q 15 12 2), (996, T 65), (997, Q 12 6 3),
+ (998, T 101), (999, T 59), (1000, Q 5 4 3),
+ (1001, T 17), (1002, Q 5 3 2), (1003, Q 13 8 3),
+ (1004, Q 10 9 7), (1005, Q 12 8 2), (1006, Q 5 4 3),
+ (1007, T 75), (1008, Q 19 17 8), (1009, T 55),
+ (1010, T 99), (1011, Q 10 7 4), (1012, T 115),
+ (1013, Q 9 8 6), (1014, T 385), (1015, T 186),
+ (1016, Q 15 6 3), (1017, Q 9 4 1), (1018, Q 12 10 5),
+ (1019, Q 10 8 1), (1020, T 135), (1021, Q 5 2 1),
+ (1022, T 317), (1023, T 7), (1024, Q 19 6 1),
+ (1025, T 294), (1026, T 35), (1027, Q 13 12 6),
+ (1028, T 119), (1029, T 98), (1030, T 93),
+ (1031, T 68), (1032, Q 21 15 3), (1033, T 108),
+ (1034, T 75), (1035, Q 12 6 5), (1036, T 411),
+ (1037, Q 12 7 2), (1038, Q 13 7 2), (1039, T 21),
+ (1040, Q 15 10 8), (1041, T 412), (1042, T 439),
+ (1043, Q 10 7 6), (1044, T 41), (1045, Q 13 9 6),
+ (1046, Q 8 5 2), (1047, T 10), (1048, Q 15 7 2),
+ (1049, T 141), (1050, T 159), (1051, Q 13 12 10),
+ (1052, T 291), (1053, Q 10 9 1), (1054, T 105),
+ (1055, T 24), (1056, Q 11 2 1), (1057, T 198),
+ (1058, T 27), (1059, Q 6 3 1), (1060, T 439),
+ (1061, Q 10 3 1), (1062, T 49), (1063, T 168),
+ (1064, Q 13 11 9), (1065, T 463), (1066, Q 10 9 3),
+ (1067, Q 13 9 8), (1068, Q 15 8 3), (1069, Q 18 16 8),
+ (1070, Q 15 14 11), (1071, T 7), (1072, Q 19 9 8),
+ (1073, Q 12 6 3), (1074, Q 7 4 3), (1075, Q 15 14 5),
+ (1076, Q 8 6 3), (1077, Q 10 9 7), (1078, T 361),
+ (1079, T 230), (1080, Q 15 9 6), (1081, T 24),
+ (1082, T 407), (1083, Q 16 7 2), (1084, T 189),
+ (1085, T 62), (1086, T 189), (1087, T 112),
+ (1088, Q 22 21 10), (1089, T 91), (1090, T 79),
+ (1091, Q 12 10 5), (1092, T 23), (1093, Q 7 6 1),
+ (1094, T 57), (1095, T 139), (1096, Q 24 15 6),
+ (1097, T 14), (1098, T 83), (1099, Q 16 9 1),
+ (1100, T 35), (1101, Q 9 7 4), (1102, T 117),
+ (1103, T 65), (1104, Q 21 9 6), (1105, T 21),
+ (1106, T 195), (1107, Q 23 11 10), (1108, T 327),
+ (1109, Q 17 14 3), (1110, T 417), (1111, T 13),
+ (1112, Q 15 8 6), (1113, T 107), (1114, Q 19 10 6),
+ (1115, Q 18 15 3), (1116, T 59), (1117, Q 12 10 4),
+ (1118, Q 9 7 5), (1119, T 283), (1120, Q 13 9 6),
+ (1121, T 62), (1122, T 427), (1123, Q 14 7 3),
+ (1124, Q 8 7 4), (1125, Q 15 8 3), (1126, T 105),
+ (1127, T 27), (1128, Q 7 3 1), (1129, T 103),
+ (1130, T 551), (1131, Q 10 6 1), (1132, Q 6 4 1),
+ (1133, Q 11 6 4), (1134, T 129), (1135, T 9),
+ (1136, Q 9 4 2), (1137, T 277), (1138, T 31),
+ (1139, Q 13 12 5), (1140, T 141), (1141, Q 12 7 3),
+ (1142, T 357), (1143, Q 7 2 1), (1144, Q 11 9 7),
+ (1145, T 227), (1146, T 131), (1147, Q 7 6 3),
+ (1148, T 23), (1149, Q 20 17 3), (1150, Q 13 4 1),
+ (1151, T 90), (1152, Q 15 3 2), (1153, T 241),
+ (1154, T 75), (1155, Q 13 6 1), (1156, T 307),
+ (1157, Q 8 7 3), (1158, T 245), (1159, T 66),
+ (1160, Q 15 11 2), (1161, T 365), (1162, Q 18 16 11),
+ (1163, Q 11 10 1), (1164, T 19), (1165, Q 8 6 1),
+ (1166, T 189), (1167, T 133), (1168, Q 12 7 2),
+ (1169, T 114), (1170, T 27), (1171, Q 6 5 1),
+ (1172, Q 15 5 2), (1173, Q 17 14 5), (1174, T 133),
+ (1175, T 476), (1176, Q 11 9 3), (1177, T 16),
+ (1178, T 375), (1179, Q 15 8 6), (1180, T 25),
+ (1181, Q 17 11 6), (1182, T 77), (1183, T 87),
+ (1184, Q 5 3 2), (1185, T 134), (1186, T 171),
+ (1187, Q 13 8 4), (1188, T 75), (1189, Q 8 3 1),
+ (1190, T 233), (1191, T 196), (1192, Q 9 8 7),
+ (1193, T 173), (1194, Q 15 14 12), (1195, Q 13 6 5),
+ (1196, T 281), (1197, Q 9 8 2), (1198, T 405),
+ (1199, T 114), (1200, Q 15 9 6), (1201, T 171),
+ (1202, T 287), (1203, Q 8 4 2), (1204, T 43),
+ (1205, Q 4 2 1), (1206, T 513), (1207, T 273),
+ (1208, Q 11 10 6), (1209, T 118), (1210, T 243),
+ (1211, Q 14 7 1), (1212, T 203), (1213, Q 9 5 2),
+ (1214, T 257), (1215, T 302), (1216, Q 27 25 9),
+ (1217, T 393), (1218, T 91), (1219, Q 12 10 6),
+ (1220, T 413), (1221, Q 15 14 9), (1222, Q 18 16 1),
+ (1223, T 255), (1224, Q 12 9 7), (1225, T 234),
+ (1226, T 167), (1227, Q 16 13 10), (1228, T 27),
+ (1229, Q 15 6 2), (1230, T 433), (1231, T 105),
+ (1232, Q 25 10 2), (1233, T 151), (1234, T 427),
+ (1235, Q 13 9 8), (1236, T 49), (1237, Q 10 6 4),
+ (1238, T 153), (1239, T 4), (1240, Q 17 7 5),
+ (1241, T 54), (1242, T 203), (1243, Q 16 15 1),
+ (1244, Q 16 14 7), (1245, Q 13 6 1), (1246, T 25),
+ (1247, T 14), (1248, Q 15 5 3), (1249, T 187),
+ (1250, Q 15 13 10), (1251, Q 13 10 5), (1252, T 97),
+ (1253, Q 11 10 9), (1254, Q 19 10 4), (1255, T 589),
+ (1256, Q 31 30 2), (1257, T 289), (1258, Q 9 6 4),
+ (1259, Q 11 8 6), (1260, T 21), (1261, Q 7 4 1),
+ (1262, Q 7 4 2), (1263, T 77), (1264, Q 5 3 2),
+ (1265, T 119), (1266, T 7), (1267, Q 9 5 2),
+ (1268, T 345), (1269, Q 17 10 8), (1270, T 333),
+ (1271, T 17), (1272, Q 16 9 7), (1273, T 168),
+ (1274, Q 15 13 4), (1275, Q 11 10 1), (1276, T 217),
+ (1277, Q 18 11 10), (1278, T 189), (1279, T 216),
+ (1280, Q 12 7 5), (1281, T 229), (1282, T 231),
+ (1283, Q 12 9 3), (1284, T 223), (1285, Q 10 9 1),
+ (1286, T 153), (1287, T 470), (1288, Q 23 16 6),
+ (1289, T 99), (1290, Q 10 4 3), (1291, Q 9 8 4),
+ (1292, Q 12 10 1), (1293, Q 14 9 6), (1294, T 201),
+ (1295, T 38), (1296, Q 15 14 2), (1297, T 198),
+ (1298, T 399), (1299, Q 14 11 5), (1300, T 75),
+ (1301, Q 11 10 1), (1302, T 77), (1303, Q 16 12 8),
+ (1304, Q 20 17 15), (1305, T 326), (1306, T 39),
+ (1307, Q 14 12 9), (1308, T 495), (1309, Q 8 3 2),
+ (1310, T 333), (1311, T 476), (1312, Q 15 14 2),
+ (1313, T 164), (1314, T 19), (1315, Q 12 4 2),
+ (1316, Q 8 6 3), (1317, Q 13 12 3), (1318, Q 12 11 5),
+ (1319, T 129), (1320, Q 12 9 3), (1321, T 52),
+ (1322, Q 10 8 3), (1323, Q 17 16 2), (1324, T 337),
+ (1325, Q 12 9 3), (1326, T 397), (1327, T 277),
+ (1328, Q 21 11 3), (1329, T 73), (1330, Q 11 6 1),
+ (1331, Q 7 5 4), (1332, T 95), (1333, Q 11 3 2),
+ (1334, T 617), (1335, T 392), (1336, Q 8 3 2),
+ (1337, T 75), (1338, T 315), (1339, Q 15 6 4),
+ (1340, T 125), (1341, Q 6 5 2), (1342, Q 15 9 7),
+ (1343, T 348), (1344, Q 15 6 1), (1345, T 553),
+ (1346, Q 6 3 2), (1347, Q 10 9 7), (1348, T 553),
+ (1349, Q 14 10 4), (1350, T 237), (1351, T 39),
+ (1352, Q 17 14 6), (1353, T 371), (1354, T 255),
+ (1355, Q 8 4 1), (1356, T 131), (1357, Q 14 6 1),
+ (1358, T 117), (1359, T 98), (1360, Q 5 3 2),
+ (1361, T 56), (1362, T 655), (1363, Q 9 5 2),
+ (1364, T 239), (1365, Q 11 8 4), (1366, T 1),
+ (1367, T 134), (1368, Q 15 9 5), (1369, T 88),
+ (1370, Q 10 5 3), (1371, Q 10 9 4), (1372, T 181),
+ (1373, Q 15 11 2), (1374, T 609), (1375, T 52),
+ (1376, Q 19 18 10), (1377, T 100), (1378, Q 7 6 3),
+ (1379, Q 15 8 2), (1380, T 183), (1381, Q 18 7 6),
+ (1382, Q 10 9 2), (1383, T 130), (1384, Q 11 5 1),
+ (1385, T 12), (1386, T 219), (1387, Q 13 10 7),
+ (1388, T 11), (1389, Q 19 9 4), (1390, T 129),
+ (1391, T 3), (1392, Q 17 15 5), (1393, T 300),
+ (1394, Q 17 13 9), (1395, Q 14 6 5), (1396, T 97),
+ (1397, Q 13 8 3), (1398, T 601), (1399, T 55),
+ (1400, Q 8 3 1), (1401, T 92), (1402, T 127),
+ (1403, Q 12 11 2), (1404, T 81), (1405, Q 15 10 8),
+ (1406, Q 13 2 1), (1407, T 47), (1408, Q 14 13 6),
+ (1409, T 194), (1410, T 383), (1411, Q 25 14 11),
+ (1412, T 125), (1413, Q 20 19 16), (1414, T 429),
+ (1415, T 282), (1416, Q 10 9 6), (1417, T 342),
+ (1418, Q 5 3 2), (1419, Q 15 9 4), (1420, T 33),
+ (1421, Q 9 4 2), (1422, T 49), (1423, T 15),
+ (1424, Q 11 6 2), (1425, T 28), (1426, T 103),
+ (1427, Q 18 17 8), (1428, T 27), (1429, Q 11 6 5),
+ (1430, T 33), (1431, T 17), (1432, Q 11 10 6),
+ (1433, T 387), (1434, T 363), (1435, Q 15 10 9),
+ (1436, T 83), (1437, Q 7 6 4), (1438, T 357),
+ (1439, Q 13 12 4), (1440, Q 14 13 7), (1441, T 322),
+ (1442, T 395), (1443, Q 16 5 1), (1444, T 595),
+ (1445, Q 13 10 3), (1446, T 421), (1447, T 195),
+ (1448, Q 11 3 2), (1449, T 13), (1450, Q 16 12 3),
+ (1451, Q 14 3 1), (1452, T 315), (1453, Q 26 10 5),
+ (1454, T 297), (1455, T 52), (1456, Q 9 4 2),
+ (1457, T 314), (1458, T 243), (1459, Q 16 14 9),
+ (1460, T 185), (1461, Q 12 5 3), (1462, Q 13 5 2),
+ (1463, T 575), (1464, Q 12 9 3), (1465, T 39),
+ (1466, T 311), (1467, Q 13 5 2), (1468, T 181),
+ (1469, Q 20 18 14), (1470, T 49), (1471, T 25),
+ (1472, Q 11 4 1), (1473, T 77), (1474, Q 17 11 10),
+ (1475, Q 15 14 8), (1476, T 21), (1477, Q 17 10 5),
+ (1478, T 69), (1479, T 49), (1480, Q 11 10 2),
+ (1481, T 32), (1482, T 411), (1483, Q 21 16 3),
+ (1484, Q 11 7 4), (1485, Q 22 10 3), (1486, T 85),
+ (1487, T 140), (1488, Q 9 8 6), (1489, T 252),
+ (1490, T 279), (1491, Q 9 5 2), (1492, T 307),
+ (1493, Q 17 10 4), (1494, Q 13 12 9), (1495, T 94),
+ (1496, Q 13 11 4), (1497, T 49), (1498, Q 17 11 10),
+ (1499, Q 16 12 5), (1500, T 25), (1501, Q 6 5 2),
+ (1502, Q 12 5 1), (1503, T 80), (1504, Q 8 3 2),
+ (1505, T 246), (1506, Q 11 5 2), (1507, Q 11 10 2),
+ (1508, T 599), (1509, Q 18 12 10), (1510, T 189),
+ (1511, T 278), (1512, Q 10 9 3), (1513, T 399),
+ (1514, T 299), (1515, Q 13 10 6), (1516, T 277),
+ (1517, Q 13 10 6), (1518, T 69), (1519, T 220),
+ (1520, Q 13 10 3), (1521, T 229), (1522, Q 18 11 10),
+ (1523, Q 16 15 1), (1524, T 27), (1525, Q 18 9 3),
+ (1526, T 473), (1527, T 373), (1528, Q 18 17 7),
+ (1529, T 60), (1530, T 207), (1531, Q 13 9 8),
+ (1532, Q 22 20 13), (1533, Q 25 18 7), (1534, T 225),
+ (1535, T 404), (1536, Q 21 6 2), (1537, T 46),
+ (1538, Q 6 2 1), (1539, Q 17 12 6), (1540, T 75),
+ (1541, Q 4 2 1), (1542, T 365), (1543, T 445),
+ (1544, Q 11 7 1), (1545, T 44), (1546, Q 10 8 5),
+ (1547, Q 12 5 2), (1548, T 63), (1549, Q 17 4 2),
+ (1550, T 189), (1551, T 557), (1552, Q 19 12 2),
+ (1553, T 252), (1554, T 99), (1555, Q 10 8 5),
+ (1556, T 65), (1557, Q 14 9 3), (1558, T 9),
+ (1559, T 119), (1560, Q 8 5 2), (1561, T 339),
+ (1562, T 95), (1563, Q 12 9 7), (1564, T 7),
+ (1565, Q 13 10 2), (1566, T 77), (1567, T 127),
+ (1568, Q 21 10 7), (1569, T 319), (1570, T 667),
+ (1571, Q 17 10 3), (1572, T 501), (1573, Q 18 12 9),
+ (1574, Q 9 8 5), (1575, T 17), (1576, Q 20 9 2),
+ (1577, T 341), (1578, T 731), (1579, Q 7 6 5),
+ (1580, T 647), (1581, Q 10 4 2), (1582, T 121),
+ (1583, T 20), (1584, Q 21 19 13), (1585, T 574),
+ (1586, T 399), (1587, Q 15 10 7), (1588, T 85),
+ (1589, Q 16 8 3), (1590, T 169), (1591, T 15),
+ (1592, Q 12 7 5), (1593, T 568), (1594, Q 10 7 1),
+ (1595, Q 18 2 1), (1596, T 3), (1597, Q 14 3 2),
+ (1598, Q 13 7 3), (1599, T 643), (1600, Q 14 11 1),
+ (1601, T 548), (1602, T 783), (1603, Q 14 11 1),
+ (1604, T 317), (1605, Q 7 6 4), (1606, T 153),
+ (1607, T 87), (1608, Q 15 13 1), (1609, T 231),
+ (1610, Q 11 5 3), (1611, Q 18 13 7), (1612, T 771),
+ (1613, Q 30 20 11), (1614, Q 15 6 3), (1615, T 103),
+ (1616, Q 13 4 3), (1617, T 182), (1618, T 211),
+ (1619, Q 17 6 1), (1620, T 27), (1621, Q 13 12 10),
+ (1622, Q 15 14 10), (1623, T 17), (1624, Q 13 11 5),
+ (1625, T 69), (1626, Q 11 5 1), (1627, Q 18 6 1),
+ (1628, T 603), (1629, Q 10 4 2), (1630, T 741),
+ (1631, T 668), (1632, Q 17 15 3), (1633, T 147),
+ (1634, T 227), (1635, Q 15 10 9), (1636, T 37),
+ (1637, Q 16 6 1), (1638, T 173), (1639, T 427),
+ (1640, Q 7 5 1), (1641, T 287), (1642, T 231),
+ (1643, Q 20 15 10), (1644, Q 18 9 1),
+ (1645, Q 14 12 5), (1646, Q 16 5 1), (1647, T 310),
+ (1648, Q 18 13 1), (1649, T 434), (1650, T 579),
+ (1651, Q 18 13 8), (1652, T 45), (1653, Q 12 8 3),
+ (1654, Q 16 9 5), (1655, T 53), (1656, Q 19 15 10),
+ (1657, T 16), (1658, Q 17 6 5), (1659, Q 17 10 1),
+ (1660, T 37), (1661, Q 17 10 9), (1662, Q 21 13 7),
+ (1663, T 99), (1664, Q 17 9 6), (1665, T 176),
+ (1666, T 271), (1667, Q 18 17 13), (1668, T 459),
+ (1669, Q 21 17 10), (1670, Q 6 5 2), (1671, T 202),
+ (1672, Q 5 4 3), (1673, T 90), (1674, T 755),
+ (1675, Q 15 7 2), (1676, T 363), (1677, Q 8 4 2),
+ (1678, T 129), (1679, T 20), (1680, Q 11 6 2),
+ (1681, T 135), (1682, Q 15 8 7), (1683, Q 14 13 2),
+ (1684, Q 10 4 3), (1685, Q 24 13 10),
+ (1686, Q 19 14 11), (1687, T 31), (1688, Q 15 8 6),
+ (1689, T 758), (1690, Q 16 11 5), (1691, Q 16 5 1),
+ (1692, T 359), (1693, Q 23 18 17), (1694, T 501),
+ (1695, T 29), (1696, Q 15 6 3), (1697, T 201),
+ (1698, T 459), (1699, Q 12 10 7), (1700, T 225),
+ (1701, Q 22 17 13), (1702, Q 24 22 5), (1703, T 161),
+ (1704, Q 14 11 3), (1705, T 52), (1706, Q 19 17 6),
+ (1707, Q 21 14 12), (1708, T 93), (1709, Q 13 10 3),
+ (1710, T 201), (1711, T 178), (1712, Q 15 12 5),
+ (1713, T 250), (1714, Q 7 6 4), (1715, Q 17 13 6),
+ (1716, T 221), (1717, Q 13 11 8), (1718, Q 17 14 9),
+ (1719, T 113), (1720, Q 17 14 10), (1721, T 300),
+ (1722, T 39), (1723, Q 18 13 3), (1724, T 261),
+ (1725, Q 15 14 8), (1726, T 753), (1727, Q 8 4 3),
+ (1728, Q 11 10 5), (1729, T 94), (1730, Q 15 13 1),
+ (1731, Q 10 4 2), (1732, Q 14 11 10), (1733, Q 8 6 2),
+ (1734, T 461), (1735, T 418), (1736, Q 19 14 6),
+ (1737, T 403), (1738, T 267), (1739, Q 10 9 2),
+ (1740, T 259), (1741, Q 20 4 3), (1742, T 869),
+ (1743, T 173), (1744, Q 19 18 2), (1745, T 369),
+ (1746, T 255), (1747, Q 22 12 9), (1748, T 567),
+ (1749, Q 20 11 7), (1750, T 457), (1751, T 482),
+ (1752, Q 6 3 2), (1753, T 775), (1754, Q 19 17 6),
+ (1755, Q 6 4 3), (1756, T 99), (1757, Q 15 14 8),
+ (1758, Q 6 5 2), (1759, T 165), (1760, Q 8 3 2),
+ (1761, Q 13 12 10), (1762, Q 25 21 17),
+ (1763, Q 17 14 9), (1764, T 105), (1765, Q 17 15 14),
+ (1766, Q 10 3 2), (1767, T 250), (1768, Q 25 6 5),
+ (1769, T 327), (1770, T 279), (1771, Q 13 6 5),
+ (1772, T 371), (1773, Q 15 9 4), (1774, T 117),
+ (1775, T 486), (1776, Q 10 9 3), (1777, T 217),
+ (1778, T 635), (1779, Q 30 27 17), (1780, T 457),
+ (1781, Q 16 6 2), (1782, T 57), (1783, T 439),
+ (1784, Q 23 21 6), (1785, T 214), (1786, Q 20 13 6),
+ (1787, Q 20 16 1), (1788, T 819), (1789, Q 15 11 8),
+ (1790, T 593), (1791, T 190), (1792, Q 17 14 3),
+ (1793, T 114), (1794, Q 21 18 3), (1795, Q 10 5 2),
+ (1796, Q 12 9 5), (1797, Q 8 6 3), (1798, T 69),
+ (1799, T 312), (1800, Q 22 5 2), (1801, T 502),
+ (1802, T 843), (1803, Q 15 10 3), (1804, T 747),
+ (1805, Q 6 5 2), (1806, T 101), (1807, T 123),
+ (1808, Q 19 16 9), (1809, T 521), (1810, T 171),
+ (1811, Q 16 7 2), (1812, Q 12 6 5), (1813, Q 22 21 20),
+ (1814, T 545), (1815, T 163), (1816, Q 23 18 1),
+ (1817, T 479), (1818, T 495), (1819, Q 13 6 5),
+ (1820, T 11), (1821, Q 17 5 2), (1822, Q 18 8 1),
+ (1823, T 684), (1824, Q 7 5 1), (1825, T 9),
+ (1826, Q 18 11 3), (1827, Q 22 20 13), (1828, T 273),
+ (1829, Q 4 3 2), (1830, T 381), (1831, T 51),
+ (1832, Q 18 13 7), (1833, T 518), (1834, Q 9 5 1),
+ (1835, Q 14 12 3), (1836, T 243), (1837, Q 21 17 2),
+ (1838, T 53), (1839, T 836), (1840, Q 21 10 2),
+ (1841, T 66), (1842, Q 12 10 7), (1843, Q 13 9 8),
+ (1844, T 339), (1845, Q 16 11 5), (1846, T 901),
+ (1847, T 180), (1848, Q 16 13 3), (1849, T 49),
+ (1850, Q 6 3 2), (1851, Q 15 4 1), (1852, Q 16 13 6),
+ (1853, Q 18 15 12), (1854, T 885), (1855, T 39),
+ (1856, Q 11 9 4), (1857, T 688), (1858, Q 16 15 7),
+ (1859, Q 13 10 6), (1860, T 13), (1861, Q 25 23 12),
+ (1862, T 149), (1863, T 260), (1864, Q 11 9 1),
+ (1865, T 53), (1866, T 11), (1867, Q 12 4 2),
+ (1868, Q 9 7 5), (1869, Q 11 8 1), (1870, T 121),
+ (1871, T 261), (1872, Q 10 5 2), (1873, T 199),
+ (1874, Q 20 4 3), (1875, Q 17 9 2), (1876, Q 13 9 4),
+ (1877, Q 12 8 7), (1878, T 253), (1879, T 174),
+ (1880, Q 15 4 2), (1881, T 370), (1882, Q 9 6 1),
+ (1883, Q 16 10 9), (1884, T 669), (1885, Q 20 10 9),
+ (1886, T 833), (1887, T 353), (1888, Q 17 13 2),
+ (1889, T 29), (1890, T 371), (1891, Q 9 8 5),
+ (1892, Q 8 7 1), (1893, Q 19 8 7), (1894, Q 12 11 10),
+ (1895, T 873), (1896, Q 26 11 2), (1897, Q 12 9 1),
+ (1898, Q 10 7 2), (1899, Q 13 6 1), (1900, T 235),
+ (1901, Q 26 24 19), (1902, T 733), (1903, T 778),
+ (1904, Q 12 11 1), (1905, T 344), (1906, T 931),
+ (1907, Q 16 6 4), (1908, T 945), (1909, Q 21 19 14),
+ (1910, Q 18 13 11), (1911, T 67), (1912, Q 20 15 10),
+ (1913, T 462), (1914, Q 14 5 1), (1915, Q 10 9 6),
+ (1916, Q 18 11 10), (1917, Q 16 9 7), (1918, T 477),
+ (1919, T 105), (1920, Q 11 3 2), (1921, T 468),
+ (1922, Q 23 16 15), (1923, Q 16 15 6), (1924, T 327),
+ (1925, Q 23 10 4), (1926, T 357), (1927, T 25),
+ (1928, Q 17 16 7), (1929, T 31), (1930, Q 7 5 2),
+ (1931, Q 16 7 6), (1932, T 277), (1933, Q 14 13 6),
+ (1934, T 413), (1935, T 103), (1936, Q 15 10 1),
+ (1937, T 231), (1938, T 747), (1939, Q 5 2 1),
+ (1940, T 113), (1941, Q 20 10 7), (1942, Q 15 9 6),
+ (1943, T 11), (1944, Q 27 22 18), (1945, T 91),
+ (1946, T 51), (1947, Q 18 13 12), (1948, T 603),
+ (1949, Q 10 7 3), (1950, T 9), (1951, T 121),
+ (1952, Q 15 14 6), (1953, T 17), (1954, Q 16 11 2),
+ (1955, Q 23 15 6), (1956, T 279), (1957, Q 16 12 6),
+ (1958, T 89), (1959, T 371), (1960, Q 17 15 2),
+ (1961, T 771), (1962, T 99), (1963, Q 7 6 3),
+ (1964, T 21), (1965, Q 10 7 5), (1966, T 801),
+ (1967, T 26), (1968, Q 25 19 14), (1969, T 175),
+ (1970, Q 10 7 2), (1971, Q 20 5 4), (1972, Q 12 11 1),
+ (1973, Q 22 5 1), (1974, T 165), (1975, T 841),
+ (1976, Q 25 19 17), (1977, T 238), (1978, Q 11 8 6),
+ (1979, Q 22 21 4), (1980, T 33), (1981, Q 8 7 6),
+ (1982, Q 14 9 2), (1983, T 113), (1984, Q 13 11 5),
+ (1985, T 311), (1986, T 891), (1987, Q 20 16 14),
+ (1988, T 555), (1989, Q 23 14 8), (1990, T 133),
+ (1991, T 546), (1992, Q 6 3 2), (1993, T 103),
+ (1994, T 15), (1995, Q 10 7 3), (1996, T 307),
+ (1997, Q 14 10 1), (1998, Q 15 12 2), (1999, T 367),
+ (2000, Q 13 10 6), (2001, T 169), (2002, Q 22 21 11),
+ (2003, Q 12 10 8), (2004, T 441), (2005, Q 17 12 7),
+ (2006, T 917), (2007, T 205), (2008, Q 26 23 13),
+ (2009, T 54), (2010, T 459), (2011, Q 17 15 4),
+ (2012, Q 19 15 4), (2013, Q 5 4 2), (2014, Q 9 7 6),
+ (2015, T 42), (2016, Q 21 15 7), (2017, T 330),
+ (2018, Q 20 7 3), (2019, Q 20 7 2), (2020, T 81),
+ (2021, Q 19 14 1), (2022, T 349), (2023, T 165),
+ (2024, Q 40 35 9), (2025, T 274), (2026, T 475),
+ (2027, Q 11 10 3), (2028, T 93), (2029, Q 12 7 4),
+ (2030, Q 13 12 2), (2031, T 386), (2032, Q 7 6 2),
+ (2033, T 881), (2034, T 143), (2035, Q 9 8 4),
+ (2036, T 71), (2037, Q 19 18 3), (2038, Q 16 11 6),
+ (2039, T 155), (2040, Q 7 2 1), (2041, T 735),
+ (2042, Q 16 8 7), (2043, Q 9 7 4), (2044, T 45),
+ (2045, Q 7 6 4), (2046, Q 12 11 3), (2047, T 3),
+ (2048, Q 19 14 13), (2049, T 124), (2050, Q 15 13 8),
+ (2051, Q 13 6 5), (2052, T 323), (2053, Q 21 13 6),
+ (2054, T 201), (2055, T 11), (2056, Q 13 12 3),
+ (2057, T 245), (2058, T 343), (2059, Q 14 12 10),
+ (2060, T 387), (2061, Q 19 4 1), (2062, Q 16 3 2),
+ (2063, T 48), (2064, Q 17 9 2), (2065, T 97),
+ (2066, T 71), (2067, Q 17 13 8), (2068, Q 18 10 7),
+ (2069, Q 18 9 8), (2070, T 237), (2071, Q 11 5 3),
+ (2072, Q 13 10 3), (2073, T 253), (2074, T 231),
+ (2075, Q 9 7 4), (2076, T 851), (2077, Q 15 14 4),
+ (2078, Q 16 6 5), (2079, T 35), (2080, Q 4 3 1),
+ (2081, T 467), (2082, T 523), (2083, Q 21 11 10),
+ (2084, Q 4 2 1), (2085, Q 9 8 3), (2086, T 261),
+ (2087, T 141), (2088, Q 18 11 5), (2089, T 150),
+ (2090, Q 9 4 1), (2091, Q 12 9 5), (2092, Q 17 15 7),
+ (2093, Q 16 15 7), (2094, T 645), (2095, T 256),
+ (2096, Q 19 4 2), (2097, T 119), (2098, T 19),
+ (2099, Q 15 12 9), (2100, T 35), (2101, Q 25 22 9),
+ (2102, T 33), (2103, T 98), (2104, Q 19 15 9),
+ (2105, T 153), (2106, T 111), (2107, Q 17 10 2),
+ (2108, Q 21 5 3), (2109, Q 10 5 1), (2110, Q 12 9 6),
+ (2111, T 249), (2112, Q 16 13 7), (2113, T 385),
+ (2114, T 155), (2115, Q 11 10 1), (2116, T 25),
+ (2117, Q 24 16 11), (2118, T 385), (2119, T 84),
+ (2120, Q 17 14 6), (2121, T 304), (2122, T 91),
+ (2123, Q 14 11 3), (2124, T 45), (2125, Q 24 17 14),
+ (2126, T 881), (2127, T 539), (2128, Q 23 9 1),
+ (2129, T 21), (2130, T 239), (2131, Q 13 6 5),
+ (2132, T 213), (2133, Q 24 22 4), (2134, Q 23 13 2),
+ (2135, T 47), (2136, Q 15 12 9), (2137, T 331),
+ (2138, Q 13 9 2), (2139, Q 14 4 1), (2140, T 283),
+ (2141, Q 16 3 1), (2142, T 69), (2143, T 345),
+ (2144, Q 13 7 3), (2145, T 19), (2146, T 595),
+ (2147, Q 8 3 2), (2148, T 549), (2149, Q 17 9 2),
+ (2150, T 569), (2151, T 224), (2152, Q 24 13 7),
+ (2153, T 582), (2154, Q 10 7 5), (2155, Q 10 9 8),
+ (2156, T 405), (2157, Q 14 4 1), (2158, T 93),
+ (2159, T 6), (2160, Q 31 25 14), (2161, T 766),
+ (2162, T 47), (2163, Q 12 9 7), (2164, T 561),
+ (2165, Q 10 4 2), (2166, T 693), (2167, T 840),
+ (2168, Q 11 9 3), (2169, T 55), (2170, T 411),
+ (2171, Q 7 6 4), (2172, Q 6 4 1), (2173, Q 15 8 4),
+ (2174, T 225), (2175, T 128), (2176, Q 15 8 1),
+ (2177, T 554), (2178, T 15), (2179, Q 8 7 2),
+ (2180, T 111), (2181, Q 18 12 7), (2182, T 93),
+ (2183, T 162), (2184, Q 11 10 5), (2185, T 51),
+ (2186, T 51), (2187, Q 22 11 1), (2188, T 99),
+ (2189, Q 19 8 7), (2190, T 441), (2191, T 111),
+ (2192, Q 8 5 3), (2193, T 71), (2194, Q 15 13 9),
+ (2195, Q 23 22 16), (2196, T 539), (2197, Q 6 5 2),
+ (2198, T 893), (2199, T 49), (2200, Q 20 15 5),
+ (2201, T 143), (2202, Q 15 3 2), (2203, Q 14 6 5),
+ (2204, Q 11 7 1), (2205, Q 14 7 4), (2206, T 793),
+ (2207, T 438), (2208, Q 21 16 6), (2209, T 142),
+ (2210, T 539), (2211, Q 20 14 3), (2212, T 423),
+ (2213, Q 20 19 4), (2214, T 1041), (2215, T 39),
+ (2216, Q 24 7 2), (2217, T 455), (2218, T 603),
+ (2219, Q 22 12 11), (2220, T 7), (2221, Q 17 16 6),
+ (2222, T 333), (2223, Q 17 6 2), (2224, Q 21 19 5),
+ (2225, T 47), (2226, Q 19 16 7), (2227, Q 14 9 8),
+ (2228, T 425), (2229, Q 17 8 7), (2230, T 637),
+ (2231, T 654), (2232, Q 19 17 4), (2233, T 249),
+ (2234, Q 7 6 1), (2235, Q 20 17 11), (2236, T 63),
+ (2237, Q 7 4 2), (2238, T 1053), (2239, T 120),
+ (2240, Q 23 7 1), (2241, T 20), (2242, T 7),
+ (2243, Q 27 15 2), (2244, T 399), (2245, Q 22 12 11),
+ (2246, Q 23 15 6), (2247, T 217), (2248, Q 9 4 3),
+ (2249, T 126), (2250, T 927), (2251, Q 19 16 13),
+ (2252, T 75), (2253, Q 19 14 2), (2254, Q 10 9 2),
+ (2255, T 729), (2256, Q 14 9 6), (2257, T 829),
+ (2258, T 983), (2259, Q 16 10 6), (2260, Q 12 4 1),
+ (2261, Q 14 12 7), (2262, T 57), (2263, T 273),
+ (2264, Q 15 7 2), (2265, T 151), (2266, T 343),
+ (2267, Q 18 17 8), (2268, T 115), (2269, Q 15 10 7),
+ (2270, T 369), (2271, T 560), (2272, Q 21 10 9),
+ (2273, T 630), (2274, T 239), (2275, Q 15 12 1),
+ (2276, T 21), (2277, Q 10 4 2), (2278, Q 17 14 7),
+ (2279, T 276), (2280, Q 13 4 2), (2281, T 715),
+ (2282, T 975), (2283, Q 20 13 4), (2284, T 889),
+ (2285, Q 8 6 2), (2286, T 249), (2287, T 651),
+ (2288, Q 17 16 7), (2289, T 136), (2290, Q 23 6 5),
+ (2291, Q 13 10 2), (2292, T 89), (2293, Q 10 8 3),
+ (2294, Q 21 17 10), (2295, T 259), (2296, Q 15 10 1),
+ (2297, T 405), (2298, Q 15 13 3), (2299, Q 16 6 1),
+ (2300, T 95), (2301, Q 15 9 8), (2302, Q 15 8 1),
+ (2303, T 80), (2304, Q 8 7 5), (2305, T 424),
+ (2306, T 551), (2307, Q 11 7 2), (2308, T 31),
+ (2309, Q 12 10 8), (2310, T 233), (2311, T 148),
+ (2312, Q 19 6 4), (2313, T 221), (2314, T 879),
+ (2315, Q 17 15 4), (2316, T 21), (2317, Q 17 4 2),
+ (2318, T 245), (2319, T 161), (2320, Q 13 11 5),
+ (2321, T 543), (2322, T 83), (2323, Q 16 3 2),
+ (2324, T 717), (2325, Q 14 8 5), (2326, Q 13 10 7),
+ (2327, T 32), (2328, Q 15 9 2), (2329, T 105),
+ (2330, Q 15 5 1), (2331, T 14), (2332, T 349),
+ (2333, Q 18 15 8), (2334, T 1125), (2335, T 553),
+ (2336, Q 15 10 8), (2337, T 523), (2338, T 211),
+ (2339, Q 10 3 2), (2340, T 39), (2341, Q 24 18 16),
+ (2342, T 65), (2343, T 415), (2344, Q 27 26 14),
+ (2345, T 29), (2346, T 987), (2347, Q 11 10 2),
+ (2348, T 731), (2349, Q 31 16 9), (2350, Q 21 19 4),
+ (2351, T 950), (2352, Q 23 20 2), (2353, T 328),
+ (2354, Q 14 11 6), (2355, Q 12 11 6), (2356, T 183),
+ (2357, Q 10 9 8), (2358, T 161), (2359, T 172),
+ (2360, Q 19 10 8), (2361, T 646), (2362, Q 13 10 6),
+ (2363, Q 9 7 4), (2364, T 643), (2365, Q 21 14 5),
+ (2366, Q 16 13 6), (2367, T 610), (2368, Q 13 11 8),
+ (2369, T 77), (2370, Q 12 11 6), (2371, Q 20 18 17),
+ (2372, T 1139), (2373, Q 17 14 5), (2374, Q 24 16 13),
+ (2375, T 198), (2376, Q 7 5 4), (2377, T 381),
+ (2378, T 243), (2379, Q 22 9 3), (2380, T 1),
+ (2381, Q 18 12 2), (2382, T 429), (2383, T 49),
+ (2384, Q 21 19 1), (2385, T 607), (2386, Q 11 9 1),
+ (2387, Q 8 7 6), (2388, T 11), (2389, Q 31 12 10),
+ (2390, T 629), (2391, T 956), (2392, Q 31 13 3),
+ (2393, T 59), (2394, T 423), (2395, Q 17 8 7),
+ (2396, T 173), (2397, Q 22 17 4), (2398, Q 15 13 11),
+ (2399, T 107), (2400, Q 20 19 17), (2401, T 61),
+ (2402, T 251), (2403, Q 11 8 2), (2404, T 67),
+ (2405, Q 17 14 5), (2406, Q 14 12 5), (2407, T 91),
+ (2408, Q 23 6 4), (2409, T 1198), (2410, T 807),
+ (2411, Q 12 2 1), (2412, T 25), (2413, Q 11 6 1),
+ (2414, T 29), (2415, T 154), (2416, Q 23 6 5),
+ (2417, T 225), (2418, T 311), (2419, Q 22 16 6),
+ (2420, T 77), (2421, Q 11 8 4), (2422, T 1117),
+ (2423, T 102), (2424, Q 21 16 6), (2425, T 678),
+ (2426, Q 20 4 3), (2427, Q 8 6 5), (2428, T 301),
+ (2429, Q 22 14 7), (2430, T 477), (2431, T 303),
+ (2432, Q 29 22 19), (2433, T 305), (2434, T 507),
+ (2435, Q 18 6 2), (2436, T 145), (2437, Q 9 4 3),
+ (2438, T 929), (2439, T 404), (2440, Q 12 7 5),
+ (2441, T 339), (2442, T 127), (2443, Q 15 13 4),
+ (2444, T 1115), (2445, Q 23 20 10), (2446, Q 18 13 6),
+ (2447, T 786), (2448, Q 21 10 4), (2449, T 621),
+ (2450, T 191), (2451, Q 10 4 3), (2452, T 331),
+ (2453, Q 21 14 11), (2454, T 357), (2455, T 313),
+ (2456, Q 12 5 3), (2457, T 238), (2458, Q 23 20 18),
+ (2459, Q 17 7 4), (2460, T 35), (2461, Q 19 18 10),
+ (2462, Q 22 13 8), (2463, T 1172), (2464, Q 5 4 3),
+ (2465, T 531), (2466, T 599), (2467, Q 18 14 2),
+ (2468, T 99), (2469, Q 26 16 11), (2470, T 217),
+ (2471, Q 15 6 3), (2472, Q 12 3 1), (2473, T 225),
+ (2474, T 899), (2475, Q 12 11 9), (2476, Q 17 3 2),
+ (2477, Q 19 17 6), (2478, T 765), (2479, T 72),
+ (2480, Q 20 5 2), (2481, T 710), (2482, Q 11 7 6),
+ (2483, Q 12 11 2), (2484, T 523), (2485, T 142),
+ (2486, Q 19 14 9), (2487, T 155), (2488, Q 23 13 9),
+ (2489, T 315), (2490, Q 8 7 5), (2491, Q 25 16 12),
+ (2492, T 141), (2493, Q 18 15 7), (2494, Q 13 8 2),
+ (2495, T 497), (2496, Q 12 3 1), (2497, T 1171),
+ (2498, Q 8 7 4), (2499, Q 13 12 9), (2500, T 135),
+ (2501, Q 22 21 5), (2502, T 45), (2503, T 316),
+ (2504, Q 19 8 6), (2505, T 131), (2506, Q 17 11 3),
+ (2507, Q 13 8 1), (2508, T 25), (2509, Q 14 13 3),
+ (2510, T 1113), (2511, T 110), (2512, Q 29 21 7),
+ (2513, T 99), (2514, T 183), (2515, Q 8 7 5),
+ (2516, T 563), (2517, Q 14 4 1), (2518, Q 18 13 2),
+ (2519, T 579), (2520, Q 31 15 13), (2521, T 426),
+ (2522, Q 16 10 5), (2523, Q 23 17 14),
+ (2524, Q 15 6 4), (2525, Q 7 6 5), (2526, T 141),
+ (2527, T 640), (2528, Q 19 9 4), (2529, T 49),
+ (2530, Q 14 5 3), (2531, Q 6 2 1), (2532, Q 26 22 13),
+ (2533, Q 10 3 1), (2534, T 185), (2535, Q 24 19 16),
+ (2536, Q 21 10 9), (2537, T 77), (2538, T 315),
+ (2539, Q 10 9 3), (2540, T 209), (2541, Q 11 8 7),
+ (2542, T 97), (2543, T 240), (2544, Q 21 20 6),
+ (2545, T 982), (2546, T 891), (2547, Q 22 10 3),
+ (2548, T 373), (2549, Q 10 9 5), (2550, T 333),
+ (2551, T 103), (2552, Q 28 3 2), (2553, T 28),
+ (2554, T 1123), (2555, Q 9 6 2), (2556, T 349),
+ (2557, Q 18 17 7), (2558, Q 18 8 1), (2559, T 23),
+ (2560, Q 9 3 1), (2561, T 201), (2562, T 203),
+ (2563, Q 12 11 10), (2564, T 561), (2565, Q 25 16 14),
+ (2566, T 37), (2567, T 122), (2568, Q 8 5 2),
+ (2569, T 69), (2570, Q 18 15 14), (2571, Q 18 16 9),
+ (2572, T 535), (2573, Q 12 11 3), (2574, T 5),
+ (2575, T 867), (2576, Q 7 2 1), (2577, T 674),
+ (2578, Q 15 7 3), (2579, Q 23 6 1), (2580, T 105),
+ (2581, Q 26 14 12), (2582, Q 22 19 15), (2583, T 31),
+ (2584, Q 25 19 12), (2585, T 263), (2586, T 1047),
+ (2587, Q 23 12 10), (2588, Q 13 8 1),
+ (2589, Q 29 11 10), (2590, T 1017), (2591, T 219),
+ (2592, Q 15 12 5), (2593, T 297), (2594, T 863),
+ (2595, Q 24 17 2), (2596, T 145), (2597, Q 16 8 7),
+ (2598, T 225), (2599, T 289), (2600, Q 14 13 7),
+ (2601, T 406), (2602, Q 11 6 1), (2603, Q 18 8 7),
+ (2604, T 435), (2605, Q 19 14 5), (2606, T 1181),
+ (2607, T 34), (2608, Q 15 11 2), (2609, T 425),
+ (2610, T 427), (2611, Q 27 17 10), (2612, Q 21 14 6),
+ (2613, Q 14 12 9), (2614, T 553), (2615, T 518),
+ (2616, Q 17 8 7), (2617, T 462), (2618, T 71),
+ (2619, Q 17 10 1), (2620, T 835), (2621, Q 8 7 1),
+ (2622, Q 11 5 3), (2623, T 409), (2624, Q 15 10 4),
+ (2625, T 112), (2626, T 43), (2627, Q 20 17 11),
+ (2628, T 47), (2629, Q 13 9 6), (2630, T 177),
+ (2631, T 139), (2632, Q 19 5 3), (2633, T 1241),
+ (2634, Q 20 11 5), (2635, Q 25 21 14),
+ (2636, Q 18 11 10), (2637, Q 9 6 4), (2638, Q 10 3 1),
+ (2639, T 144), (2640, Q 23 11 9), (2641, T 736),
+ (2642, T 551), (2643, Q 16 13 10), (2644, T 597),
+ (2645, Q 18 11 10), (2646, T 297), (2647, T 513),
+ (2648, Q 15 8 1), (2649, T 689), (2650, Q 17 13 5),
+ (2651, Q 7 5 4), (2652, T 519), (2653, Q 17 4 2),
+ (2654, Q 20 16 13), (2655, T 53), (2656, Q 19 11 5),
+ (2657, T 242), (2658, Q 6 3 2), (2659, Q 20 18 16),
+ (2660, T 5), (2661, Q 17 14 2), (2662, Q 14 12 7),
+ (2663, T 458), (2664, Q 27 21 19), (2665, T 772),
+ (2666, T 663), (2667, T 254), (2668, T 819),
+ (2669, Q 18 4 2), (2670, T 229), (2671, T 46),
+ (2672, Q 18 7 1), (2673, T 530), (2674, T 967),
+ (2675, Q 13 10 9), (2676, T 93), (2677, Q 17 8 6),
+ (2678, Q 15 6 5), (2679, T 286), (2680, Q 15 9 4),
+ (2681, T 635), (2682, T 463), (2683, Q 11 6 1),
+ (2684, Q 14 12 3), (2685, Q 8 2 1), (2686, T 789),
+ (2687, T 225), (2688, Q 21 10 6), (2689, T 36),
+ (2690, Q 12 9 3), (2691, Q 14 10 8), (2692, T 577),
+ (2693, Q 10 5 3), (2694, T 621), (2695, T 123),
+ (2696, Q 17 15 12), (2697, T 170), (2698, T 963),
+ (2699, Q 32 30 29), (2700, T 3), (2701, Q 12 10 5),
+ (2702, T 257), (2703, T 67), (2704, Q 12 9 7),
+ (2705, Q 12 10 5), (2706, T 515), (2707, Q 9 6 4),
+ (2708, T 423), (2709, Q 10 9 3), (2710, Q 7 3 1),
+ (2711, T 690), (2712, Q 21 12 7), (2713, T 840),
+ (2714, Q 12 8 7), (2715, Q 30 26 15), (2716, T 255),
+ (2717, Q 14 8 3), (2718, T 369), (2719, T 102),
+ (2720, Q 25 18 1), (2721, T 826), (2722, T 127),
+ (2723, Q 9 6 5), (2724, T 121), (2725, Q 21 17 2),
+ (2726, Q 10 6 1), (2727, T 430), (2728, Q 21 7 5),
+ (2729, T 96), (2730, T 343), (2731, Q 15 11 2),
+ (2732, T 845), (2733, Q 19 8 7), (2734, Q 9 5 4),
+ (2735, T 933), (2736, Q 16 3 1), (2737, T 226),
+ (2738, T 923), (2739, Q 12 9 5), (2740, T 109),
+ (2741, Q 6 5 4), (2742, T 149), (2743, T 447),
+ (2744, Q 19 18 10), (2745, T 484), (2746, Q 9 7 2),
+ (2747, Q 15 11 6), (2748, T 25), (2749, Q 22 18 17),
+ (2750, T 629), (2751, T 49), (2752, Q 15 4 2),
+ (2753, T 716), (2754, T 231), (2755, Q 13 7 6),
+ (2756, T 159), (2757, Q 24 23 12), (2758, Q 17 5 4),
+ (2759, T 842), (2760, Q 29 26 7), (2761, T 108),
+ (2762, T 1319), (2763, Q 12 10 6), (2764, T 687),
+ (2765, Q 16 10 3), (2766, T 1285), (2767, T 102),
+ (2768, Q 25 19 15), (2769, T 269), (2770, T 567),
+ (2771, Q 13 12 5), (2772, T 135), (2773, Q 30 25 20),
+ (2774, Q 28 3 2), (2775, T 802), (2776, Q 7 3 2),
+ (2777, Q 22 21 17), (2778, T 1095), (2779, Q 20 17 9),
+ (2780, T 51), (2781, Q 28 27 10), (2782, Q 22 10 9),
+ (2783, T 168), (2784, Q 29 21 15), (2785, T 349),
+ (2786, T 339), (2787, Q 19 18 3), (2788, Q 21 16 2),
+ (2789, Q 14 12 8), (2790, T 837), (2791, T 490),
+ (2792, Q 12 7 2), (2793, T 343), (2794, Q 11 9 4),
+ (2795, Q 10 8 4), (2796, T 769), (2797, Q 19 6 1),
+ (2798, Q 20 14 5), (2799, T 880), (2800, Q 17 14 6),
+ (2801, T 279), (2802, Q 18 14 3), (2803, Q 18 16 13),
+ (2804, T 609), (2805, Q 24 8 2), (2806, T 729),
+ (2807, T 270), (2808, Q 15 13 1), (2809, T 1342),
+ (2810, Q 23 10 9), (2811, Q 10 9 7), (2812, T 453),
+ (2813, Q 13 7 6), (2814, T 621), (2815, T 84),
+ (2816, Q 21 19 8), (2817, T 109), (2818, Q 15 9 1),
+ (2819, Q 10 6 5), (2820, T 815), (2821, Q 16 6 4),
+ (2822, Q 18 17 3), (2823, T 592), (2824, Q 15 14 10),
+ (2825, T 288), (2826, T 135), (2827, Q 19 10 6),
+ (2828, T 1103), (2829, Q 9 6 4), (2830, Q 17 15 13),
+ (2831, T 186), (2832, Q 27 18 1), (2833, T 409),
+ (2834, Q 15 13 7), (2835, Q 20 13 5), (2836, T 1113),
+ (2837, Q 17 8 3), (2838, Q 20 4 1), (2839, T 1033),
+ (2840, Q 20 15 9), (2841, T 370), (2842, T 1231),
+ (2843, Q 7 3 2), (2844, T 25), (2845, Q 10 9 1),
+ (2846, Q 23 15 4), (2847, T 329), (2848, Q 15 8 1),
+ (2849, T 114), (2850, T 1411), (2851, Q 10 7 1),
+ (2852, T 1145), (2853, Q 14 8 1), (2854, T 313),
+ (2855, T 41), (2856, Q 15 13 3), (2857, T 756),
+ (2858, Q 17 9 7), (2859, Q 29 20 11), (2860, T 603),
+ (2861, Q 20 16 10), (2862, T 405), (2863, T 139),
+ (2864, Q 21 17 15), (2865, T 212), (2866, Q 9 7 2),
+ (2867, Q 15 13 10), (2868, T 915), (2869, Q 8 6 1),
+ (2870, Q 12 11 1), (2871, T 272), (2872, Q 21 5 2),
+ (2873, T 75), (2874, Q 13 6 3), (2875, Q 20 16 2),
+ (2876, T 605), (2877, Q 10 7 4), (2878, T 781),
+ (2879, T 149), (2880, Q 13 10 6), (2881, T 1201),
+ (2882, T 1431), (2883, Q 16 13 12), (2884, T 529),
+ (2885, Q 13 11 6), (2886, Q 20 14 9), (2887, T 469),
+ (2888, Q 11 4 1), (2889, T 76), (2890, T 31),
+ (2891, Q 16 15 10), (2892, T 309), (2893, Q 27 7 2),
+ (2894, Q 16 14 9), (2895, T 358), (2896, Q 29 6 1),
+ (2897, T 15), (2898, T 91), (2899, Q 19 10 1),
+ (2900, T 303), (2901, Q 11 3 2), (2902, Q 14 10 9),
+ (2903, T 279), (2904, Q 27 15 6), (2905, T 321),
+ (2906, T 1155), (2907, Q 17 14 1), (2908, Q 19 13 10),
+ (2909, Q 23 22 4), (2910, T 1301), (2911, T 685),
+ (2912, Q 16 9 2), (2913, T 238), (2914, T 351),
+ (2915, Q 18 7 5), (2916, T 21), (2917, Q 16 15 4),
+ (2918, T 237), (2919, T 149), (2920, Q 19 9 5),
+ (2921, T 480), (2922, T 559), (2923, Q 11 6 5),
+ (2924, Q 12 4 1), (2925, Q 12 4 3), (2926, Q 20 14 1),
+ (2927, T 974), (2928, Q 24 21 11), (2929, T 651),
+ (2930, Q 9 4 1), (2931, Q 13 8 1), (2932, Q 14 7 6),
+ (2933, Q 15 14 13), (2934, T 713), (2935, Q 13 12 7),
+ (2936, Q 5 3 2), (2937, T 172), (2938, T 499),
+ (2939, Q 30 17 5), (2940, T 49), (2941, Q 23 18 17),
+ (2942, T 1425), (2943, T 320), (2944, Q 5 3 2),
+ (2945, T 146), (2946, T 551), (2947, Q 22 20 11),
+ (2948, Q 17 3 2), (2949, Q 17 7 4), (2950, T 397),
+ (2951, T 872), (2952, Q 17 13 2), (2953, T 33),
+ (2954, Q 9 6 5), (2955, Q 12 10 6), (2956, T 823),
+ (2957, Q 19 14 3), (2958, Q 23 13 5), (2959, T 69),
+ (2960, Q 12 3 2), (2961, T 86), (2962, T 319),
+ (2963, Q 21 14 5), (2964, T 83), (2965, Q 25 22 15),
+ (2966, T 861), (2967, T 1028), (2968, Q 29 27 4),
+ (2969, T 561), (2970, T 583), (2971, Q 18 13 2),
+ (2972, T 693), (2973, Q 18 10 4), (2974, Q 11 3 1),
+ (2975, T 192), (2976, Q 21 10 3), (2977, T 126),
+ (2978, T 375), (2979, Q 12 11 6), (2980, T 381),
+ (2981, Q 13 2 1), (2982, T 669), (2983, T 330),
+ (2984, Q 17 9 6), (2985, T 166), (2986, T 343),
+ (2987, Q 8 3 2), (2988, T 313), (2989, Q 18 9 7),
+ (2990, Q 26 22 9), (2991, T 292), (2992, Q 23 3 1),
+ (2993, T 569), (2994, T 303), (2995, Q 9 6 4),
+ (2996, T 345), (2997, Q 12 6 5), (2998, T 669),
+ (2999, T 1011), (3000, Q 15 12 9), (3001, T 975),
+ (3002, Q 22 21 10), (3003, Q 12 11 5), (3004, T 351),
+ (3005, Q 14 12 5), (3006, Q 15 9 6), (3007, T 963),
+ (3008, Q 15 13 1), (3009, T 1349), (3010, Q 25 12 10),
+ (3011, Q 22 8 6), (3012, T 1327), (3013, Q 23 6 2),
+ (3014, Q 17 15 5), (3015, T 308), (3016, Q 38 25 9),
+ (3017, T 108), (3018, T 203), (3019, Q 16 6 1),
+ (3020, T 413), (3021, Q 22 10 1), (3022, Q 14 12 1),
+ (3023, T 734), (3024, Q 32 3 2), (3025, T 757),
+ (3026, Q 19 18 13), (3027, Q 17 16 4), (3028, T 135),
+ (3029, Q 11 6 4), (3030, Q 12 9 4), (3031, T 55),
+ (3032, Q 17 15 4), (3033, T 238), (3034, T 399),
+ (3035, Q 21 20 2), (3036, T 391), (3037, Q 7 6 3),
+ (3038, T 633), (3039, T 436), (3040, Q 27 21 3),
+ (3041, T 776), (3042, T 415), (3043, Q 18 16 15),
+ (3044, T 69), (3045, Q 17 14 11), (3046, T 1021),
+ (3047, Q 19 15 4), (3048, Q 18 3 2), (3049, T 765),
+ (3050, T 651), (3051, Q 19 17 16), (3052, T 363),
+ (3053, Q 22 20 15), (3054, Q 21 4 3), (3055, Q 13 7 1),
+ (3056, Q 5 4 3), (3057, T 110), (3058, T 811),
+ (3059, Q 15 10 1), (3060, T 405), (3061, Q 22 15 1),
+ (3062, T 1053), (3063, T 32), (3064, Q 25 11 9),
+ (3065, T 432), (3066, T 455), (3067, Q 18 16 13),
+ (3068, T 215), (3069, Q 34 26 19), (3070, Q 20 13 8),
+ (3071, T 65), (3072, Q 11 10 5), (3073, T 184),
+ (3074, Q 17 9 3), (3075, Q 16 14 10), (3076, T 475),
+ (3077, Q 12 10 8), (3078, T 105), (3079, T 174),
+ (3080, Q 21 19 16), (3081, T 64), (3082, Q 9 6 1),
+ (3083, Q 23 20 18), (3084, T 109), (3085, Q 25 14 12),
+ (3086, T 1281), (3087, T 49), (3088, Q 20 13 11),
+ (3089, T 261), (3090, T 279), (3091, Q 12 7 5),
+ (3092, T 45), (3093, Q 14 11 8), (3094, T 769),
+ (3095, T 419), (3096, Q 33 29 14), (3097, T 1162),
+ (3098, Q 18 17 11), (3099, Q 14 13 11), (3100, T 45),
+ (3101, Q 10 7 3), (3102, T 225), (3103, T 124),
+ (3104, Q 23 9 5), (3105, T 833), (3106, Q 6 2 1),
+ (3107, Q 14 12 11), (3108, T 61), (3109, Q 26 20 19),
+ (3110, T 1421), (3111, T 199), (3112, Q 17 15 1),
+ (3113, T 191), (3114, Q 19 15 4), (3115, Q 25 18 16),
+ (3116, T 461), (3117, Q 19 8 4), (3118, T 525),
+ (3119, T 315), (3120, Q 18 17 11), (3121, T 493),
+ (3122, Q 22 7 6), (3123, Q 15 10 4), (3124, T 861),
+ (3125, Q 24 21 18), (3126, T 449), (3127, T 139),
+ (3128, Q 30 19 11), (3129, T 23), (3130, T 867),
+ (3131, Q 22 8 7), (3132, T 123), (3133, Q 6 4 3),
+ (3134, T 89), (3135, T 356), (3136, Q 15 12 10),
+ (3137, T 587), (3138, Q 29 19 13), (3139, Q 14 11 10),
+ (3140, T 1115), (3141, Q 23 18 12), (3142, T 981),
+ (3143, T 8), (3144, Q 23 21 8), (3145, T 112),
+ (3146, Q 18 11 6), (3147, Q 17 10 7), (3148, T 1171),
+ (3149, Q 22 3 2), (3150, T 253), (3151, T 1254),
+ (3152, Q 21 17 6), (3153, T 98), (3154, Q 19 17 6),
+ (3155, Q 15 12 2), (3156, T 565), (3157, Q 24 14 10),
+ (3158, Q 19 9 5), (3159, T 103), (3160, Q 7 6 2),
+ (3161, T 858), (3162, T 315), (3163, Q 18 13 10),
+ (3164, T 113), (3165, Q 17 13 10), (3166, Q 18 10 1),
+ (3167, T 672), (3168, Q 33 31 18), (3169, T 1123),
+ (3170, T 783), (3171, Q 19 14 13), (3172, T 301),
+ (3173, Q 20 17 14), (3174, T 81), (3175, T 646),
+ (3176, Q 13 10 5), (3177, T 484), (3178, T 915),
+ (3179, Q 22 12 2), (3180, T 1085), (3181, Q 12 10 3),
+ (3182, T 1205), (3183, T 1225), (3184, Q 11 10 2),
+ (3185, T 204), (3186, T 891), (3187, Q 9 8 2),
+ (3188, T 129), (3189, Q 19 18 12), (3190, Q 12 4 1),
+ (3191, T 495), (3192, Q 25 8 7), (3193, T 211),
+ (3194, T 1059), (3195, Q 19 14 1), (3196, T 175),
+ (3197, Q 22 16 14), (3198, T 841), (3199, T 54),
+ (3200, Q 11 6 4), (3201, T 674), (3202, Q 24 12 3),
+ (3203, Q 14 7 3), (3204, T 31), (3205, Q 17 9 2),
+ (3206, Q 15 8 6), (3207, T 704), (3208, Q 16 13 3),
+ (3209, T 81), (3210, T 1303), (3211, Q 12 10 5),
+ (3212, T 1559), (3213, Q 30 16 1), (3214, T 1197),
+ (3215, T 614), (3216, Q 21 11 3), (3217, T 67),
+ (3218, Q 10 9 8), (3219, Q 24 10 3), (3220, T 19),
+ (3221, Q 11 6 5), (3222, T 145), (3223, T 784),
+ (3224, Q 23 19 1), (3225, T 101), (3226, Q 9 7 5),
+ (3227, Q 8 7 6), (3228, T 1225), (3229, Q 12 9 7),
+ (3230, T 501), (3231, Q 15 9 8), (3232, Q 12 9 7),
+ (3233, T 575), (3234, T 511), (3235, Q 21 11 8),
+ (3236, T 887), (3237, Q 19 8 4), (3238, T 409),
+ (3239, T 98), (3240, Q 12 3 2), (3241, T 127),
+ (3242, Q 27 13 7), (3243, Q 22 13 5), (3244, T 1249),
+ (3245, Q 11 10 4), (3246, T 1221), (3247, T 426),
+ (3248, Q 15 8 1), (3249, T 149), (3250, Q 15 11 8),
+ (3251, Q 9 6 5), (3252, T 567), (3253, Q 10 5 3),
+ (3254, T 1485), (3255, T 124), (3256, Q 31 26 2),
+ (3257, T 806), (3258, T 203), (3259, Q 22 4 1),
+ (3260, T 237), (3261, Q 18 12 10), (3262, Q 15 13 7),
+ (3263, T 939), (3264, Q 17 5 2), (3265, Q 18 16 7),
+ (3266, Q 19 2 1), (3267, Q 20 19 10), (3268, T 73),
+ (3269, Q 22 3 2), (3270, T 237), (3271, T 333),
+ (3272, Q 23 10 1), (3273, T 1408), (3274, T 775),
+ (3275, Q 24 13 10), (3276, T 69), (3277, Q 25 22 1),
+ (3278, Q 22 12 1), (3279, T 446), (3280, Q 16 15 6),
+ (3281, T 47), (3282, T 783), (3283, Q 30 28 21),
+ (3284, Q 24 17 13), (3285, Q 18 4 1), (3286, T 397),
+ (3287, T 717), (3288, Q 21 18 11), (3289, T 43),
+ (3290, Q 11 7 3), (3291, Q 18 7 1), (3292, T 61),
+ (3293, Q 20 18 15), (3294, T 249), (3295, T 594),
+ (3296, Q 19 14 13), (3297, T 7), (3298, T 639),
+ (3299, Q 18 17 14), (3300, T 55), (3301, Q 24 10 4),
+ (3302, T 605), (3303, T 1336), (3304, Q 19 17 3),
+ (3305, T 806), (3306, T 127), (3307, Q 15 10 2),
+ (3308, T 717), (3309, Q 23 20 6), (3310, T 1),
+ (3311, T 618), (3312, Q 14 9 3), (3313, T 436),
+ (3314, T 1019), (3315, Q 12 8 2), (3316, T 1641),
+ (3317, Q 22 17 7), (3318, T 585), (3319, T 58),
+ (3320, Q 17 10 4), (3321, T 20), (3322, T 567),
+ (3323, Q 28 14 10), (3324, T 173), (3325, Q 25 19 10),
+ (3326, T 1145), (3327, T 875), (3328, Q 17 9 2),
+ (3329, T 525), (3330, T 191), (3331, Q 18 17 11),
+ (3332, T 587), (3333, Q 16 8 7), (3334, Q 6 4 1),
+ (3335, T 636), (3336, Q 11 10 5), (3337, T 370),
+ (3338, T 1155), (3339, Q 22 16 12), (3340, Q 11 7 5),
+ (3341, Q 25 19 12), (3342, Q 9 6 5), (3343, T 73),
+ (3344, Q 30 27 15), (3345, T 796), (3346, Q 15 6 1),
+ (3347, Q 23 18 16), (3348, T 177), (3349, Q 20 19 17),
+ (3350, T 1401), (3351, T 731), (3352, Q 21 20 19),
+ (3353, T 389), (3354, Q 10 9 3), (3355, Q 10 6 4),
+ (3356, T 339), (3357, Q 24 17 15), (3358, Q 19 8 6),
+ (3359, T 99), (3360, Q 18 15 5), (3361, Q 12 10 4),
+ (3362, Q 11 7 4), (3363, Q 14 10 2), (3364, T 85),
+ (3365, Q 24 15 2), (3366, T 257), (3367, T 136),
+ (3368, Q 7 5 1), (3369, T 1541), (3370, Q 15 10 1),
+ (3371, Q 30 29 18), (3372, T 47), (3373, Q 14 6 4),
+ (3374, T 417), (3375, T 49), (3376, Q 11 9 1),
+ (3377, T 236), (3378, T 623), (3379, Q 25 20 9),
+ (3380, T 659), (3381, Q 7 4 1), (3382, T 217),
+ (3383, T 956), (3384, Q 21 9 3), (3385, T 603),
+ (3386, Q 19 9 2), (3387, Q 26 25 16), (3388, T 169),
+ (3389, Q 17 15 4), (3390, T 1381), (3391, T 465),
+ (3392, Q 23 13 6), (3393, T 1615), (3394, Q 13 12 3),
+ (3395, Q 22 10 6), (3396, Q 13 6 1), (3397, Q 19 4 1),
+ (3398, T 245), (3399, T 416), (3400, Q 14 13 6),
+ (3401, T 531), (3402, T 387), (3403, Q 15 12 6),
+ (3404, T 173), (3405, Q 24 9 2), (3406, Q 22 13 12),
+ (3407, T 507), (3408, Q 16 15 6), (3409, T 244),
+ (3410, T 1023), (3411, Q 14 8 5), (3412, T 325),
+ (3413, Q 14 9 6), (3414, T 93), (3415, T 1272),
+ (3416, Q 28 27 1), (3417, T 32), (3418, T 15),
+ (3419, Q 12 9 3), (3420, T 423), (3421, Q 19 14 5),
+ (3422, T 1121), (3423, T 11), (3424, Q 22 15 6),
+ (3425, T 189), (3426, T 1071), (3427, Q 16 12 1),
+ (3428, Q 17 16 13), (3429, Q 16 12 6), (3430, T 153),
+ (3431, T 153), (3432, Q 25 2 1), (3433, Q 28 25 12),
+ (3434, Q 14 13 12), (3435, Q 15 14 5), (3436, T 159),
+ (3437, Q 18 16 10), (3438, T 393), (3439, T 147),
+ (3440, Q 27 16 1), (3441, T 394), (3442, Q 8 7 3),
+ (3443, Q 26 19 3), (3444, T 69), (3445, Q 21 5 2),
+ (3446, Q 21 17 8), (3447, T 404), (3448, Q 17 11 6),
+ (3449, T 917), (3450, Q 11 8 3), (3451, Q 19 14 9),
+ (3452, T 1145), (3453, Q 16 6 1), (3454, Q 25 23 21),
+ (3455, T 21), (3456, Q 19 18 9), (3457, T 120),
+ (3458, T 519), (3459, Q 19 18 12), (3460, T 1495),
+ (3461, Q 20 10 7), (3462, T 225), (3463, T 289),
+ (3464, Q 11 6 3), (3465, T 304), (3466, T 43),
+ (3467, Q 28 26 6), (3468, T 921), (3469, Q 38 16 6),
+ (3470, T 917), (3471, T 314), (3472, Q 17 14 7),
+ (3473, T 720), (3474, T 735), (3475, Q 30 16 13),
+ (3476, T 525), (3477, Q 16 15 12), (3478, T 465),
+ (3479, T 155), (3480, Q 19 15 13), (3481, T 546),
+ (3482, Q 15 5 4), (3483, Q 12 5 2), (3484, T 1329),
+ (3485, Q 8 7 4), (3486, T 1085), (3487, T 120),
+ (3488, Q 12 11 1), (3489, T 518), (3490, Q 16 12 3),
+ (3491, Q 19 14 7), (3492, T 57), (3493, Q 19 18 1),
+ (3494, Q 25 19 9), (3495, T 254), (3496, Q 35 21 4),
+ (3497, T 1025), (3498, T 567), (3499, Q 29 24 4),
+ (3500, T 375), (3501, Q 15 8 2), (3502, Q 15 13 6),
+ (3503, T 993), (3504, Q 23 17 10), (3505, T 103),
+ (3506, Q 13 5 3), (3507, Q 21 14 6), (3508, Q 10 7 6),
+ (3509, Q 23 12 7), (3510, T 81), (3511, T 1141),
+ (3512, Q 37 35 6), (3513, T 41), (3514, Q 11 9 4),
+ (3515, Q 17 10 9), (3516, T 667), (3517, Q 22 14 12),
+ (3518, Q 16 14 9), (3519, T 569), (3520, Q 32 29 3),
+ (3521, T 129), (3522, T 399), (3523, Q 23 12 2),
+ (3524, T 1439), (3525, Q 10 7 5), (3526, Q 12 11 10),
+ (3527, T 476), (3528, Q 25 18 7), (3529, T 270),
+ (3530, Q 10 9 5), (3531, Q 18 3 1), (3532, T 1561),
+ (3533, Q 30 3 2), (3534, T 973), (3535, T 162),
+ (3536, Q 12 7 5), (3537, T 218), (3538, Q 13 6 5),
+ (3539, Q 16 2 1), (3540, T 75), (3541, Q 23 7 2),
+ (3542, T 345), (3543, T 377), (3544, Q 21 14 2),
+ (3545, T 998), (3546, T 151), (3547, Q 26 23 12),
+ (3548, T 255), (3549, Q 14 6 3), (3550, T 1269),
+ (3551, T 183), (3552, Q 15 9 6), (3553, Q 13 3 2),
+ (3554, Q 24 23 17), (3555, Q 28 25 15), (3556, T 127),
+ (3557, Q 14 8 5), (3558, T 397), (3559, T 69),
+ (3560, Q 17 3 2), (3561, T 257), (3562, T 927),
+ (3563, Q 18 15 6), (3564, T 225), (3565, Q 22 17 12),
+ (3566, Q 8 6 1), (3567, Q 24 20 12),
+ (3568, Q 21 12 10), (3569, T 1028), (3570, T 699),
+ (3571, Q 30 13 3), (3572, T 1143), (3573, Q 13 8 2),
+ (3574, T 889), (3575, T 339), (3576, Q 19 10 3),
+ (3577, T 348), (3578, Q 17 9 5), (3579, Q 20 14 6),
+ (3580, T 915), (3581, Q 22 15 2), (3582, T 713),
+ (3583, T 747), (3584, Q 25 12 10), (3585, T 7),
+ (3586, Q 19 14 8), (3587, Q 26 6 5), (3588, T 843),
+ (3589, Q 30 28 8), (3590, T 1713), (3591, T 509),
+ (3592, Q 38 33 14), (3593, T 72), (3594, T 59),
+ (3595, Q 28 14 2), (3596, T 383), (3597, Q 22 9 3),
+ (3598, Q 24 5 1), (3599, T 114), (3600, Q 9 5 2),
+ (3601, T 669), (3602, Q 10 2 1), (3603, Q 23 11 6),
+ (3604, T 637), (3605, Q 8 7 4), (3606, T 861),
+ (3607, T 142), (3608, Q 15 14 10), (3609, T 1016),
+ (3610, Q 12 5 2), (3611, Q 18 7 1), (3612, T 215),
+ (3613, Q 17 7 6), (3614, T 29), (3615, T 47),
+ (3616, Q 25 18 7), (3617, T 377), (3618, T 1539),
+ (3619, Q 13 12 5), (3620, T 231), (3621, Q 22 21 16),
+ (3622, T 481), (3623, Q 10 9 7), (3624, Q 29 27 12),
+ (3625, T 279), (3626, Q 26 25 13), (3627, Q 7 6 4),
+ (3628, T 957), (3629, Q 15 10 2), (3630, T 729),
+ (3631, T 90), (3632, Q 26 17 5), (3633, T 553),
+ (3634, T 651), (3635, Q 15 8 2), (3636, T 391),
+ (3637, Q 7 6 5), (3638, Q 28 8 1), (3639, T 76),
+ (3640, Q 20 15 10), (3641, T 1626), (3642, T 771),
+ (3643, Q 14 13 8), (3644, T 1365), (3645, Q 21 14 6),
+ (3646, Q 20 17 6), (3647, T 45), (3648, Q 23 7 2),
+ (3649, T 394), (3650, T 1691), (3651, Q 15 13 6),
+ (3652, T 721), (3653, Q 10 9 8), (3654, T 273),
+ (3655, T 112), (3656, Q 17 12 11), (3657, T 928),
+ (3658, T 1471), (3659, Q 18 13 2), (3660, T 61),
+ (3661, Q 16 11 6), (3662, T 1365), (3663, T 130),
+ (3664, Q 35 24 14), (3665, T 189), (3666, Q 30 20 11),
+ (3667, Q 15 6 4), (3668, T 269), (3669, Q 22 7 4),
+ (3670, Q 23 4 3), (3671, T 101), (3672, Q 19 17 8),
+ (3673, T 544), (3674, Q 27 15 11), (3675, Q 30 10 9),
+ (3676, T 609), (3677, Q 25 20 7), (3678, T 501),
+ (3679, T 21), (3680, Q 14 13 7), (3681, T 115),
+ (3682, T 471), (3683, Q 15 13 10), (3684, T 81),
+ (3685, Q 9 4 3), (3686, T 81), (3687, T 889),
+ (3688, Q 32 13 11), (3689, T 759), (3690, T 839),
+ (3691, Q 26 9 2), (3692, Q 6 5 3), (3693, Q 26 20 18),
+ (3694, T 1129), (3695, T 62), (3696, Q 36 33 22),
+ (3697, T 91), (3698, T 1719), (3699, Q 24 21 5),
+ (3700, T 675), (3701, Q 4 2 1), (3702, T 1281),
+ (3703, T 429), (3704, Q 14 13 1), (3705, T 148),
+ (3706, T 1195), (3707, Q 11 6 1), (3708, T 147),
+ (3709, Q 16 14 6), (3710, T 797), (3711, T 1735),
+ (3712, Q 13 12 7), (3713, T 413), (3714, T 459),
+ (3715, Q 20 18 11), (3716, Q 24 11 4),
+ (3717, Q 18 15 4), (3718, Q 23 18 10), (3719, T 488),
+ (3720, Q 17 15 11), (3721, T 31), (3722, Q 15 7 5),
+ (3723, Q 18 6 4), (3724, Q 10 9 8), (3725, Q 21 14 8),
+ (3726, T 609), (3727, T 42), (3728, Q 9 4 2),
+ (3729, T 184), (3730, T 1191), (3731, Q 26 20 5),
+ (3732, T 1327), (3733, Q 8 7 3), (3734, T 1305),
+ (3735, T 46), (3736, Q 33 22 18), (3737, T 287),
+ (3738, T 75), (3739, Q 18 10 5), (3740, T 95),
+ (3741, Q 16 15 4), (3742, Q 25 18 11), (3743, T 279),
+ (3744, Q 27 14 2), (3745, T 684), (3746, Q 22 9 7),
+ (3747, Q 32 22 11), (3748, Q 19 11 8),
+ (3749, Q 15 4 1), (3750, T 1013), (3751, T 435),
+ (3752, Q 9 4 2), (3753, T 407), (3754, T 1611),
+ (3755, Q 15 13 8), (3756, T 291), (3757, Q 18 16 5),
+ (3758, Q 21 20 9), (3759, T 208), (3760, Q 23 9 1),
+ (3761, T 30), (3762, T 383), (3763, Q 23 10 2),
+ (3764, T 1307), (3765, Q 28 19 12), (3766, Q 21 15 1),
+ (3767, T 672), (3768, Q 14 7 2), (3769, T 300),
+ (3770, T 107), (3771, Q 13 10 9), (3772, T 61),
+ (3773, Q 10 9 4), (3774, Q 24 9 4), (3775, T 1416),
+ (3776, Q 7 5 4), (3777, T 1414), (3778, Q 9 5 1),
+ (3779, Q 23 8 2), (3780, T 63), (3781, Q 10 9 6),
+ (3782, T 1785), (3783, T 272), (3784, Q 29 13 6),
+ (3785, T 87), (3786, T 1027), (3787, Q 14 6 1),
+ (3788, T 1173), (3789, Q 16 15 4), (3790, Q 22 21 17),
+ (3791, T 45), (3792, Q 20 7 5), (3793, T 481),
+ (3794, Q 17 4 3), (3795, Q 8 7 5), (3796, T 127),
+ (3797, Q 16 8 6), (3798, T 1337), (3799, T 202),
+ (3800, Q 24 23 21), (3801, T 112), (3802, Q 16 15 8),
+ (3803, Q 18 15 6), (3804, T 349), (3805, Q 18 12 9),
+ (3806, Q 9 7 5), (3807, T 68), (3808, Q 29 18 4),
+ (3809, T 938), (3810, T 323), (3811, Q 9 8 4),
+ (3812, T 1799), (3813, Q 11 8 7), (3814, Q 22 21 11),
+ (3815, T 143), (3816, Q 19 13 9), (3817, T 252),
+ (3818, Q 17 8 6), (3819, Q 16 6 3), (3820, Q 20 11 3),
+ (3821, Q 8 7 6), (3822, T 29), (3823, T 609),
+ (3824, Q 19 13 2), (3825, T 437), (3826, Q 23 8 1),
+ (3827, Q 18 13 8), (3828, T 1217), (3829, Q 13 9 6),
+ (3830, T 713), (3831, T 310), (3832, Q 35 13 2),
+ (3833, T 35), (3834, T 567), (3835, Q 15 5 4),
+ (3836, T 681), (3837, Q 22 18 3), (3838, T 273),
+ (3839, T 503), (3840, Q 27 9 1), (3841, T 840),
+ (3842, T 1331), (3843, Q 16 5 2), (3844, T 1063),
+ (3845, Q 11 10 9), (3846, T 693), (3847, T 108),
+ (3848, Q 29 18 13), (3849, T 71), (3850, T 583),
+ (3851, Q 29 24 19), (3852, T 169), (3853, Q 12 7 5),
+ (3854, T 765), (3855, T 1399), (3856, Q 39 25 3),
+ (3857, T 50), (3858, T 459), (3859, Q 14 8 7),
+ (3860, T 35), (3861, Q 31 10 2), (3862, Q 18 16 5),
+ (3863, T 834), (3864, Q 19 15 9), (3865, T 289),
+ (3866, T 315), (3867, Q 20 14 6), (3868, Q 13 12 9),
+ (3869, Q 24 22 13), (3870, T 913), (3871, T 264),
+ (3872, Q 10 3 2), (3873, T 32), (3874, Q 20 8 3),
+ (3875, Q 11 10 4), (3876, T 157), (3877, Q 17 11 4),
+ (3878, Q 19 9 2), (3879, T 121), (3880, Q 27 5 1),
+ (3881, T 810), (3882, T 1775), (3883, Q 20 9 2),
+ (3884, T 45), (3885, Q 15 8 3), (3886, T 273),
+ (3887, T 915), (3888, Q 45 42 6), (3889, T 340),
+ (3890, Q 20 19 10), (3891, Q 17 9 2), (3892, T 289),
+ (3893, Q 16 13 2), (3894, T 1197), (3895, T 777),
+ (3896, Q 15 7 5), (3897, T 310), (3898, Q 25 9 1),
+ (3899, Q 21 20 12), (3900, T 65), (3901, Q 26 6 1),
+ (3902, T 1845), (3903, T 350), (3904, Q 17 13 2),
+ (3905, T 26), (3906, T 251), (3907, Q 15 4 1),
+ (3908, T 855), (3909, Q 14 12 11), (3910, Q 28 22 13),
+ (3911, T 1673), (3912, Q 24 11 2), (3913, T 393),
+ (3914, T 531), (3915, Q 25 22 9), (3916, T 445),
+ (3917, Q 16 12 11), (3918, T 117), (3919, T 285),
+ (3920, Q 15 13 8), (3921, T 785), (3922, Q 26 21 1),
+ (3923, Q 24 21 3), (3924, T 245), (3925, Q 18 16 5),
+ (3926, Q 17 16 12), (3927, T 367), (3928, Q 8 7 5),
+ (3929, T 1440), (3930, T 199), (3931, Q 23 9 4),
+ (3932, T 1563), (3933, Q 30 19 3), (3934, Q 28 12 5),
+ (3935, Q 20 15 8), (3936, Q 15 5 3), (3937, T 252),
+ (3938, T 1835), (3939, Q 28 19 10), (3940, Q 21 5 2),
+ (3941, Q 19 11 6), (3942, T 57), (3943, T 1125),
+ (3944, Q 31 29 28), (3945, T 427), (3946, T 1155),
+ (3947, Q 22 10 5), (3948, T 293), (3949, Q 28 22 3),
+ (3950, T 873), (3951, T 752), (3952, Q 11 6 5),
+ (3953, T 698), (3954, T 503), (3955, Q 24 8 5),
+ (3956, T 429), (3957, Q 18 16 10), (3958, Q 27 4 2),
+ (3959, T 891), (3960, Q 29 15 2), (3961, T 756),
+ (3962, T 255), (3963, Q 13 8 1), (3964, T 735),
+ (3965, Q 14 3 2), (3966, T 337), (3967, T 357),
+ (3968, Q 25 18 14), (3969, T 196), (3970, T 163),
+ (3971, Q 10 7 2), (3972, T 595), (3973, Q 13 11 8),
+ (3974, T 861), (3975, T 322), (3976, Q 36 3 1),
+ (3977, T 221), (3978, Q 19 9 7), (3979, Q 25 9 2),
+ (3980, Q 16 9 4), (3981, Q 21 11 8), (3982, Q 21 13 8),
+ (3983, T 11), (3984, Q 19 5 2), (3985, T 1038),
+ (3986, Q 12 8 7), (3987, Q 11 4 2), (3988, T 1017),
+ (3989, Q 6 5 2), (3990, T 469), (3991, T 168),
+ (3992, Q 27 8 6), (3993, T 1468), (3994, Q 19 12 9),
+ (3995, Q 12 9 8), (3996, T 19), (3997, Q 16 13 3),
+ (3998, T 153), (3999, T 1250), (4000, Q 31 18 17),
+ (4001, T 137), (4002, Q 24 11 6), (4003, Q 14 12 5),
+ (4004, T 1479), (4005, Q 17 12 2), (4006, Q 17 6 1),
+ (4007, T 705), (4008, Q 24 9 6), (4009, T 124),
+ (4010, Q 18 15 2), (4011, Q 28 15 9),
+ (4012, Q 21 20 8), (4013, Q 18 17 15), (4014, T 125),
+ (4015, T 249), (4016, Q 33 32 23), (4017, T 22),
+ (4018, T 1467), (4019, Q 7 6 1), (4020, T 375),
+ (4021, Q 24 19 16), (4022, Q 7 4 2), (4023, T 985),
+ (4024, Q 16 9 7), (4025, T 599), (4026, Q 23 20 10),
+ (4027, Q 9 7 4), (4028, Q 22 12 7), (4029, Q 14 11 4),
+ (4030, T 93), (4031, T 1805), (4032, Q 15 13 6),
+ (4033, T 223), (4034, T 1163), (4035, Q 25 16 1),
+ (4036, T 157), (4037, Q 21 14 10), (4038, T 953),
+ (4039, T 1408), (4040, Q 29 20 15), (4041, T 410),
+ (4042, Q 23 21 13), (4043, Q 6 5 1), (4044, T 1659),
+ (4045, Q 22 12 10), (4046, T 981), (4047, T 158),
+ (4048, Q 21 5 2), (4049, T 215), (4050, T 71),
+ (4051, Q 24 14 7), (4052, T 17), (4053, Q 17 14 5),
+ (4054, T 981), (4055, T 854), (4056, Q 21 17 6),
+ (4057, T 871), (4058, T 419), (4059, Q 13 6 3),
+ (4060, T 435), (4061, Q 28 20 10), (4062, T 765),
+ (4063, T 118), (4064, Q 33 29 7), (4065, T 356),
+ (4066, T 847), (4067, Q 24 8 5), (4068, T 825),
+ (4069, Q 18 9 1), (4070, T 1529), (4071, T 661),
+ (4072, Q 13 10 6), (4073, T 575), (4074, T 595),
+ (4075, Q 21 10 6), (4076, Q 19 15 7),
+ (4077, Q 24 18 2), (4078, Q 29 18 16), (4079, T 224),
+ (4080, Q 15 9 6), (4081, T 78), (4082, Q 16 10 3),
+ (4083, Q 19 10 4), (4084, T 1435), (4085, Q 12 11 6),
+ (4086, T 1445), (4087, T 769), (4088, Q 15 7 2),
+ (4089, T 463), (4090, T 79), (4091, Q 23 12 10),
+ (4092, T 1491), (4093, Q 23 22 18), (4094, T 321),
+ (4095, T 616), (4096, Q 27 15 1), (4097, T 1232),
+ (4098, T 3), (4099, Q 19 18 2), (4100, T 615),
+ (4101, Q 18 10 6), (4102, T 57), (4103, T 1278),
+ (4104, Q 30 13 3), (4105, T 252), (4106, T 123),
+ (4107, Q 27 6 2), (4108, T 1615), (4109, Q 19 12 1),
+ (4110, Q 16 12 1), (4111, T 201), (4112, Q 23 12 1),
+ (4113, T 913), (4114, T 219), (4115, Q 16 12 1),
+ (4116, T 245), (4117, Q 19 18 13), (4118, Q 22 12 1),
+ (4119, T 1015), (4120, Q 26 17 9), (4121, Q 12 6 3),
+ (4122, T 595), (4123, Q 10 9 1), (4124, T 345),
+ (4125, T 2), (4126, T 133), (4127, T 276),
+ (4128, Q 31 2 1), (4129, T 1315), (4130, Q 21 7 5),
+ (4131, Q 18 14 5), (4132, T 873), (4133, Q 19 14 12),
+ (4134, T 1045), (4135, T 1554), (4136, Q 31 29 15),
+ (4137, T 862), (4138, T 1899), (4139, Q 15 7 2),
+ (4140, T 549), (4141, Q 28 23 2), (4142, T 525),
+ (4143, T 421), (4144, Q 15 10 1), (4145, T 51),
+ (4146, T 131), (4147, Q 14 10 5), (4148, T 1857),
+ (4149, Q 28 8 2), (4150, T 573), (4151, T 186),
+ (4152, Q 25 13 3), (4153, Q 20 13 5), (4154, T 231),
+ (4155, Q 17 10 7), (4156, T 1165), (4157, Q 19 17 10),
+ (4158, T 133), (4159, T 81), (4160, Q 27 18 12),
+ (4161, T 1361), (4162, T 2047), (4163, Q 22 15 5),
+ (4164, T 2045), (4165, Q 18 13 2), (4166, T 645),
+ (4167, T 698), (4168, Q 17 10 6), (4169, T 105),
+ (4170, T 387), (4171, Q 24 8 1), (4172, Q 13 9 5),
+ (4173, Q 16 12 10), (4174, T 1297), (4175, T 1698),
+ (4176, Q 26 15 5), (4177, T 805), (4178, Q 18 2 1),
+ (4179, Q 14 6 3), (4180, T 273), (4181, Q 26 18 1),
+ (4182, T 1985), (4183, T 1984), (4184, Q 29 15 7),
+ (4185, T 341), (4186, T 1411), (4187, Q 15 14 6),
+ (4188, T 947), (4189, Q 16 10 1), (4190, Q 11 7 6),
+ (4191, T 454), (4192, Q 15 11 5), (4193, T 200),
+ (4194, Q 18 5 2), (4195, Q 21 13 2), (4196, T 1565),
+ (4197, Q 16 13 6), (4198, Q 19 14 6), (4199, T 225),
+ (4200, Q 12 5 2), (4201, T 76), (4202, T 1031),
+ (4203, Q 10 4 1), (4204, T 1327), (4205, Q 8 4 3),
+ (4206, T 381), (4207, T 1846), (4208, Q 15 6 3),
+ (4209, T 826), (4210, T 1491), (4211, Q 14 12 6),
+ (4212, T 243), (4213, Q 18 15 10), (4214, T 473),
+ (4215, T 34), (4216, Q 13 3 2), (4217, T 347),
+ (4218, T 287), (4219, Q 24 6 4), (4220, T 525),
+ (4221, Q 13 10 3), (4222, Q 18 10 1), (4223, T 144),
+ (4224, Q 8 3 2), (4225, T 9), (4226, Q 30 23 10),
+ (4227, Q 19 11 2), (4228, T 145), (4229, Q 7 6 1),
+ (4230, T 533), (4231, T 756), (4232, Q 18 13 7),
+ (4233, T 5), (4234, T 799), (4235, Q 15 3 2),
+ (4236, T 459), (4237, Q 21 19 14), (4238, T 389),
+ (4239, T 904), (4240, Q 31 6 1), (4241, T 273),
+ (4242, T 503), (4243, Q 14 12 10), (4244, T 387),
+ (4245, Q 26 20 15), (4246, T 273), (4247, T 783),
+ (4248, Q 11 6 2), (4249, T 387), (4250, Q 7 6 4),
+ (4251, Q 23 18 17), (4252, Q 28 10 7),
+ (4253, Q 21 12 11), (4254, Q 11 5 3), (4255, T 754),
+ (4256, Q 15 13 8), (4257, T 578), (4258, Q 9 7 5),
+ (4259, Q 17 12 7), (4260, T 99), (4261, Q 23 20 18),
+ (4262, T 1301), (4263, T 217), (4264, Q 15 14 5),
+ (4265, T 362), (4266, T 727), (4267, Q 24 8 2),
+ (4268, T 147), (4269, Q 19 17 16), (4270, Q 18 11 7),
+ (4271, T 1775), (4272, Q 11 8 1), (4273, T 385),
+ (4274, T 1859), (4275, Q 13 12 10), (4276, T 1471),
+ (4277, Q 26 3 1), (4278, T 309), (4279, T 945),
+ (4280, Q 17 14 5), (4281, T 226), (4282, T 1671),
+ (4283, Q 30 27 15), (4284, T 81), (4285, Q 20 18 11),
+ (4286, Q 12 5 4), (4287, T 679), (4288, Q 5 4 3),
+ (4289, T 689), (4290, T 99), (4291, Q 18 14 10),
+ (4292, Q 22 18 7), (4293, Q 20 19 17), (4294, Q 9 8 7),
+ (4295, T 302), (4296, Q 14 5 2), (4297, Q 15 4 2),
+ (4298, Q 30 24 11), (4299, Q 17 16 14), (4300, T 175),
+ (4301, Q 12 11 2), (4302, T 569), (4303, T 84),
+ (4304, Q 12 7 2), (4305, T 116), (4306, Q 9 5 1),
+ (4307, Q 28 24 2), (4308, T 901), (4309, Q 23 15 10),
+ (4310, Q 13 10 2), (4311, T 455), (4312, Q 21 5 2),
+ (4313, T 1016), (4314, T 1071), (4315, Q 9 8 4),
+ (4316, T 431), (4317, Q 20 18 11), (4318, T 973),
+ (4319, T 1850), (4320, Q 21 20 14), (4321, T 390),
+ (4322, T 111), (4323, Q 16 6 3), (4324, T 987),
+ (4325, Q 22 16 12), (4326, T 485), (4327, T 540),
+ (4328, Q 20 17 15), (4329, T 833), (4330, T 1351),
+ (4331, Q 12 9 2), (4332, T 593), (4333, Q 21 17 10),
+ (4334, Q 17 12 6), (4335, T 826), (4336, Q 18 11 5),
+ (4337, T 1991), (4338, T 287), (4339, Q 25 22 16),
+ (4340, T 725), (4341, Q 28 14 11), (4342, T 1477),
+ (4343, T 678), (4344, Q 8 7 5), (4345, T 271),
+ (4346, T 1911), (4347, Q 10 8 5), (4348, T 429),
+ (4349, Q 13 11 10), (4350, T 301), (4351, T 900),
+ (4352, Q 33 27 20), (4353, T 1042), (4354, Q 11 5 3),
+ (4355, Q 24 23 14), (4356, T 667), (4357, Q 16 7 6),
+ (4358, T 645), (4359, T 595), (4360, Q 21 4 2),
+ (4361, T 272), (4362, T 539), (4363, Q 15 8 2),
+ (4364, T 1523), (4365, Q 22 12 10), (4366, T 1773),
+ (4367, T 197), (4368, Q 27 12 6), (4369, T 154),
+ (4370, Q 26 15 11), (4371, Q 18 15 5), (4372, T 151),
+ (4373, Q 8 7 1), (4374, T 729), (4375, T 253),
+ (4376, Q 18 7 1), (4377, T 155), (4378, T 1939),
+ (4379, Q 16 13 8), (4380, T 745), (4381, Q 22 19 12),
+ (4382, T 1541), (4383, T 886), (4384, Q 27 19 17),
+ (4385, Q 19 17 10), (4386, T 175), (4387, Q 23 18 4),
+ (4388, Q 18 8 5), (4389, Q 15 10 3), (4390, T 1029),
+ (4391, T 84), (4392, Q 20 19 5), (4393, Q 15 13 9),
+ (4394, T 1535), (4395, Q 33 25 18), (4396, T 925),
+ (4397, Q 25 18 11), (4398, T 933), (4399, T 585),
+ (4400, Q 37 35 3), (4401, T 394), (4402, T 351),
+ (4403, Q 15 14 4), (4404, T 543), (4405, Q 21 13 2),
+ (4406, T 137), (4407, Q 21 3 2), (4408, Q 9 8 7),
+ (4409, T 218), (4410, T 211), (4411, Q 22 6 3),
+ (4412, T 1769), (4413, Q 23 22 20), (4414, Q 19 6 4),
+ (4415, T 1269), (4416, Q 31 10 6), (4417, T 442),
+ (4418, Q 23 19 7), (4419, Q 13 11 8), (4420, T 865),
+ (4421, Q 32 22 18), (4422, T 1069), (4423, T 271),
+ (4424, Q 21 19 13), (4425, T 533), (4426, Q 11 6 1),
+ (4427, Q 27 22 16), (4428, T 63), (4429, Q 16 6 4),
+ (4430, Q 14 4 1), (4431, T 47), (4432, Q 25 5 3),
+ (4433, T 350), (4434, T 207), (4435, Q 12 5 2),
+ (4436, T 273), (4437, Q 20 8 2), (4438, Q 8 6 1),
+ (4439, T 869), (4440, Q 26 21 14), (4441, T 909),
+ (4442, T 1187), (4443, Q 16 6 4), (4444, T 1839),
+ (4445, T 254), (4446, T 589), (4447, T 21),
+ (4448, Q 11 9 8), (4449, T 644), (4450, T 1603),
+ (4451, Q 17 12 8), (4452, T 905), (4453, Q 26 15 2),
+ (4454, T 621), (4455, T 1189), (4456, Q 24 9 7),
+ (4457, T 329), (4458, T 255), (4459, Q 13 9 6),
+ (4460, T 155), (4461, Q 15 10 6), (4462, Q 21 16 3),
+ (4463, T 582), (4464, Q 13 3 1), (4465, T 351),
+ (4466, T 639), (4467, Q 30 29 11), (4468, T 1621),
+ (4469, Q 19 18 16), (4470, T 2117), (4471, T 471),
+ (4472, Q 30 7 2), (4473, T 112), (4474, T 799),
+ (4475, Q 16 5 3), (4476, T 595), (4477, Q 37 22 4),
+ (4478, Q 25 21 8), (4479, T 1165), (4480, Q 28 21 15),
+ (4481, T 273), (4482, T 919), (4483, Q 8 7 2),
+ (4484, T 975), (4485, Q 8 2 1), (4486, T 1749),
+ (4487, T 843), (4488, Q 38 35 13), (4489, T 193),
+ (4490, T 1907), (4491, Q 18 7 3), (4492, T 895),
+ (4493, Q 22 8 1), (4494, T 401), (4495, T 1),
+ (4496, Q 17 10 7), (4497, T 299), (4498, Q 23 8 1),
+ (4499, Q 27 8 5), (4500, T 5), (4501, Q 7 6 1),
+ (4502, T 657), (4503, Q 7 5 1), (4504, Q 12 9 6),
+ (4505, T 794), (4506, Q 13 9 3), (4507, Q 14 9 4),
+ (4508, T 285), (4509, Q 14 5 4), (4510, Q 20 13 9),
+ (4511, T 173), (4512, Q 12 3 1), (4513, T 196),
+ (4514, T 323), (4515, Q 8 6 3), (4516, T 715),
+ (4517, Q 21 16 11), (4518, T 577), (4519, T 1191),
+ (4520, Q 39 25 23), (4521, T 650), (4522, T 1327),
+ (4523, Q 17 12 7), (4524, T 1339), (4525, Q 16 11 8),
+ (4526, T 849), (4527, T 674), (4528, Q 23 13 9),
+ (4529, T 345), (4530, T 151), (4531, Q 8 5 1),
+ (4532, Q 25 22 20), (4533, Q 15 4 1), (4534, T 381),
+ (4535, T 993), (4536, Q 25 11 7), (4537, T 21),
+ (4538, T 2223), (4539, Q 11 8 6), (4540, T 715),
+ (4541, Q 12 11 2), (4542, T 897), (4543, T 358),
+ (4544, Q 25 14 7), (4545, T 523), (4546, Q 27 23 16),
+ (4547, Q 6 5 1), (4548, T 831), (4549, Q 23 12 7),
+ (4550, T 297), (4551, T 730), (4552, Q 34 27 18),
+ (4553, T 704), (4554, T 207), (4555, Q 25 22 12),
+ (4556, Q 26 21 12), (4557, T 98), (4558, T 1869),
+ (4559, T 1356), (4560, Q 14 13 7), (4561, T 835),
+ (4562, T 87), (4563, Q 20 11 1), (4564, T 165),
+ (4565, Q 18 6 2), (4566, T 905), (4567, T 126),
+ (4568, Q 22 17 6), (4569, T 2110), (4570, T 2079),
+ (4571, Q 10 6 1), (4572, T 81), (4573, Q 24 15 6),
+ (4574, T 69), (4575, T 638), (4576, Q 26 19 9),
+ (4577, Q 9 8 4), (4578, T 1419), (4579, Q 10 6 2),
+ (4580, Q 21 12 5), (4581, Q 27 13 10),
+ (4582, Q 14 12 1), (4583, T 1358), (4584, Q 19 15 9),
+ (4585, T 223), (4586, T 483), (4587, Q 13 6 1),
+ (4588, T 265), (4589, Q 26 18 16), (4590, T 497),
+ (4591, T 1254), (4592, Q 21 16 11), (4593, Q 22 16 12),
+ (4594, Q 30 11 4), (4595, Q 15 14 1), (4596, T 371),
+ (4597, Q 34 13 12), (4598, Q 32 28 9), (4599, T 25),
+ (4600, Q 17 14 1), (4601, T 68), (4602, T 675),
+ (4603, Q 24 22 5), (4604, T 1907), (4605, Q 8 5 2),
+ (4606, T 2013), (4607, T 1026), (4608, Q 23 20 13),
+ (4609, T 780), (4610, T 239), (4611, Q 23 13 10),
+ (4612, T 1557), (4613, Q 27 14 10), (4614, T 965),
+ (4615, T 232), (4616, Q 27 23 5), (4617, T 287),
+ (4618, T 975), (4619, Q 10 8 7), (4620, T 77),
+ (4621, Q 28 15 4), (4622, Q 21 20 17), (4623, T 136),
+ (4624, Q 26 23 10), (4625, T 42), (4626, T 367),
+ (4627, Q 16 8 5), (4628, T 1779), (4629, Q 20 3 2),
+ (4630, Q 14 3 2), (4631, Q 25 17 7), (4632, Q 19 16 2),
+ (4633, T 1035), (4634, T 1535), (4635, Q 21 16 1),
+ (4636, T 901), (4637, Q 18 17 3), (4638, Q 30 24 15),
+ (4639, T 448), (4640, Q 25 8 7), (4641, T 149),
+ (4642, T 1311), (4643, Q 15 13 10), (4644, T 189),
+ (4645, Q 24 11 5), (4646, Q 16 13 9), (4647, T 959),
+ (4648, Q 8 5 3), (4649, T 207), (4650, T 567),
+ (4651, Q 29 24 8), (4652, T 95), (4653, Q 30 21 13),
+ (4654, Q 21 20 1), (4655, T 474), (4656, Q 27 25 4),
+ (4657, T 417), (4658, T 1943), (4659, Q 8 7 5),
+ (4660, T 885), (4661, Q 26 21 2), (4662, T 297),
+ (4663, T 841), (4664, Q 37 6 5), (4665, T 1663),
+ (4666, Q 24 17 11), (4667, Q 36 25 20), (4668, T 917),
+ (4669, Q 18 14 10), (4670, Q 29 12 2), (4671, T 392),
+ (4672, Q 27 25 23), (4673, T 147), (4674, Q 10 5 4),
+ (4675, Q 26 25 21), (4676, T 603), (4677, Q 19 11 10),
+ (4678, T 2245), (4679, T 1146), (4680, Q 10 9 3),
+ (4681, T 216), (4682, T 119), (4683, Q 35 28 14),
+ (4684, T 819), (4685, Q 24 10 1), (4686, T 285),
+ (4687, T 1330), (4688, Q 13 7 6), (4689, T 421),
+ (4690, T 283), (4691, Q 26 21 3), (4692, T 21),
+ (4693, Q 26 13 6), (4694, T 1725), (4695, T 1522),
+ (4696, Q 18 17 11), (4697, T 386), (4698, T 351),
+ (4699, Q 36 7 5), (4700, T 873), (4701, Q 23 21 18),
+ (4702, Q 17 3 2), (4703, T 248), (4704, Q 11 8 1),
+ (4705, T 1033), (4706, T 2151), (4707, Q 17 16 11),
+ (4708, T 1543), (4709, Q 21 12 11), (4710, T 2257),
+ (4711, T 426), (4712, Q 25 16 6), (4713, T 67),
+ (4714, Q 19 17 6), (4715, Q 26 24 7), (4716, T 97),
+ (4717, Q 30 17 16), (4718, Q 16 14 1), (4719, T 466),
+ (4720, Q 24 19 9), (4721, Q 10 9 7),
+ (4722, Q 24 19 18), (4723, Q 19 14 2), (4724, T 617),
+ (4725, Q 13 10 8), (4726, T 1693), (4727, T 408),
+ (4728, Q 26 21 14), (4729, T 73), (4730, Q 19 12 10),
+ (4731, Q 14 6 5), (4732, T 157), (4733, Q 14 9 5),
+ (4734, T 2193), (4735, T 412), (4736, Q 15 10 1),
+ (4737, T 248), (4738, Q 12 7 5), (4739, Q 27 26 6),
+ (4740, T 1941), (4741, Q 21 10 8), (4742, T 2201),
+ (4743, T 857), (4744, Q 19 14 6), (4745, T 281),
+ (4746, T 363), (4747, Q 25 24 8), (4748, T 1257),
+ (4749, Q 29 19 16), (4750, T 541), (4751, T 1946),
+ (4752, Q 29 5 2), (4753, T 2368), (4754, T 923),
+ (4755, Q 19 6 4), (4756, T 279), (4757, Q 30 22 17),
+ (4758, T 401), (4759, T 883), (4760, Q 28 11 9),
+ (4761, T 170), (4762, Q 7 6 4), (4763, Q 17 16 7),
+ (4764, T 477), (4765, Q 30 19 7), (4766, Q 25 22 21),
+ (4767, T 178), (4768, Q 25 17 3), (4769, T 119),
+ (4770, T 507), (4771, Q 24 5 4), (4772, T 213),
+ (4773, Q 26 12 5), (4774, Q 16 13 6), (4775, T 2381),
+ (4776, Q 27 23 6), (4777, T 348), (4778, Q 18 5 3),
+ (4779, Q 14 8 1), (4780, T 321), (4781, Q 22 19 5),
+ (4782, T 1397), (4783, T 369), (4784, Q 30 29 7),
+ (4785, T 382), (4786, Q 20 3 1), (4787, Q 19 6 5),
+ (4788, T 9), (4789, Q 14 7 2), (4790, T 1233),
+ (4791, T 707), (4792, Q 29 18 4), (4793, T 413),
+ (4794, Q 19 12 7), (4795, Q 23 7 2), (4796, Q 18 8 7),
+ (4797, Q 15 14 3), (4798, T 117), (4799, T 158),
+ (4800, Q 29 19 11), (4801, T 1146), (4802, T 291),
+ (4803, Q 7 5 4), (4804, Q 18 15 4), (4805, T 1922),
+ (4806, T 2349), (4807, T 12), (4808, Q 13 4 2),
+ (4809, T 91), (4810, T 1171), (4811, Q 13 10 2),
+ (4812, Q 22 15 13), (4813, Q 18 7 6),
+ (4814, Q 22 10 9), (4815, T 638), (4816, Q 33 31 25),
+ (4817, T 491), (4818, T 459), (4819, Q 28 25 7),
+ (4820, T 515), (4821, Q 16 13 2), (4822, Q 33 17 13),
+ (4823, T 1094), (4824, Q 25 16 3), (4825, T 558),
+ (4826, Q 24 19 17), (4827, Q 29 20 14), (4828, T 913),
+ (4829, Q 20 14 2), (4830, T 1493), (4831, T 337),
+ (4832, Q 33 30 5), (4833, T 458), (4834, Q 19 17 2),
+ (4835, Q 28 10 5), (4836, T 301), (4837, Q 14 9 1),
+ (4838, Q 17 12 7), (4839, T 238), (4840, Q 25 21 2),
+ (4841, Q 19 13 3), (4842, Q 33 29 18),
+ (4843, Q 22 21 3), (4844, Q 16 15 1),
+ (4845, Q 38 21 17), (4846, T 1477), (4847, T 1085),
+ (4848, Q 28 27 6), (4849, T 184), (4850, T 243),
+ (4851, Q 24 17 2), (4852, T 561), (4853, Q 17 7 4),
+ (4854, T 633), (4855, T 172), (4856, Q 27 23 21),
+ (4857, T 34), (4858, T 355), (4859, Q 25 22 14),
+ (4860, T 81), (4861, Q 15 7 6), (4862, Q 15 8 1),
+ (4863, T 166), (4864, Q 29 22 17), (4865, T 1551),
+ (4866, Q 23 15 2), (4867, Q 18 11 1), (4868, T 593),
+ (4869, Q 22 16 4), (4870, T 213), (4871, T 1251),
+ (4872, Q 24 9 2), (4873, T 1798), (4874, T 555),
+ (4875, Q 26 16 10), (4876, T 585), (4877, Q 23 20 6),
+ (4878, T 1457), (4879, T 1342), (4880, Q 32 21 7),
+ (4881, T 1276), (4882, Q 28 7 4), (4883, Q 26 8 2),
+ (4884, T 91), (4885, Q 27 21 12), (4886, T 1989),
+ (4887, T 139), (4888, Q 35 21 8), (4889, T 45),
+ (4890, T 1967), (4891, Q 25 19 16), (4892, T 2381),
+ (4893, Q 15 12 2), (4894, T 469), (4895, T 623),
+ (4896, Q 21 19 12), (4897, T 210), (4898, Q 25 12 2),
+ (4899, Q 33 28 6), (4900, T 697), (4901, Q 20 18 14),
+ (4902, T 1253), (4903, T 774), (4904, Q 27 18 15),
+ (4905, T 296), (4906, Q 22 21 6), (4907, Q 14 10 3),
+ (4908, T 111), (4909, Q 30 16 11), (4910, T 377),
+ (4911, T 1955), (4912, Q 30 29 7), (4913, T 693),
+ (4914, T 259), (4915, Q 16 9 1), (4916, T 1793),
+ (4917, Q 34 5 4), (4918, T 889), (4919, T 380),
+ (4920, Q 11 9 5), (4921, T 277), (4922, T 2387),
+ (4923, Q 10 3 1), (4924, T 1545), (4925, Q 19 6 2),
+ (4926, T 693), (4927, T 21), (4928, Q 29 9 3),
+ (4929, T 49), (4930, T 2143), (4931, Q 23 21 18),
+ (4932, T 1039), (4933, Q 13 11 8), (4934, T 413),
+ (4935, T 133), (4936, Q 27 22 15), (4937, T 63),
+ (4938, Q 19 9 3), (4939, Q 24 8 1), (4940, T 383),
+ (4941, Q 17 14 1), (4942, Q 13 12 9), (4943, T 494),
+ (4944, Q 19 6 4), (4945, T 1011), (4946, Q 23 9 1),
+ (4947, Q 24 6 4), (4948, T 601), (4949, Q 30 25 2),
+ (4950, T 517), (4951, T 217), (4952, Q 29 11 5),
+ (4953, T 938), (4954, Q 15 10 7), (4955, Q 27 12 5),
+ (4956, T 559), (4957, Q 11 6 5), (4958, T 1709),
+ (4959, T 920), (4960, Q 25 20 6), (4961, T 843),
+ (4962, Q 23 11 6), (4963, Q 20 17 15),
+ (4964, Q 13 10 5), (4965, Q 13 12 6), (4966, T 2205),
+ (4967, T 1292), (4968, Q 26 25 17), (4969, T 1084),
+ (4970, T 1131), (4971, Q 12 6 2), (4972, T 709),
+ (4973, Q 26 22 16), (4974, T 1229), (4975, T 2301),
+ (4976, Q 42 7 1), (4977, T 644), (4978, T 315),
+ (4979, Q 29 11 8), (4980, T 111), (4981, Q 33 15 12),
+ (4982, T 1701), (4983, T 1070), (4984, Q 23 16 9),
+ (4985, T 384), (4986, T 239), (4987, Q 10 7 4),
+ (4988, T 375), (4989, Q 15 8 2), (4990, Q 23 19 3),
+ (4991, T 201), (4992, Q 15 8 6), (4993, T 39),
+ (4994, T 1791), (4995, Q 28 25 19), (4996, Q 18 15 13),
+ (4997, Q 31 11 6), (4998, T 161), (4999, Q 13 11 9),
+ (5000, Q 17 15 7), (5001, T 637), (5002, Q 33 13 8),
+ (5003, Q 18 16 8), (5004, T 671), (5005, Q 22 13 6),
+ (5006, Q 12 3 2), (5007, T 464), (5008, Q 21 10 3),
+ (5009, T 38), (5010, Q 17 8 6), (5011, Q 29 20 15),
+ (5012, T 33), (5013, Q 38 35 15), (5014, T 1197),
+ (5015, T 206), (5016, Q 15 12 9), (5017, T 385),
+ (5018, T 731), (5019, Q 23 19 2), (5020, T 97),
+ (5021, Q 14 11 2), (5022, T 329), (5023, T 777),
+ (5024, Q 33 23 14), (5025, T 1379), (5026, Q 20 15 11),
+ (5027, Q 28 9 5), (5028, T 1089), (5029, Q 22 3 2),
+ (5030, T 2373), (5031, T 496), (5032, Q 25 6 2),
+ (5033, T 1122), (5034, T 387), (5035, Q 24 21 10),
+ (5036, T 1295), (5037, Q 22 15 3), (5038, T 45),
+ (5039, T 489), (5040, Q 24 5 3), (5041, T 646),
+ (5042, T 1607), (5043, Q 23 17 8), (5044, T 1165),
+ (5045, Q 25 24 2), (5046, Q 17 11 4), (5047, T 415),
+ (5048, Q 34 15 10), (5049, T 133), (5050, T 2467),
+ (5051, Q 22 17 15), (5052, T 833), (5053, Q 26 18 11),
+ (5054, T 1493), (5055, T 211), (5056, Q 22 9 6),
+ (5057, T 126), (5058, T 1411), (5059, Q 20 19 14),
+ (5060, T 161), (5061, Q 16 11 7), (5062, T 141),
+ (5063, T 795), (5064, Q 21 12 11), (5065, T 126),
+ (5066, T 783), (5067, Q 12 6 2), (5068, T 1635),
+ (5069, Q 18 5 3), (5070, Q 16 13 7), (5071, T 258),
+ (5072, Q 25 5 3), (5073, T 476), (5074, T 2119),
+ (5075, Q 18 15 5), (5076, T 1467), (5077, Q 18 11 5),
+ (5078, T 2201), (5079, T 35), (5080, Q 21 7 6),
+ (5081, T 1562), (5082, T 35), (5083, Q 25 19 6),
+ (5084, T 173), (5085, Q 20 14 13), (5086, Q 23 18 14),
+ (5087, T 210), (5088, Q 22 21 3), (5089, T 88),
+ (5090, T 147), (5091, Q 18 13 10), (5092, T 843),
+ (5093, Q 15 6 2), (5094, T 1377), (5095, T 489),
+ (5096, Q 19 18 13), (5097, T 454), (5098, T 243),
+ (5099, Q 24 2 1), (5100, T 675), (5101, Q 18 16 15),
+ (5102, Q 22 18 11), (5103, T 148), (5104, Q 30 13 2),
+ (5105, T 72), (5106, T 1307), (5107, Q 17 2 1),
+ (5108, T 191), (5109, Q 26 19 7), (5110, T 2209),
+ (5111, T 279), (5112, Q 42 33 9), (5113, T 559),
+ (5114, T 899), (5115, Q 14 8 5), (5116, T 1387),
+ (5117, Q 19 14 6), (5118, T 2045), (5119, T 130),
+ (5120, Q 33 27 5), (5121, T 457), (5122, T 199),
+ (5123, Q 11 8 5), (5124, T 279), (5125, Q 23 18 4),
+ (5126, Q 22 14 9), (5127, T 1519), (5128, Q 24 15 6),
+ (5129, T 1514), (5130, T 603), (5131, Q 21 7 4),
+ (5132, T 15), (5133, Q 15 11 8), (5134, T 1629),
+ (5135, T 141), (5136, Q 27 25 4), (5137, T 1701),
+ (5138, T 1571), (5139, Q 36 22 1), (5140, T 1015),
+ (5141, Q 24 14 5), (5142, Q 12 11 3), (5143, T 1767),
+ (5144, Q 15 11 5), (5145, T 308), (5146, T 1771),
+ (5147, Q 12 10 2), (5148, T 103), (5149, Q 30 22 2),
+ (5150, T 213), (5151, T 724), (5152, Q 15 8 1),
+ (5153, T 708), (5154, Q 16 5 2), (5155, Q 15 14 1),
+ (5156, Q 14 6 1), (5157, Q 8 6 3), (5158, Q 21 20 2),
+ (5159, T 494), (5160, Q 35 31 13), (5161, T 315),
+ (5162, T 419), (5163, Q 20 17 5), (5164, Q 12 7 3),
+ (5165, Q 18 16 10), (5166, T 117), (5167, T 2193),
+ (5168, Q 15 11 5), (5169, T 1196), (5170, T 1411),
+ (5171, Q 18 3 2), (5172, T 2247), (5173, Q 23 22 2),
+ (5174, T 189), (5175, T 347), (5176, Q 24 21 3),
+ (5177, T 963), (5178, Q 15 13 10), (5179, Q 30 12 9),
+ (5180, T 2055), (5181, Q 23 7 2), (5182, Q 16 13 6),
+ (5183, T 1869), (5184, Q 20 11 5), (5185, T 373),
+ (5186, T 1755), (5187, Q 16 8 5), (5188, T 2305),
+ (5189, Q 28 22 2), (5190, T 677), (5191, T 330),
+ (5192, Q 11 8 2), (5193, T 1006), (5194, Q 25 15 13),
+ (5195, Q 27 11 6), (5196, T 617), (5197, Q 20 15 7),
+ (5198, Q 27 10 8), (5199, T 1546), (5200, Q 33 27 19),
+ (5201, T 125), (5202, T 1519), (5203, Q 14 4 3),
+ (5204, T 917), (5205, Q 9 8 6), (5206, T 465),
+ (5207, T 588), (5208, Q 23 22 2), (5209, T 156),
+ (5210, T 2219), (5211, Q 20 19 1), (5212, T 487),
+ (5213, Q 19 8 7), (5214, Q 12 9 8), (5215, T 354),
+ (5216, Q 27 19 2), (5217, T 1507), (5218, T 2335),
+ (5219, Q 23 3 2), (5220, T 205), (5221, Q 12 11 8),
+ (5222, T 1637), (5223, T 1787), (5224, Q 29 15 1),
+ (5225, T 503), (5226, T 2607), (5227, Q 24 10 7),
+ (5228, T 327), (5229, Q 28 19 13), (5230, Q 13 12 11),
+ (5231, T 1188), (5232, Q 21 11 2), (5233, T 205),
+ (5234, T 275), (5235, Q 16 6 1), (5236, T 475),
+ (5237, Q 12 10 7), (5238, T 765), (5239, T 549),
+ (5240, Q 33 27 21), (5241, T 101), (5242, T 895),
+ (5243, Q 10 9 1), (5244, T 2321), (5245, Q 28 23 3),
+ (5246, T 2477), (5247, T 235), (5248, Q 27 18 1),
+ (5249, T 197), (5250, T 1371), (5251, Q 35 25 14),
+ (5252, T 627), (5253, Q 24 17 14), (5254, T 1305),
+ (5255, T 167), (5256, Q 9 5 2), (5257, T 1537),
+ (5258, T 1359), (5259, Q 10 8 4), (5260, T 1455),
+ (5261, Q 22 10 9), (5262, Q 22 20 1), (5263, T 769),
+ (5264, Q 16 11 9), (5265, T 41), (5266, T 483),
+ (5267, Q 31 25 14), (5268, T 297), (5269, Q 23 6 1),
+ (5270, T 341), (5271, T 1106), (5272, Q 29 18 10),
+ (5273, T 1395), (5274, Q 17 11 10), (5275, Q 16 10 1),
+ (5276, T 609), (5277, Q 9 7 6), (5278, T 2337),
+ (5279, T 1299), (5280, Q 13 11 1), (5281, Q 29 9 4),
+ (5282, Q 13 10 9), (5283, Q 25 17 2), (5284, Q 16 9 5),
+ (5285, Q 25 24 23), (5286, Q 20 14 7), (5287, T 196),
+ (5288, Q 11 10 1), (5289, T 1424), (5290, Q 17 9 4),
+ (5291, Q 24 18 5), (5292, T 315), (5293, Q 25 9 2),
+ (5294, Q 14 3 1), (5295, T 1133), (5296, Q 8 3 2),
+ (5297, T 446), (5298, T 575), (5299, Q 17 12 1),
+ (5300, T 2195), (5301, Q 14 8 1), (5302, T 2205),
+ (5303, T 434), (5304, Q 27 6 5), (5305, T 1863),
+ (5306, Q 15 4 1), (5307, Q 12 10 4),
+ (5308, Q 18 14 11), (5309, Q 7 6 1), (5310, T 837),
+ (5311, T 142), (5312, Q 22 3 2), (5313, T 598),
+ (5314, T 7), (5315, Q 18 14 3), (5316, T 1067),
+ (5317, Q 17 4 3), (5318, T 125), (5319, T 1573),
+ (5320, Q 19 17 3), (5321, T 351), (5322, T 1199),
+ (5323, Q 15 11 2), (5324, T 15), (5325, Q 18 14 11),
+ (5326, T 1545), (5327, T 723), (5328, Q 30 27 9),
+ (5329, T 1219), (5330, T 803), (5331, Q 18 5 3),
+ (5332, T 171), (5333, Q 25 24 19), (5334, T 545),
+ (5335, Q 16 15 11), (5336, Q 23 21 8), (5337, T 2279),
+ (5338, T 1647), (5339, Q 17 16 15), (5340, T 731),
+ (5341, Q 22 15 13), (5342, Q 27 9 3), (5343, T 485),
+ (5344, Q 17 11 10), (5345, T 339), (5346, T 171),
+ (5347, Q 24 22 11), (5348, T 2259), (5349, Q 16 13 10),
+ (5350, Q 15 14 5), (5351, T 707), (5352, Q 23 20 1),
+ (5353, T 1419), (5354, Q 22 7 6), (5355, Q 16 11 2),
+ (5356, T 51), (5357, Q 29 24 10), (5358, T 2485),
+ (5359, T 81), (5360, Q 19 11 1), (5361, T 35),
+ (5362, Q 15 7 1), (5363, Q 20 7 1), (5364, T 863),
+ (5365, Q 14 13 8), (5366, Q 20 3 2), (5367, T 194),
+ (5368, Q 19 18 3), (5369, T 152), (5370, T 1919),
+ (5371, Q 18 15 6), (5372, T 1151), (5373, Q 20 14 13),
+ (5374, Q 24 19 14), (5375, T 188), (5376, Q 7 4 1),
+ (5377, T 547), (5378, T 1059), (5379, Q 23 17 4),
+ (5380, T 423), (5381, Q 13 11 10), (5382, Q 26 24 17),
+ (5383, T 1509), (5384, Q 17 15 4), (5385, T 376),
+ (5386, T 2055), (5387, Q 28 21 8), (5388, T 2261),
+ (5389, Q 18 10 9), (5390, T 2409), (5391, T 434),
+ (5392, Q 7 3 2), (5393, T 215), (5394, T 1523),
+ (5395, Q 18 13 1), (5396, T 2255), (5397, Q 9 5 2),
+ (5398, T 357), (5399, T 485), (5400, Q 33 17 3),
+ (5401, T 420), (5402, Q 18 15 9), (5403, Q 14 11 6),
+ (5404, T 387), (5405, Q 17 14 12), (5406, T 1205),
+ (5407, T 955), (5408, Q 30 23 1), (5409, T 1720),
+ (5410, T 2343), (5411, Q 28 10 3), (5412, T 917),
+ (5413, Q 21 18 7), (5414, Q 25 2 1), (5415, T 331),
+ (5416, Q 34 31 19), (5417, T 1256), (5418, T 303),
+ (5419, Q 25 24 23), (5420, T 945), (5421, Q 30 29 6),
+ (5422, T 445), (5423, T 311), (5424, Q 16 15 13),
+ (5425, T 186), (5426, Q 18 11 8), (5427, Q 18 12 11),
+ (5428, T 117), (5429, Q 40 22 5), (5430, T 513),
+ (5431, T 2163), (5432, Q 37 34 23), (5433, T 791),
+ (5434, Q 19 18 15), (5435, Q 24 18 14), (5436, T 1229),
+ (5437, Q 21 8 2), (5438, T 1289), (5439, T 203),
+ (5440, Q 24 15 10), (5441, T 1254), (5442, T 1635),
+ (5443, Q 20 10 6), (5444, T 1235), (5445, Q 20 19 7),
+ (5446, T 865), (5447, T 860), (5448, Q 43 33 15),
+ (5449, T 103), (5450, T 479), (5451, Q 30 19 16),
+ (5452, T 2691), (5453, Q 13 4 2), (5454, T 893),
+ (5455, T 91), (5456, Q 21 14 10), (5457, T 767),
+ (5458, T 1839), (5459, Q 36 20 2), (5460, T 29),
+ (5461, Q 30 28 5), (5462, Q 15 11 1), (5463, T 167),
+ (5464, Q 15 5 2), (5465, T 54), (5466, Q 32 23 10),
+ (5467, Q 22 8 5), (5468, T 95), (5469, Q 32 23 2),
+ (5470, Q 13 12 1), (5471, T 198), (5472, Q 21 15 3),
+ (5473, T 589), (5474, T 1247), (5475, Q 18 16 13),
+ (5476, Q 30 23 11), (5477, Q 23 18 10), (5478, T 305),
+ (5479, T 370), (5480, Q 13 10 3), (5481, T 167),
+ (5482, Q 20 17 9), (5483, Q 22 2 1), (5484, T 1029),
+ (5485, Q 16 8 2), (5486, Q 14 9 8), (5487, T 1834),
+ (5488, Q 21 19 9), (5489, T 1290), (5490, T 1143),
+ (5491, Q 24 14 1), (5492, T 135), (5493, Q 15 12 7),
+ (5494, T 537), (5495, T 279), (5496, Q 13 11 4),
+ (5497, T 1729), (5498, Q 19 12 7), (5499, Q 29 21 18),
+ (5500, T 175), (5501, Q 27 19 2), (5502, T 2537),
+ (5503, T 237), (5504, Q 20 19 1), (5505, T 98),
+ (5506, Q 23 20 12), (5507, Q 15 10 7), (5508, T 729),
+ (5509, Q 11 9 4), (5510, Q 19 15 2), (5511, T 554),
+ (5512, Q 13 11 6), (5513, T 1814), (5514, T 535),
+ (5515, Q 19 3 2), (5516, T 1563), (5517, Q 40 13 11),
+ (5518, Q 26 23 7), (5519, T 773), (5520, Q 10 5 2),
+ (5521, T 1209), (5522, Q 26 15 2), (5523, Q 26 20 13),
+ (5524, T 2113), (5525, Q 24 21 6), (5526, T 1505),
+ (5527, T 318), (5528, Q 25 18 14), (5529, T 1756),
+ (5530, T 1467), (5531, Q 20 15 1), (5532, T 1017),
+ (5533, Q 19 16 10), (5534, T 1425), (5535, T 217),
+ (5536, Q 20 5 3), (5537, T 492), (5538, Q 28 22 7),
+ (5539, Q 14 9 7), (5540, T 1089), (5541, Q 15 9 4),
+ (5542, T 957), (5543, T 248), (5544, Q 11 10 2),
+ (5545, T 298), (5546, Q 23 12 6), (5547, Q 22 4 3),
+ (5548, T 403), (5549, Q 33 11 10), (5550, T 1273),
+ (5551, T 712), (5552, Q 15 9 8), (5553, T 116),
+ (5554, Q 16 5 2), (5555, Q 24 20 5), (5556, T 269),
+ (5557, Q 39 35 8), (5558, T 1301), (5559, T 938),
+ (5560, Q 55 46 10), (5561, T 773), (5562, T 995),
+ (5563, Q 22 19 13), (5564, T 705), (5565, Q 17 14 5),
+ (5566, T 2185), (5567, T 239), (5568, Q 33 22 7),
+ (5569, T 4), (5570, Q 17 16 3), (5571, Q 27 11 2),
+ (5572, T 1053), (5573, Q 18 11 6), (5574, T 901),
+ (5575, T 699), (5576, Q 27 23 6), (5577, T 328),
+ (5578, Q 15 9 3), (5579, Q 25 20 12), (5580, T 81),
+ (5581, Q 20 6 4), (5582, T 1697), (5583, T 1037),
+ (5584, Q 13 9 7), (5585, T 1338), (5586, T 371),
+ (5587, Q 21 16 7), (5588, T 39), (5589, Q 29 27 8),
+ (5590, T 1381), (5591, T 870), (5592, Q 29 20 7),
+ (5593, T 124), (5594, T 15), (5595, Q 21 12 2),
+ (5596, T 853), (5597, Q 20 6 3), (5598, T 101),
+ (5599, T 565), (5600, Q 8 5 3), (5601, T 487),
+ (5602, T 963), (5603, Q 22 20 4), (5604, T 2251),
+ (5605, Q 32 23 1), (5606, T 1905), (5607, T 43),
+ (5608, Q 22 5 2), (5609, T 287), (5610, T 271),
+ (5611, Q 20 9 7), (5612, T 135), (5613, Q 20 17 14),
+ (5614, Q 6 3 1), (5615, T 461), (5616, Q 30 15 6),
+ (5617, T 6), (5618, Q 17 15 2), (5619, Q 11 8 6),
+ (5620, T 1251), (5621, Q 12 11 4), (5622, T 2465),
+ (5623, T 709), (5624, Q 21 18 14), (5625, T 28),
+ (5626, T 943), (5627, Q 13 9 8), (5628, T 863),
+ (5629, Q 23 12 4), (5630, T 357), (5631, T 1502),
+ (5632, Q 17 15 5), (5633, T 143), (5634, T 759),
+ (5635, Q 17 10 3), (5636, T 555), (5637, Q 8 6 5),
+ (5638, Q 20 17 13), (5639, T 1365), (5640, Q 29 27 23),
+ (5641, T 568), (5642, Q 33 23 2), (5643, Q 10 3 1),
+ (5644, T 2233), (5645, Q 19 16 2), (5646, Q 23 8 5),
+ (5647, Q 17 16 9), (5648, Q 21 15 8), (5649, T 49),
+ (5650, T 967), (5651, Q 10 7 2), (5652, T 929),
+ (5653, Q 16 11 5), (5654, T 149), (5655, T 434),
+ (5656, Q 27 12 9), (5657, T 165), (5658, Q 9 4 3),
+ (5659, Q 12 8 2), (5660, T 39), (5661, Q 26 14 10),
+ (5662, T 2637), (5663, T 90), (5664, Q 31 29 11),
+ (5665, T 714), (5666, T 1215), (5667, Q 10 8 1),
+ (5668, Q 34 27 3), (5669, Q 27 4 1), (5670, T 41),
+ (5671, T 37), (5672, Q 26 25 10), (5673, T 82),
+ (5674, Q 18 15 13), (5675, Q 17 15 4), (5676, T 1259),
+ (5677, Q 27 26 2), (5678, Q 31 21 8), (5679, T 271),
+ (5680, Q 40 17 2), (5681, T 326), (5682, Q 35 16 1),
+ (5683, Q 22 18 11), (5684, T 87), (5685, Q 10 7 5),
+ (5686, Q 27 7 3), (5687, T 2007), (5688, Q 41 20 11),
+ (5689, T 1384), (5690, T 1623), (5691, Q 21 15 4),
+ (5692, T 561), (5693, Q 24 4 2), (5694, T 1609),
+ (5695, T 732), (5696, Q 26 21 14), (5697, Q 19 8 2),
+ (5698, Q 14 9 5), (5699, Q 12 8 5), (5700, T 705),
+ (5701, Q 16 6 5), (5702, Q 22 15 8), (5703, T 82),
+ (5704, Q 27 25 14), (5705, T 248), (5706, T 2199),
+ (5707, Q 24 21 16), (5708, T 1151), (5709, Q 22 9 1),
+ (5710, T 409), (5711, T 441), (5712, Q 10 9 3),
+ (5713, T 27), (5714, T 1775), (5715, Q 28 6 3),
+ (5716, Q 14 13 8), (5717, Q 21 6 5), (5718, T 1361),
+ (5719, T 375), (5720, Q 32 11 2), (5721, T 1562),
+ (5722, Q 19 18 14), (5723, Q 28 19 6), (5724, T 103),
+ (5725, Q 22 9 3), (5726, T 309), (5727, T 1310),
+ (5728, Q 25 24 7), (5729, T 515), (5730, Q 25 18 10),
+ (5731, Q 13 11 8), (5732, T 2267), (5733, Q 10 8 5),
+ (5734, T 2629), (5735, T 744), (5736, Q 25 18 10),
+ (5737, T 507), (5738, Q 30 17 4), (5739, Q 18 15 13),
+ (5740, T 115), (5741, Q 16 6 4), (5742, T 1085),
+ (5743, T 1621), (5744, Q 21 11 8), (5745, T 544),
+ (5746, T 279), (5747, Q 13 4 2), (5748, Q 18 17 2),
+ (5749, Q 26 19 18), (5750, T 377), (5751, T 127),
+ (5752, Q 21 20 7), (5753, T 1721), (5754, T 1235),
+ (5755, Q 8 7 2), (5756, T 371), (5757, Q 22 18 16),
+ (5758, T 805), (5759, T 1431), (5760, Q 29 23 10),
+ (5761, T 615), (5762, T 2759), (5763, Q 18 13 1),
+ (5764, T 2019), (5765, Q 17 10 7), (5766, Q 13 10 4),
+ (5767, T 124), (5768, Q 21 14 3), (5769, T 83),
+ (5770, Q 9 7 2), (5771, Q 16 14 13), (5772, T 343),
+ (5773, Q 12 11 8), (5774, Q 15 5 4), (5775, T 266),
+ (5776, Q 19 12 1), (5777, T 134), (5778, T 1071),
+ (5779, Q 21 7 4), (5780, T 1535), (5781, Q 24 14 6),
+ (5782, T 2377), (5783, T 954), (5784, Q 25 22 6),
+ (5785, T 1161), (5786, Q 20 19 7), (5787, Q 30 20 15),
+ (5788, T 1585), (5789, Q 21 14 12), (5790, T 197),
+ (5791, T 2101), (5792, Q 33 13 11), (5793, T 437),
+ (5794, T 2383), (5795, Q 15 14 3), (5796, T 831),
+ (5797, Q 33 26 23), (5798, T 1853), (5799, T 934),
+ (5800, Q 25 7 6), (5801, T 129), (5802, T 1015),
+ (5803, Q 16 15 10), (5804, Q 13 8 1), (5805, Q 10 7 3),
+ (5806, T 369), (5807, T 731), (5808, Q 43 10 1),
+ (5809, T 369), (5810, T 47), (5811, Q 21 17 2),
+ (5812, T 295), (5813, Q 14 13 1), (5814, T 2233),
+ (5815, T 1083), (5816, Q 17 15 7), (5817, T 343),
+ (5818, T 763), (5819, T 1058), (5820, T 61),
+ (5821, Q 18 11 4), (5822, T 2145), (5823, T 916),
+ (5824, Q 23 17 10), (5825, T 323), (5826, T 2027),
+ (5827, Q 28 16 10), (5828, Q 17 8 5), (5829, Q 24 6 5),
+ (5830, Q 27 23 11), (5831, T 275), (5832, Q 21 18 13),
+ (5833, T 264), (5834, T 935), (5835, Q 13 5 2),
+ (5836, T 91), (5837, Q 13 9 2), (5838, T 153),
+ (5839, T 169), (5840, Q 23 14 2), (5841, T 250),
+ (5842, Q 21 18 7), (5843, Q 20 7 6), (5844, T 1809),
+ (5845, Q 18 5 1), (5846, Q 20 17 3), (5847, T 1013),
+ (5848, Q 19 8 6), (5849, T 105), (5850, T 27),
+ (5851, Q 9 6 1), (5852, Q 15 13 10),
+ (5853, Q 46 36 18), (5854, T 2217), (5855, T 1334),
+ (5856, Q 23 15 6), (5857, T 516), (5858, T 2735),
+ (5859, Q 28 25 16), (5860, T 1899), (5861, Q 16 2 1),
+ (5862, Q 18 3 2), (5863, T 58), (5864, Q 27 11 10),
+ (5865, T 1249), (5866, Q 30 23 2), (5867, Q 17 6 2),
+ (5868, T 373), (5869, Q 26 23 4), (5870, Q 15 9 5),
+ (5871, T 287), (5872, Q 19 15 10), (5873, T 113),
+ (5874, T 267), (5875, Q 20 13 9), (5876, T 243),
+ (5877, Q 37 36 30), (5878, Q 24 9 1), (5879, T 2556),
+ (5880, Q 21 10 3), (5881, T 81), (5882, T 975),
+ (5883, Q 19 6 4), (5884, Q 14 11 10),
+ (5885, Q 38 29 14), (5886, T 297), (5887, T 142),
+ (5888, Q 23 10 4), (5889, T 541), (5890, Q 13 8 3),
+ (5891, Q 20 15 9), (5892, T 63), (5893, Q 28 3 1),
+ (5894, Q 21 15 2), (5895, T 781), (5896, Q 30 23 1),
+ (5897, T 390), (5898, T 247), (5899, Q 35 21 10),
+ (5900, T 125), (5901, Q 23 15 12), (5902, T 1981),
+ (5903, T 380), (5904, Q 32 19 5), (5905, T 172),
+ (5906, Q 23 18 15), (5907, Q 25 17 2), (5908, T 2101),
+ (5909, Q 34 24 14), (5910, T 449), (5911, T 2545),
+ (5912, Q 33 22 13), (5913, T 292), (5914, Q 25 13 7),
+ (5915, Q 30 29 28), (5916, Q 20 15 3),
+ (5917, Q 21 12 6), (5918, Q 13 12 8), (5919, T 1843),
+ (5920, Q 16 15 6), (5921, T 311), (5922, T 495),
+ (5923, Q 18 10 5), (5924, T 1017), (5925, Q 24 7 3),
+ (5926, T 325), (5927, T 1305), (5928, Q 16 7 2),
+ (5929, Q 16 6 4), (5930, Q 17 13 10),
+ (5931, Q 30 26 14), (5932, T 2673), (5933, Q 15 11 6),
+ (5934, Q 28 25 4), (5935, T 84), (5936, Q 27 4 1),
+ (5937, T 49), (5938, Q 23 7 3), (5939, Q 12 5 3),
+ (5940, T 99), (5941, Q 20 18 11), (5942, T 245),
+ (5943, T 1075), (5944, Q 23 21 14), (5945, Q 9 5 3),
+ (5946, Q 33 20 3), (5947, Q 14 11 4), (5948, T 117),
+ (5949, Q 23 21 18), (5950, Q 32 13 8), (5951, T 216),
+ (5952, Q 25 23 2), (5953, T 1767), (5954, T 95),
+ (5955, Q 28 8 5), (5956, T 385), (5957, Q 18 6 2),
+ (5958, T 2297), (5959, T 1864), (5960, Q 37 35 25),
+ (5961, T 2081), (5962, T 2599), (5963, Q 35 28 6),
+ (5964, T 1475), (5965, Q 27 19 12), (5966, T 609),
+ (5967, T 2359), (5968, Q 21 14 4), (5969, T 24),
+ (5970, T 399), (5971, Q 11 3 2), (5972, T 315),
+ (5973, Q 20 8 3), (5974, Q 23 19 3), (5975, T 284),
+ (5976, Q 18 9 6), (5977, T 657), (5978, T 1151),
+ (5979, Q 29 25 2), (5980, T 1951), (5981, Q 21 14 13),
+ (5982, T 45), (5983, T 1960), (5984, Q 17 7 1),
+ (5985, T 203), (5986, T 895), (5987, Q 23 18 4),
+ (5988, T 1067), (5989, Q 36 20 2), (5990, T 2729),
+ (5991, T 680), (5992, Q 29 9 2), (5993, T 1133),
+ (5994, Q 17 9 5), (5995, Q 26 25 20),
+ (5996, Q 20 18 3), (5997, Q 10 8 1), (5998, T 1765),
+ (5999, T 362), (6000, Q 23 21 12), (6001, T 648),
+ (6002, T 2895), (6003, Q 25 19 14), (6004, T 2287),
+ (6005, Q 22 13 8), (6006, T 1025), (6007, T 435),
+ (6008, Q 30 27 15), (6009, T 346), (6010, T 2907),
+ (6011, Q 36 30 5), (6012, T 533), (6013, Q 31 24 16),
+ (6014, Q 21 14 9), (6015, T 91), (6016, Q 35 34 2),
+ (6017, T 261), (6018, T 1315), (6019, Q 19 18 11),
+ (6020, T 645), (6021, Q 32 22 17), (6022, T 2217),
+ (6023, T 143), (6024, Q 39 33 26), (6025, T 586),
+ (6026, T 915), (6027, T 98), (6028, Q 18 8 7),
+ (6029, Q 22 17 3), (6030, T 1377), (6031, T 613),
+ (6032, Q 44 21 14), (6033, T 406), (6034, T 439),
+ (6035, Q 28 14 13), (6036, T 1577), (6037, Q 10 7 1),
+ (6038, Q 21 17 11), (6039, T 1556), (6040, Q 25 11 5),
+ (6041, T 1476), (6042, Q 21 3 2), (6043, Q 15 12 6),
+ (6044, T 2525), (6045, Q 19 16 10), (6046, Q 16 3 2),
+ (6047, T 411), (6048, Q 17 15 8), (6049, T 988),
+ (6050, T 1227), (6051, Q 34 17 1), (6052, T 127),
+ (6053, Q 15 11 2), (6054, Q 24 22 21), (6055, T 1242),
+ (6056, Q 7 6 1), (6057, T 2378), (6058, T 1155),
+ (6059, Q 39 34 20), (6060, T 243), (6061, Q 31 25 6),
+ (6062, Q 15 7 2), (6063, Q 28 24 9),
+ (6064, Q 23 18 11), (6065, T 129), (6066, T 67),
+ (6067, Q 30 18 10), (6068, T 1149), (6069, Q 21 5 2),
+ (6070, T 37), (6071, T 789), (6072, Q 28 15 13),
+ (6073, T 1753), (6074, T 35), (6075, Q 26 24 6),
+ (6076, T 1387), (6077, Q 17 11 8), (6078, T 1241),
+ (6079, T 382), (6080, Q 19 8 6), (6081, T 1081),
+ (6082, Q 20 2 1), (6083, Q 33 26 6), (6084, T 279),
+ (6085, Q 16 13 7), (6086, T 557), (6087, T 1948),
+ (6088, Q 23 10 3), (6089, T 1062), (6090, T 11),
+ (6091, Q 15 9 4), (6092, T 1475), (6093, Q 14 9 6),
+ (6094, T 973), (6095, T 2186), (6096, Q 20 11 2),
+ (6097, T 346), (6098, T 1395), (6099, Q 22 16 14),
+ (6100, T 577), (6101, Q 24 20 11), (6102, Q 22 17 16),
+ (6103, T 376), (6104, Q 13 11 6), (6105, T 823),
+ (6106, T 2079), (6107, Q 23 12 10), (6108, T 213),
+ (6109, Q 17 11 4), (6110, Q 26 19 13), (6111, T 467),
+ (6112, Q 35 12 1), (6113, T 1283), (6114, Q 11 6 5),
+ (6115, Q 22 19 10), (6116, T 873), (6117, Q 34 33 30),
+ (6118, T 1765), (6119, T 287), (6120, Q 4 3 1),
+ (6121, T 490), (6122, Q 32 24 11), (6123, Q 25 22 6),
+ (6124, T 19), (6125, Q 22 8 6), (6126, Q 20 15 5),
+ (6127, Q 31 9 4), (6128, Q 34 15 2), (6129, T 1421),
+ (6130, Q 24 22 7), (6131, Q 36 34 7), (6132, T 135),
+ (6133, Q 16 7 3), (6134, T 2445), (6135, T 572),
+ (6136, Q 17 7 5), (6137, T 1682), (6138, Q 26 11 10),
+ (6139, Q 14 13 3), (6140, T 135), (6141, Q 16 13 6),
+ (6142, T 2245), (6143, T 1005), (6144, Q 26 7 1),
+ (6145, T 348), (6146, T 71), (6147, Q 29 24 6),
+ (6148, Q 25 18 16), (6149, Q 23 20 14), (6150, T 1297),
+ (6151, T 538), (6152, Q 28 27 13), (6153, T 77),
+ (6154, Q 23 12 10), (6155, Q 34 33 4), (6156, T 25),
+ (6157, Q 17 16 14), (6158, Q 14 6 5), (6159, T 1165),
+ (6160, Q 38 15 10), (6161, T 1556), (6162, T 603),
+ (6163, Q 17 12 7), (6164, T 1179), (6165, Q 25 15 12),
+ (6166, Q 5 4 2), (6167, T 33), (6168, Q 20 11 2),
+ (6169, T 1204), (6170, T 1179), (6171, Q 22 10 8),
+ (6172, T 3), (6173, Q 10 9 1), (6174, T 1029),
+ (6175, T 823), (6176, Q 29 15 1), (6177, T 430),
+ (6178, T 1719), (6179, Q 16 8 1), (6180, T 245),
+ (6181, Q 22 13 6), (6182, T 1773), (6183, T 56),
+ (6184, Q 39 13 12), (6185, T 308), (6186, Q 15 6 4),
+ (6187, Q 26 25 18), (6188, T 1223), (6189, Q 26 8 5),
+ (6190, T 877), (6191, T 1074), (6192, Q 20 5 2),
+ (6193, T 919), (6194, Q 21 9 2), (6195, Q 30 24 23),
+ (6196, T 1807), (6197, Q 25 14 4), (6198, T 213),
+ (6199, T 109), (6200, Q 29 10 7), (6201, T 922),
+ (6202, T 867), (6203, Q 20 15 10), (6204, T 691),
+ (6205, Q 14 12 1), (6206, Q 22 7 5), (6207, T 1363),
+ (6208, Q 25 23 14), (6209, T 935), (6210, T 711),
+ (6211, Q 19 18 5), (6212, Q 27 16 14),
+ (6213, Q 15 14 12), (6214, T 913), (6215, T 134),
+ (6216, Q 39 30 9), (6217, T 711), (6218, T 383),
+ (6219, Q 17 14 4), (6220, T 889), (6221, Q 21 12 3),
+ (6222, T 693), (6223, T 1033), (6224, Q 13 4 2),
+ (6225, T 317), (6226, T 1035), (6227, Q 18 9 8),
+ (6228, T 2691), (6229, Q 12 7 6), (6230, T 1317),
+ (6231, T 359), (6232, Q 17 3 1), (6233, T 777),
+ (6234, Q 22 18 7), (6235, Q 23 18 10), (6236, T 1701),
+ (6237, Q 32 14 9), (6238, T 2353), (6239, T 921),
+ (6240, Q 11 10 2), (6241, T 592), (6242, Q 32 28 27),
+ (6243, Q 17 10 5), (6244, T 475), (6245, Q 28 26 4),
+ (6246, T 1565), (6247, T 586), (6248, Q 18 7 2),
+ (6249, T 1000), (6250, T 363), (6251, Q 35 34 31),
+ (6252, Q 15 10 6), (6253, Q 14 10 2),
+ (6254, Q 30 29 4), (6255, T 2318), (6256, Q 11 10 5),
+ (6257, T 852), (6258, T 647), (6259, Q 18 12 3),
+ (6260, T 1601), (6261, Q 17 14 12), (6262, T 261),
+ (6263, T 1466), (6264, Q 17 16 7), (6265, T 502),
+ (6266, Q 10 7 5), (6267, Q 26 8 5), (6268, T 973),
+ (6269, Q 31 8 3), (6270, T 737), (6271, T 54),
+ (6272, Q 17 10 6), (6273, T 1106), (6274, T 999),
+ (6275, Q 15 14 5), (6276, T 1787), (6277, Q 16 10 6),
+ (6278, T 749), (6279, T 290), (6280, Q 9 7 5),
+ (6281, T 2021), (6282, T 1895), (6283, Q 14 11 4),
+ (6284, Q 16 13 8), (6285, Q 26 14 5), (6286, T 741),
+ (6287, T 104), (6288, Q 34 25 5), (6289, T 237),
+ (6290, T 1127), (6291, Q 29 6 5), (6292, T 2317),
+ (6293, Q 30 20 18), (6294, T 57), (6295, T 82),
+ (6296, Q 35 19 10), (6297, T 190), (6298, Q 15 10 1),
+ (6299, Q 25 13 2), (6300, T 7), (6301, Q 17 8 7),
+ (6302, T 2105), (6303, T 467), (6304, Q 13 3 1),
+ (6305, T 1052), (6306, T 2079), (6307, Q 28 27 5),
+ (6308, T 405), (6309, Q 23 13 10), (6310, Q 11 7 2),
+ (6311, T 1155), (6312, Q 35 33 14), (6313, T 355),
+ (6314, Q 16 11 7), (6315, Q 42 40 31), (6316, T 21),
+ (6317, Q 11 6 1), (6318, T 333), (6319, T 1213),
+ (6320, Q 29 28 10), (6321, T 1), (6322, T 387),
+ (6323, Q 19 15 14), (6324, T 1273), (6325, Q 18 4 2),
+ (6326, T 1029), (6327, Q 22 15 10), (6328, Q 15 6 1),
+ (6329, Q 21 16 1), (6330, T 623), (6331, Q 21 12 1),
+ (6332, T 2781), (6333, Q 22 14 2), (6334, T 1977),
+ (6335, T 368), (6336, Q 22 15 9), (6337, T 2086),
+ (6338, T 459), (6339, Q 17 10 7), (6340, T 1137),
+ (6341, Q 16 14 9), (6342, T 1309), (6343, T 939),
+ (6344, Q 21 15 2), (6345, T 2566), (6346, Q 31 22 16),
+ (6347, Q 11 6 2), (6348, T 75), (6349, Q 8 6 1),
+ (6350, Q 11 7 6), (6351, T 1234), (6352, Q 21 11 4),
+ (6353, T 1025), (6354, T 1155), (6355, Q 30 27 16),
+ (6356, T 1115), (6357, Q 37 27 12), (6358, T 229),
+ (6359, T 305), (6360, Q 13 11 1), (6361, Q 31 17 3),
+ (6362, T 1967), (6363, Q 32 23 14), (6364, T 67),
+ (6365, Q 21 14 5), (6366, T 273), (6367, T 142),
+ (6368, Q 31 9 1), (6369, Q 19 11 10), (6370, T 1147),
+ (6371, Q 30 18 17), (6372, T 135), (6373, Q 21 18 9),
+ (6374, Q 12 9 8), (6375, T 313), (6376, Q 28 27 5),
+ (6377, T 275), (6378, T 2643), (6379, Q 30 10 5),
+ (6380, T 1085), (6381, Q 33 26 3), (6382, T 2061),
+ (6383, T 1013), (6384, Q 34 29 7), (6385, T 364),
+ (6386, T 543), (6387, Q 28 14 4), (6388, T 2731),
+ (6389, Q 19 17 4), (6390, T 581), (6391, T 324),
+ (6392, Q 39 34 10), (6393, T 103), (6394, T 1447),
+ (6395, Q 29 7 4), (6396, T 91), (6397, Q 17 6 4),
+ (6398, Q 12 11 10), (6399, T 146), (6400, Q 37 12 3),
+ (6401, T 1146), (6402, T 947), (6403, Q 15 10 4),
+ (6404, T 1779), (6405, Q 18 10 7), (6406, T 613),
+ (6407, T 231), (6408, Q 31 12 10), (6409, T 72),
+ (6410, Q 18 15 2), (6411, Q 23 18 14), (6412, T 1131),
+ (6413, Q 18 17 10), (6414, Q 34 15 9), (6415, T 663),
+ (6416, Q 29 15 7), (6417, T 19), (6418, T 1095),
+ (6419, Q 9 7 4), (6420, T 903), (6421, Q 24 16 14),
+ (6422, T 621), (6423, Q 26 19 1), (6424, Q 29 18 5),
+ (6425, T 231), (6426, T 207), (6427, Q 35 29 18),
+ (6428, T 791), (6429, Q 18 16 13), (6430, T 1333),
+ (6431, T 3), (6432, Q 26 13 7), (6433, T 810),
+ (6434, T 651), (6435, Q 15 9 4), (6436, T 1141),
+ (6437, Q 23 18 4), (6438, T 425), (6439, T 630),
+ (6440, Q 21 18 14), (6441, T 41), (6442, Q 19 18 5),
+ (6443, Q 25 17 16), (6444, T 1647), (6445, Q 30 10 4),
+ (6446, T 2633), (6447, T 1547), (6448, Q 25 23 8),
+ (6449, T 777), (6450, T 1707), (6451, Q 26 14 13),
+ (6452, T 381), (6453, Q 29 24 14), (6454, T 825),
+ (6455, T 732), (6456, Q 31 25 17), (6457, T 840),
+ (6458, T 119), (6459, Q 25 17 2), (6460, T 2073),
+ (6461, Q 36 15 6), (6462, Q 24 3 2), (6463, T 93),
+ (6464, Q 25 22 6), (6465, T 224), (6466, Q 26 8 7),
+ (6467, Q 7 6 2), (6468, T 217), (6469, Q 24 22 6),
+ (6470, T 477), (6471, T 1910), (6472, Q 31 30 2),
+ (6473, T 1211), (6474, T 563), (6475, Q 18 13 2),
+ (6476, T 1535), (6477, Q 31 18 15), (6478, T 213),
+ (6479, T 84), (6480, Q 11 10 1), (6481, T 538),
+ (6482, Q 17 8 3), (6483, Q 10 5 1), (6484, T 43),
+ (6485, Q 21 8 6), (6486, Q 23 11 1), (6487, T 880),
+ (6488, Q 21 13 7), (6489, T 706), (6490, T 111),
+ (6491, Q 17 16 6), (6492, T 1169), (6493, Q 38 11 4),
+ (6494, Q 29 27 5), (6495, T 283), (6496, Q 21 5 2),
+ (6497, T 1736), (6498, T 2079), (6499, Q 26 9 2),
+ (6500, T 375), (6501, Q 24 21 14), (6502, T 465),
+ (6503, T 330), (6504, Q 23 15 9), (6505, T 1911),
+ (6506, Q 15 7 5), (6507, Q 25 12 9), (6508, Q 20 11 3),
+ (6509, Q 14 12 7), (6510, T 61), (6511, T 2673),
+ (6512, Q 29 27 13), (6513, T 682), (6514, T 2571),
+ (6515, Q 27 26 12), (6516, Q 18 12 3),
+ (6517, Q 24 11 2), (6518, T 513), (6519, T 725),
+ (6520, Q 37 29 11), (6521, T 695), (6522, T 675),
+ (6523, Q 12 6 3), (6524, T 1283), (6525, Q 16 12 10),
+ (6526, T 2137), (6527, T 242), (6528, Q 16 7 2),
+ (6529, T 765), (6530, Q 15 9 5), (6531, Q 17 14 12),
+ (6532, Q 15 10 7), (6533, Q 18 11 9), (6534, T 45),
+ (6535, T 31), (6536, Q 25 10 9), (6537, T 542),
+ (6538, T 31), (6539, Q 12 8 2), (6540, T 333),
+ (6541, Q 14 11 7), (6542, Q 33 29 9),
+ (6543, Q 28 21 7), (6544, Q 19 15 1), (6545, T 1322),
+ (6546, T 279), (6547, Q 12 11 10), (6548, T 945),
+ (6549, Q 34 15 6), (6550, T 2401), (6551, T 941),
+ (6552, Q 27 22 6), (6553, T 265), (6554, T 159),
+ (6555, Q 28 24 22), (6556, T 885), (6557, Q 34 30 17),
+ (6558, T 153), (6559, T 879), (6560, Q 19 13 11),
+ (6561, T 1834), (6562, T 651), (6563, Q 35 30 21),
+ (6564, T 525), (6565, Q 19 15 8), (6566, Q 10 3 1),
+ (6567, T 1112), (6568, Q 19 15 1), (6569, T 1410),
+ (6570, T 1323), (6571, Q 14 13 6), (6572, Q 20 15 11),
+ (6573, Q 17 10 5), (6574, Q 29 15 14), (6575, T 884),
+ (6576, Q 27 25 19), (6577, T 2341), (6578, T 1587),
+ (6579, Q 32 15 6), (6580, T 2577), (6581, Q 10 8 6),
+ (6582, Q 17 13 8), (6583, T 859), (6584, Q 37 23 7),
+ (6585, T 476), (6586, Q 34 32 15), (6587, Q 27 4 2),
+ (6588, T 1617), (6589, Q 30 25 7), (6590, T 957),
+ (6591, T 1999), (6592, Q 45 42 1), (6593, T 279),
+ (6594, T 2679), (6595, Q 33 8 5), (6596, T 665),
+ (6597, Q 18 14 5), (6598, T 885), (6599, T 189),
+ (6600, Q 21 19 16), (6601, T 457), (6602, Q 14 8 3),
+ (6603, Q 30 20 8), (6604, T 1279), (6605, Q 25 15 14),
+ (6606, T 2365), (6607, T 813), (6608, Q 9 4 2),
+ (6609, T 286), (6610, Q 27 26 8), (6611, Q 13 10 3),
+ (6612, T 289), (6613, Q 28 22 15), (6614, T 2105),
+ (6615, T 136), (6616, Q 33 9 3), (6617, T 71),
+ (6618, T 2379), (6619, Q 7 6 1), (6620, T 341),
+ (6621, Q 21 19 6), (6622, T 645), (6623, T 491),
+ (6624, Q 15 14 9), (6625, T 549), (6626, Q 20 3 1),
+ (6627, Q 26 7 5), (6628, T 2259), (6629, Q 11 9 4),
+ (6630, T 1617), (6631, T 823), (6632, Q 27 20 17),
+ (6633, T 535), (6634, T 559), (6635, Q 14 13 9),
+ (6636, T 1189), (6637, Q 29 26 21), (6638, T 3185),
+ (6639, T 2135), (6640, Q 43 32 9), (6641, T 167),
+ (6642, T 1063), (6643, Q 42 25 9), (6644, T 917),
+ (6645, Q 23 18 3), (6646, Q 9 8 5), (6647, T 77),
+ (6648, Q 25 19 16), (6649, T 202), (6650, T 1391),
+ (6651, Q 22 19 14), (6652, T 1143), (6653, Q 8 7 3),
+ (6654, T 1809), (6655, T 54), (6656, Q 19 15 1),
+ (6657, T 839), (6658, Q 31 30 19), (6659, Q 20 16 1),
+ (6660, T 475), (6661, Q 14 12 1), (6662, T 2901),
+ (6663, T 416), (6664, Q 24 15 6), (6665, T 147),
+ (6666, T 999), (6667, Q 13 8 2), (6668, T 221),
+ (6669, Q 16 7 5), (6670, T 673), (6671, T 930),
+ (6672, Q 26 21 5), (6673, T 256), (6674, T 983),
+ (6675, Q 16 10 1), (6676, T 3141), (6677, Q 26 9 7),
+ (6678, T 41), (6679, T 550), (6680, Q 29 7 3),
+ (6681, T 124), (6682, Q 38 21 5), (6683, Q 12 5 3),
+ (6684, T 1275), (6685, Q 18 11 1), (6686, T 617),
+ (6687, T 872), (6688, Q 55 32 9), (6689, T 1764),
+ (6690, T 1911), (6691, Q 15 12 1), (6692, T 2237),
+ (6693, Q 10 6 4), (6694, T 2989), (6695, T 3072),
+ (6696, Q 45 19 7), (6697, T 2613), (6698, Q 18 14 11),
+ (6699, Q 14 12 3), (6700, T 625), (6701, Q 19 8 4),
+ (6702, T 1145), (6703, T 675), (6704, Q 11 10 6),
+ (6705, T 218), (6706, T 1683), (6707, Q 32 15 14),
+ (6708, T 189), (6709, Q 18 12 7), (6710, T 1397),
+ (6711, T 2929), (6712, Q 31 26 2), (6713, T 11),
+ (6714, T 751), (6715, Q 17 6 1), (6716, T 1781),
+ (6717, Q 16 11 7), (6718, Q 14 9 7), (6719, T 455),
+ (6720, Q 12 9 7), (6721, T 210), (6722, T 2387),
+ (6723, Q 21 18 4), (6724, T 1017), (6725, Q 23 3 2),
+ (6726, T 21), (6727, T 397), (6728, Q 21 8 2),
+ (6729, T 631), (6730, T 3), (6731, Q 32 27 6),
+ (6732, T 965), (6733, Q 8 5 3), (6734, Q 21 14 9),
+ (6735, T 1241), (6736, Q 27 14 2), (6737, T 1197),
+ (6738, Q 35 24 5), (6739, Q 29 24 1), (6740, T 41),
+ (6741, Q 18 15 11), (6742, Q 9 4 3), (6743, T 240),
+ (6744, Q 29 21 15), (6745, T 136), (6746, T 1563),
+ (6747, Q 22 21 1), (6748, T 1273), (6749, Q 18 16 4),
+ (6750, T 2781), (6751, T 1104), (6752, Q 11 8 2),
+ (6753, T 35), (6754, T 1483), (6755, Q 30 20 3),
+ (6756, T 225), (6757, T 466), (6758, T 3105),
+ (6759, T 29), (6760, Q 37 15 7), (6761, T 15),
+ (6762, Q 28 4 3), (6763, Q 32 21 11), (6764, T 989),
+ (6765, Q 23 3 2), (6766, Q 17 5 4), (6767, T 300),
+ (6768, Q 18 15 10), (6769, T 97), (6770, Q 34 31 24),
+ (6771, Q 36 13 12), (6772, T 321), (6773, Q 32 20 6),
+ (6774, T 733), (6775, T 1293), (6776, Q 25 11 6),
+ (6777, T 925), (6778, Q 34 33 1), (6779, Q 16 6 2),
+ (6780, T 655), (6781, Q 16 15 4), (6782, T 3321),
+ (6783, T 518), (6784, Q 16 15 1), (6785, T 452),
+ (6786, T 171), (6787, Q 25 5 2), (6788, T 2345),
+ (6789, Q 28 19 9), (6790, Q 22 8 5), (6791, T 107),
+ (6792, Q 27 25 24), (6793, T 571), (6794, T 707),
+ (6795, Q 17 2 1), (6796, T 895), (6797, Q 20 10 6),
+ (6798, T 1029), (6799, T 1240), (6800, Q 26 25 1),
+ (6801, T 140), (6802, Q 29 25 3), (6803, Q 32 21 16),
+ (6804, T 49), (6805, Q 24 20 7), (6806, Q 25 23 16),
+ (6807, T 1568), (6808, Q 37 19 13), (6809, Q 27 10 5),
+ (6810, T 679), (6811, Q 21 20 8), (6812, T 1115),
+ (6813, Q 24 19 16), (6814, Q 32 26 25), (6815, T 518),
+ (6816, Q 22 5 2), (6817, T 682), (6818, T 1571),
+ (6819, Q 21 11 8), (6820, T 747), (6821, Q 19 13 8),
+ (6822, T 1425), (6823, Q 14 5 1), (6824, Q 21 14 10),
+ (6825, T 133), (6826, T 435), (6827, Q 26 12 8),
+ (6828, T 63), (6829, Q 20 16 6), (6830, T 537),
+ (6831, T 115), (6832, Q 35 32 25), (6833, T 35),
+ (6834, Q 23 14 1), (6835, Q 23 4 2), (6836, T 473),
+ (6837, Q 21 17 14), (6838, T 357), (6839, T 96),
+ (6840, Q 14 9 3), (6841, T 427), (6842, Q 18 17 7),
+ (6843, Q 26 9 6), (6844, Q 20 15 5), (6845, Q 26 20 6),
+ (6846, T 2497), (6847, T 2247), (6848, Q 29 22 18),
+ (6849, T 221), (6850, Q 21 7 4), (6851, Q 31 30 4),
+ (6852, T 839), (6853, Q 28 27 15), (6854, Q 21 14 1),
+ (6855, T 254), (6856, Q 30 29 17), (6857, T 386),
+ (6858, T 747), (6859, Q 16 12 9), (6860, T 531),
+ (6861, Q 21 10 3), (6862, T 1405), (6863, T 956),
+ (6864, Q 11 5 2), (6865, T 2494), (6866, T 647),
+ (6867, Q 16 4 2), (6868, T 43), (6869, Q 17 10 1),
+ (6870, Q 27 22 21), (6871, T 1719), (6872, Q 25 13 2),
+ (6873, T 2056), (6874, T 2631), (6875, Q 22 21 4),
+ (6876, T 287), (6877, Q 15 14 2), (6878, Q 21 15 5),
+ (6879, Q 9 6 2), (6880, Q 31 30 19), (6881, T 152),
+ (6882, T 1883), (6883, Q 32 26 25), (6884, T 383),
+ (6885, Q 22 21 12), (6886, T 565), (6887, T 495),
+ (6888, Q 24 11 9), (6889, T 652), (6890, Q 16 15 8),
+ (6891, Q 30 15 10), (6892, T 421), (6893, Q 20 12 6),
+ (6894, Q 12 9 8), (6895, T 256), (6896, Q 29 17 11),
+ (6897, Q 27 18 8), (6898, T 439), (6899, Q 6 5 2),
+ (6900, T 915), (6901, Q 6 4 1), (6902, T 645),
+ (6903, T 2981), (6904, Q 36 13 11), (6905, T 2513),
+ (6906, T 1667), (6907, Q 23 12 2), (6908, T 1613),
+ (6909, Q 36 35 8), (6910, T 1953), (6911, T 1031),
+ (6912, Q 25 15 12), (6913, T 414), (6914, Q 16 11 4),
+ (6915, Q 18 15 7), (6916, Q 13 4 1), (6917, Q 22 13 8),
+ (6918, T 1653), (6919, Q 15 14 2), (6920, Q 8 3 1),
+ (6921, T 1046), (6922, Q 25 15 13), (6923, Q 17 9 2),
+ (6924, T 93), (6925, Q 24 9 7), (6926, Q 29 9 3),
+ (6927, T 653), (6928, Q 8 7 5), (6929, T 3216),
+ (6930, T 699), (6931, Q 21 14 13), (6932, T 627),
+ (6933, Q 35 26 4), (6934, Q 15 10 9), (6935, T 678),
+ (6936, Q 37 31 30), (6937, T 582), (6938, T 963),
+ (6939, Q 16 12 6), (6940, T 399), (6941, Q 27 12 11),
+ (6942, T 1949), (6943, T 211), (6944, Q 23 21 8),
+ (6945, Q 17 3 2), (6946, Q 23 16 14),
+ (6947, Q 25 19 18), (6948, T 63), (6949, Q 16 5 2),
+ (6950, Q 11 9 3), (6951, T 434), (6952, Q 32 21 19),
+ (6953, T 1820), (6954, T 735), (6955, Q 13 7 4),
+ (6956, T 1727), (6957, Q 24 10 3), (6958, T 2113),
+ (6959, T 1070), (6960, Q 14 9 3), (6961, T 570),
+ (6962, Q 16 11 1), (6963, Q 24 20 6), (6964, T 13),
+ (6965, Q 18 8 7), (6966, T 249), (6967, T 2269),
+ (6968, Q 35 32 17), (6969, T 1073), (6970, T 1867),
+ (6971, Q 28 20 6), (6972, T 455), (6973, Q 36 34 14),
+ (6974, T 369), (6975, T 992), (6976, Q 19 18 9),
+ (6977, T 285), (6978, Q 23 18 3), (6979, Q 11 8 6),
+ (6980, T 485), (6981, Q 17 16 11), (6982, Q 21 16 8),
+ (6983, T 168), (6984, Q 8 3 2), (6985, T 439),
+ (6986, T 579), (6987, Q 21 6 4), (6988, T 445),
+ (6989, Q 15 12 2), (6990, T 1673), (6991, T 510),
+ (6992, Q 27 11 9), (6993, T 166), (6994, Q 28 12 3),
+ (6995, Q 25 12 4), (6996, T 1025), (6997, Q 27 17 4),
+ (6998, T 1241), (6999, T 623), (7000, Q 27 26 11),
+ (7001, T 1631), (7002, T 3375), (7003, Q 16 6 5),
+ (7004, T 291), (7005, Q 14 11 4), (7006, T 981),
+ (7007, T 914), (7008, Q 33 25 6), (7009, T 1932),
+ (7010, Q 14 13 6), (7011, Q 5 2 1), (7012, T 273),
+ (7013, Q 8 5 2), (7014, T 633), (7015, T 1483),
+ (7016, Q 23 10 7), (7017, T 175), (7018, T 1695),
+ (7019, Q 33 14 13), (7020, T 117), (7021, Q 23 6 4),
+ (7022, T 1337), (7023, T 242), (7024, Q 22 15 10),
+ (7025, T 1701), (7026, T 195), (7027, Q 20 9 2),
+ (7028, Q 25 16 2), (7029, Q 29 23 16), (7030, T 793),
+ (7031, T 1029), (7032, Q 19 13 9), (7033, T 16),
+ (7034, T 2679), (7035, Q 29 9 8), (7036, T 1353),
+ (7037, Q 26 24 20), (7038, T 2961), (7039, T 669),
+ (7040, Q 19 18 7), (7041, T 587), (7042, T 2871),
+ (7043, Q 15 12 6), (7044, T 23), (7045, Q 19 6 3),
+ (7046, T 1961), (7047, T 238), (7048, Q 39 17 4),
+ (7049, T 794), (7050, T 1379), (7051, Q 7 6 3),
+ (7052, T 3471), (7053, Q 13 6 1), (7054, Q 17 11 1),
+ (7055, T 803), (7056, Q 27 24 10), (7057, T 937),
+ (7058, T 1103), (7059, Q 31 17 4), (7060, T 765),
+ (7061, Q 24 23 1), (7062, T 2597), (7063, T 265),
+ (7064, Q 11 5 2), (7065, T 599), (7066, Q 21 14 11),
+ (7067, Q 19 11 10), (7068, T 549), (7069, Q 28 17 14),
+ (7070, T 1217), (7071, T 137), (7072, Q 37 26 17),
+ (7073, T 2202), (7074, T 259), (7075, Q 31 26 20),
+ (7076, T 677), (7077, T 674), (7078, Q 11 10 2),
+ (7079, T 351), (7080, Q 27 18 16), (7081, T 333),
+ (7082, T 423), (7083, Q 26 22 2), (7084, T 345),
+ (7085, Q 20 15 14), (7086, Q 22 6 3), (7087, T 1245),
+ (7088, Q 32 5 2), (7089, T 2519), (7090, Q 21 15 1),
+ (7091, Q 9 7 4), (7092, T 1929), (7093, Q 22 18 2),
+ (7094, Q 23 13 12), (7095, T 67), (7096, Q 27 17 13),
+ (7097, T 936), (7098, T 2695), (7099, Q 16 4 1),
+ (7100, T 921), (7101, Q 8 7 1), (7102, Q 28 21 8),
+ (7103, T 63), (7104, Q 15 10 4), (7105, T 1954),
+ (7106, T 3123), (7107, Q 8 2 1), (7108, T 235),
+ (7109, Q 26 21 8), (7110, T 41), (7111, T 1665),
+ (7112, Q 35 5 2), (7113, T 1618), (7114, Q 13 12 3),
+ (7115, Q 34 9 5), (7116, T 3417), (7117, Q 27 26 10),
+ (7118, T 1113), (7119, T 935), (7120, Q 17 15 5),
+ (7121, T 953), (7122, Q 35 13 2), (7123, Q 26 22 6),
+ (7124, T 89), (7125, Q 11 10 5), (7126, T 2785),
+ (7127, T 42), (7128, Q 19 13 2), (7129, T 130),
+ (7130, Q 35 24 21), (7131, Q 21 10 7), (7132, T 273),
+ (7133, Q 36 34 10), (7134, T 729), (7135, T 553),
+ (7136, Q 16 3 2), (7137, T 337), (7138, Q 20 7 6),
+ (7139, Q 26 21 11), (7140, T 225), (7141, Q 26 9 1),
+ (7142, Q 27 20 15), (7143, T 2426), (7144, Q 33 13 3),
+ (7145, T 1127), (7146, T 259), (7147, Q 20 17 9),
+ (7148, T 935), (7149, Q 9 7 6), (7150, T 33),
+ (7151, T 660), (7152, Q 37 23 16), (7153, T 301),
+ (7154, Q 15 14 8), (7155, Q 34 21 18), (7156, T 1117),
+ (7157, Q 20 18 16), (7158, Q 33 23 12), (7159, T 1332),
+ (7160, Q 27 26 9), (7161, T 49), (7162, T 1647),
+ (7163, Q 7 3 2), (7164, T 33), (7165, Q 21 17 2),
+ (7166, T 3521), (7167, T 3529), (7168, Q 13 10 6),
+ (7169, T 1110), (7170, T 1887), (7171, Q 22 18 3),
+ (7172, T 2549), (7173, Q 28 26 19), (7174, Q 16 13 4),
+ (7175, T 584), (7176, Q 33 31 21), (7177, T 918),
+ (7178, Q 16 7 6), (7179, Q 30 20 15), (7180, T 415),
+ (7181, Q 24 13 11), (7182, T 245), (7183, T 30),
+ (7184, Q 33 27 2), (7185, T 1064), (7186, Q 19 10 1),
+ (7187, Q 18 14 12), (7188, Q 23 19 7),
+ (7189, Q 18 14 8), (7190, T 897), (7191, T 1201),
+ (7192, Q 29 14 6), (7193, T 2412), (7194, T 1763),
+ (7195, Q 32 30 7), (7196, T 1607), (7197, Q 17 14 12),
+ (7198, Q 11 2 1), (7199, T 21), (7200, Q 29 23 3),
+ (7201, T 153), (7202, T 1631), (7203, T 686),
+ (7204, T 1695), (7205, Q 21 5 2), (7206, T 2349),
+ (7207, T 246), (7208, Q 29 23 21), (7209, T 460),
+ (7210, T 3111), (7211, Q 29 8 6), (7212, Q 29 26 4),
+ (7213, Q 25 15 8), (7214, Q 28 7 2), (7215, T 19),
+ (7216, Q 15 8 1), (7217, T 891), (7218, T 3263),
+ (7219, Q 23 6 5), (7220, T 2975), (7221, Q 13 12 10),
+ (7222, T 2733), (7223, T 245), (7224, Q 15 12 10),
+ (7225, T 333), (7226, T 2807), (7227, Q 29 22 7),
+ (7228, T 1165), (7229, Q 19 4 2), (7230, T 2421),
+ (7231, T 2185), (7232, Q 35 12 9), (7233, T 1435),
+ (7234, Q 29 22 18), (7235, Q 19 18 7), (7236, T 75),
+ (7237, Q 21 10 2), (7238, Q 19 14 6), (7239, T 1610),
+ (7240, Q 33 14 2), (7241, T 308), (7242, T 87),
+ (7243, Q 25 10 1), (7244, T 497), (7245, Q 26 23 9),
+ (7246, T 2505), (7247, T 726), (7248, Q 17 7 4),
+ (7249, T 274), (7250, T 2427), (7251, Q 19 14 13),
+ (7252, T 1885), (7253, Q 32 13 7), (7254, T 933),
+ (7255, T 283), (7256, Q 22 21 7), (7257, T 3472),
+ (7258, T 2731), (7259, Q 38 19 1), (7260, T 121),
+ (7261, Q 28 3 2), (7262, Q 32 13 12), (7263, T 256),
+ (7264, Q 41 36 19), (7265, T 776), (7266, T 139),
+ (7267, Q 32 17 6), (7268, Q 14 4 3),
+ (7269, Q 33 32 30), (7270, T 829), (7271, T 1325),
+ (7272, Q 23 10 4), (7273, T 789), (7274, Q 38 31 18),
+ (7275, Q 8 2 1), (7276, T 1621), (7277, Q 24 23 7),
+ (7278, T 1741), (7279, T 3247), (7280, Q 37 6 4),
+ (7281, T 179), (7282, Q 26 8 7), (7283, Q 34 22 12),
+ (7284, T 625), (7285, Q 29 18 5), (7286, T 1793),
+ (7287, T 1349), (7288, Q 25 23 17), (7289, T 1253),
+ (7290, T 1431), (7291, Q 29 24 1), (7292, T 3033),
+ (7293, Q 34 14 8), (7294, Q 22 13 10), (7295, T 1961),
+ (7296, Q 37 7 2), (7297, T 570), (7298, Q 15 13 11),
+ (7299, Q 26 11 3), (7300, T 925), (7301, Q 23 22 7),
+ (7302, T 1521), (7303, T 3280), (7304, Q 37 30 17),
+ (7305, T 602), (7306, T 7), (7307, Q 19 15 2),
+ (7308, T 287), (7309, Q 23 15 2), (7310, T 3557),
+ (7311, T 341), (7312, Q 25 24 3), (7313, T 45),
+ (7314, T 2787), (7315, Q 25 10 4), (7316, T 1415),
+ (7317, Q 20 19 4), (7318, T 2625), (7319, T 330),
+ (7320, Q 35 28 10), (7321, T 202), (7322, T 1587),
+ (7323, Q 26 11 2), (7324, T 523), (7325, Q 35 29 6),
+ (7326, T 381), (7327, T 2947), (7328, Q 41 30 26),
+ (7329, T 70), (7330, Q 11 10 9), (7331, Q 28 19 6),
+ (7332, T 643), (7333, Q 26 21 5), (7334, T 237),
+ (7335, T 1421), (7336, Q 34 21 5), (7337, T 828),
+ (7338, T 1351), (7339, Q 14 5 1), (7340, T 311),
+ (7341, Q 29 5 2), (7342, T 577), (7343, T 170),
+ (7344, Q 33 28 3), (7345, T 1344), (7346, T 671),
+ (7347, Q 27 26 2), (7348, T 2863), (7349, Q 12 6 2),
+ (7350, T 573), (7351, T 601), (7352, Q 20 5 3),
+ (7353, T 410), (7354, T 2443), (7355, Q 27 26 7),
+ (7356, T 1179), (7357, Q 30 16 8), (7358, Q 20 15 6),
+ (7359, T 2864), (7360, Q 23 18 2), (7361, T 155),
+ (7362, T 355), (7363, Q 34 24 19), (7364, T 377),
+ (7365, Q 26 20 5), (7366, T 397), (7367, T 213),
+ (7368, Q 19 13 11), (7369, T 1041), (7370, T 1683),
+ (7371, Q 28 16 9), (7372, T 1429), (7373, Q 11 8 6),
+ (7374, T 829), (7375, T 172), (7376, Q 41 22 16),
+ (7377, T 407), (7378, T 523), (7379, Q 22 8 4),
+ (7380, T 105), (7381, Q 32 10 2), (7382, T 2537),
+ (7383, T 20), (7384, Q 31 26 9), (7385, T 912),
+ (7386, T 751), (7387, Q 23 20 10), (7388, T 629),
+ (7389, Q 22 17 13), (7390, Q 13 12 10), (7391, T 35),
+ (7392, Q 33 27 21), (7393, T 1407), (7394, T 1127),
+ (7395, Q 8 4 2), (7396, Q 29 16 2), (7397, Q 28 26 21),
+ (7398, T 145), (7399, T 2715), (7400, Q 19 9 5),
+ (7401, T 1814), (7402, T 871), (7403, Q 30 20 14),
+ (7404, T 297), (7405, Q 17 14 6), (7406, Q 27 20 1),
+ (7407, Q 27 21 17), (7408, Q 13 3 1), (7409, T 854),
+ (7410, T 2179), (7411, Q 24 18 16), (7412, T 1797),
+ (7413, Q 17 6 2), (7414, Q 13 12 2), (7415, Q 10 9 5),
+ (7416, Q 35 23 9), (7417, T 634), (7418, T 867),
+ (7419, Q 32 29 2), (7420, Q 26 25 5),
+ (7421, Q 26 14 2), (7422, T 2961), (7423, T 285),
+ (7424, Q 18 13 7), (7425, T 371), (7426, T 1371),
+ (7427, Q 30 17 1), (7428, T 343), (7429, Q 30 10 4),
+ (7430, Q 11 9 6), (7431, T 65), (7432, Q 30 19 7),
+ (7433, T 420), (7434, T 2295), (7435, Q 13 5 2),
+ (7436, T 315), (7437, Q 31 20 19), (7438, T 3285),
+ (7439, T 2505), (7440, Q 22 21 15), (7441, T 1053),
+ (7442, Q 10 6 5), (7443, Q 23 12 6), (7444, T 679),
+ (7445, Q 12 5 2), (7446, T 1217), (7447, T 1),
+ (7448, Q 21 20 14), (7449, T 625), (7450, T 379),
+ (7451, Q 16 14 9), (7452, T 1701), (7453, Q 30 29 7),
+ (7454, Q 24 13 5), (7455, T 284), (7456, Q 27 8 1),
+ (7457, Q 12 9 2), (7458, T 3127), (7459, Q 40 32 14),
+ (7460, T 1535), (7461, Q 20 19 7), (7462, T 345),
+ (7463, T 2939), (7464, Q 21 18 14), (7465, T 277),
+ (7466, T 2087), (7467, Q 25 20 4), (7468, T 789),
+ (7469, Q 30 26 22), (7470, Q 17 8 3), (7471, T 400),
+ (7472, Q 23 13 7), (7473, T 457), (7474, Q 23 17 15),
+ (7475, Q 24 10 8), (7476, T 423), (7477, Q 23 16 2),
+ (7478, T 1797), (7479, T 1069), (7480, Q 32 15 2),
+ (7481, T 887), (7482, Q 18 4 3), (7483, Q 25 18 2),
+ (7484, T 3305), (7485, Q 26 8 1), (7486, Q 22 19 16),
+ (7487, T 2940), (7488, Q 21 16 6), (7489, T 2644),
+ (7490, T 2843), (7491, Q 10 9 7), (7492, T 1015),
+ (7493, Q 20 10 3), (7494, Q 20 9 8), (7495, T 241),
+ (7496, Q 23 21 12), (7497, T 49), (7498, Q 33 15 12),
+ (7499, Q 27 14 9), (7500, T 125), (7501, Q 21 13 2),
+ (7502, Q 20 17 8), (7503, T 628), (7504, Q 45 17 2),
+ (7505, T 1451), (7506, T 135), (7507, Q 34 14 9),
+ (7508, T 3503), (7509, Q 21 10 4), (7510, Q 26 7 2),
+ (7511, T 51), (7512, Q 22 21 3), (7513, T 2697),
+ (7514, Q 38 21 5), (7515, Q 18 17 11),
+ (7516, Q 27 25 18), (7517, Q 20 19 10), (7518, T 3653),
+ (7519, T 15), (7520, Q 19 9 7), (7521, T 1501),
+ (7522, T 2331), (7523, Q 35 22 1), (7524, T 75),
+ (7525, Q 17 11 4), (7526, T 533), (7527, T 1507),
+ (7528, Q 18 13 1), (7529, T 953), (7530, T 307),
+ (7531, Q 13 10 3), (7532, T 705), (7533, Q 11 8 7),
+ (7534, T 2349), (7535, T 2726), (7536, Q 42 21 14),
+ (7537, T 1377), (7538, T 735), (7539, Q 26 19 10),
+ (7540, T 2127), (7541, Q 28 10 2), (7542, T 549),
+ (7543, T 1173), (7544, Q 23 13 7), (7545, T 1679),
+ (7546, Q 15 8 5), (7547, Q 24 22 11), (7548, T 1689),
+ (7549, Q 22 16 12), (7550, Q 27 26 9), (7551, T 145),
+ (7552, Q 17 8 3), (7553, T 492), (7554, Q 12 11 6),
+ (7555, Q 26 13 2), (7556, T 2835), (7557, Q 18 16 12),
+ (7558, T 1501), (7559, T 185), (7560, Q 41 21 3),
+ (7561, T 846), (7562, T 1547), (7563, Q 29 8 7),
+ (7564, T 1845), (7565, Q 24 22 13), (7566, T 209),
+ (7567, T 151), (7568, Q 15 5 3), (7569, T 3409),
+ (7570, T 3303), (7571, Q 16 14 7), (7572, T 2413),
+ (7573, Q 12 7 6), (7574, T 197), (7575, T 2174),
+ (7576, Q 41 40 11), (7577, T 846), (7578, T 423),
+ (7579, Q 14 11 3), (7580, T 761), (7581, Q 23 21 14),
+ (7582, Q 13 6 2), (7583, T 653), (7584, Q 51 46 10),
+ (7585, T 268), (7586, T 3251), (7587, Q 15 9 4),
+ (7588, T 655), (7589, Q 15 10 7), (7590, T 869),
+ (7591, T 1236), (7592, Q 45 10 1), (7593, T 1210),
+ (7594, T 3471), (7595, Q 34 32 13), (7596, T 55),
+ (7597, Q 32 11 7), (7598, T 1469), (7599, T 2066),
+ (7600, Q 19 18 2), (7601, T 2555), (7602, T 555),
+ (7603, Q 6 5 2), (7604, T 1257), (7605, Q 28 15 3),
+ (7606, Q 24 9 7), (7607, T 111), (7608, Q 39 25 10),
+ (7609, T 495), (7610, Q 18 11 2), (7611, Q 32 27 6),
+ (7612, T 1671), (7613, Q 25 8 6), (7614, T 945),
+ (7615, Q 19 13 7), (7616, Q 31 21 14),
+ (7617, Q 18 5 3), (7618, Q 22 17 6), (7619, Q 29 18 6),
+ (7620, T 203), (7621, Q 32 29 19), (7622, T 581),
+ (7623, T 637), (7624, Q 9 2 1), (7625, T 474),
+ (7626, T 291), (7627, Q 40 15 2), (7628, T 3773),
+ (7629, Q 35 10 7), (7630, T 2833), (7631, T 92),
+ (7632, Q 54 3 2), (7633, Q 24 14 7), (7634, T 2963),
+ (7635, Q 27 11 2), (7636, T 733), (7637, Q 13 10 8),
+ (7638, T 2673), (7639, T 3729), (7640, Q 29 3 2),
+ (7641, T 925), (7642, T 663), (7643, Q 16 5 1),
+ (7644, T 161), (7645, Q 28 15 10), (7646, T 1233),
+ (7647, T 1105), (7648, Q 37 33 10), (7649, T 2222),
+ (7650, T 199), (7651, Q 24 16 13), (7652, T 2165),
+ (7653, Q 21 14 11), (7654, Q 20 14 1), (7655, T 3629),
+ (7656, Q 30 13 7), (7657, T 1069), (7658, T 3627),
+ (7659, Q 17 13 10), (7660, T 2287), (7661, Q 30 20 4),
+ (7662, T 2473), (7663, T 1203), (7664, Q 30 23 5),
+ (7665, T 97), (7666, T 1351), (7667, Q 27 26 7),
+ (7668, T 77), (7669, Q 30 6 3), (7670, Q 13 11 4),
+ (7671, T 769), (7672, Q 39 5 1), (7673, T 120),
+ (7674, T 1891), (7675, Q 9 6 1), (7676, Q 21 14 11),
+ (7677, Q 38 25 11), (7678, T 2325), (7679, T 1497),
+ (7680, Q 27 9 3), (7681, T 1500), (7682, T 479),
+ (7683, Q 23 14 7), (7684, T 1419), (7685, Q 10 9 8),
+ (7686, T 581), (7687, T 867), (7688, Q 35 16 6),
+ (7689, T 728), (7690, Q 23 19 11), (7691, Q 36 29 2),
+ (7692, T 1683), (7693, Q 30 9 4), (7694, T 2685),
+ (7695, T 119), (7696, Q 17 16 15), (7697, T 282),
+ (7698, T 111), (7699, Q 10 6 3), (7700, T 177),
+ (7701, Q 20 14 8), (7702, T 541), (7703, T 2786),
+ (7704, Q 15 12 10), (7705, T 1962), (7706, T 831),
+ (7707, Q 19 18 15), (7708, T 13), (7709, Q 18 4 2),
+ (7710, T 3853), (7711, T 3084), (7712, Q 27 22 5),
+ (7713, T 1060), (7714, T 367), (7715, Q 22 16 14),
+ (7716, T 1157), (7717, Q 7 6 1), (7718, Q 11 5 3),
+ (7719, T 1993), (7720, Q 27 25 4), (7721, T 1382),
+ (7722, T 15), (7723, Q 30 21 9), (7724, T 1967),
+ (7725, Q 23 22 17), (7726, Q 30 23 7), (7727, T 1007),
+ (7728, Q 21 6 3), (7729, T 594), (7730, T 1979),
+ (7731, Q 11 10 1), (7732, T 49), (7733, Q 15 8 3),
+ (7734, T 2089), (7735, T 717), (7736, Q 22 11 3),
+ (7737, Q 13 5 1), (7738, T 3499), (7739, Q 48 33 29),
+ (7740, T 47), (7741, Q 32 22 11), (7742, T 377),
+ (7743, T 3007), (7744, Q 33 28 27), (7745, T 1364),
+ (7746, Q 22 19 10), (7747, Q 28 26 12), (7748, T 1155),
+ (7749, Q 28 25 2), (7750, T 721), (7751, T 273),
+ (7752, Q 35 30 2), (7753, T 1459), (7754, Q 31 7 5),
+ (7755, Q 16 7 2), (7756, Q 29 6 4), (7757, Q 17 10 7),
+ (7758, T 1633), (7759, T 42), (7760, Q 32 23 21),
+ (7761, T 2074), (7762, T 231), (7763, Q 14 10 6),
+ (7764, T 499), (7765, Q 18 17 1), (7766, T 1341),
+ (7767, T 410), (7768, Q 27 18 15), (7769, T 2933),
+ (7770, T 1943), (7771, Q 38 35 27), (7772, T 2879),
+ (7773, Q 30 19 18), (7774, T 3585), (7775, T 243),
+ (7776, Q 41 39 36), (7777, T 150), (7778, Q 24 23 3),
+ (7779, Q 40 22 14), (7780, T 325), (7781, Q 24 22 5),
+ (7782, Q 25 17 1), (7783, T 118), (7784, Q 7 4 2),
+ (7785, T 818), (7786, Q 16 15 9), (7787, Q 26 18 7),
+ (7788, T 435), (7789, Q 17 13 2), (7790, T 1533),
+ (7791, T 749), (7792, Q 47 31 29), (7793, T 233),
+ (7794, T 675), (7795, Q 38 33 8), (7796, T 1841),
+ (7797, Q 14 10 1), (7798, Q 29 22 3), (7799, T 137),
+ (7800, Q 11 10 5), (7801, T 558), (7802, T 2103),
+ (7803, Q 19 14 2), (7804, Q 9 8 2), (7805, Q 23 14 5),
+ (7806, Q 17 12 6), (7807, T 1533), (7808, Q 25 24 10),
+ (7809, T 2233), (7810, T 699), (7811, Q 34 23 18),
+ (7812, T 413), (7813, Q 38 30 28), (7814, T 2121),
+ (7815, T 994), (7816, Q 20 3 2), (7817, T 47),
+ (7818, T 1291), (7819, Q 8 5 3), (7820, T 35),
+ (7821, Q 14 10 8), (7822, T 2929), (7823, T 458),
+ (7824, Q 39 36 14), (7825, T 966), (7826, T 3483),
+ (7827, Q 31 28 6), (7828, T 163), (7829, Q 15 14 8),
+ (7830, T 1281), (7831, T 825), (7832, Q 37 19 3),
+ (7833, T 613), (7834, Q 16 15 9), (7835, Q 28 20 10),
+ (7836, Q 23 20 7), (7837, Q 30 23 1), (7838, T 3789),
+ (7839, T 374), (7840, Q 33 29 23), (7841, T 2829),
+ (7842, Q 29 10 4), (7843, Q 16 9 6), (7844, Q 23 10 7),
+ (7845, Q 32 31 7), (7846, Q 23 22 2), (7847, T 270),
+ (7848, Q 34 31 21), (7849, T 967), (7850, T 3591),
+ (7851, Q 28 13 5), (7852, T 2235), (7853, Q 30 28 26),
+ (7854, T 213), (7855, T 1087), (7856, Q 12 3 2),
+ (7857, T 215), (7858, T 3643), (7859, Q 22 3 2),
+ (7860, T 2505), (7861, Q 20 16 2), (7862, Q 17 13 10),
+ (7863, T 1568), (7864, Q 19 13 1), (7865, T 654),
+ (7866, T 79), (7867, Q 40 35 21), (7868, T 1227),
+ (7869, Q 17 6 2), (7870, T 981), (7871, T 2462),
+ (7872, Q 27 22 18), (7873, T 154), (7874, T 855),
+ (7875, Q 28 21 13), (7876, T 3165), (7877, Q 18 7 4),
+ (7878, T 129), (7879, Q 24 19 8), (7880, Q 25 19 17),
+ (7881, Q 26 9 6), (7882, Q 17 15 10),
+ (7883, Q 17 16 6), (7884, T 215), (7885, Q 35 30 13),
+ (7886, Q 25 15 13), (7887, T 664), (7888, Q 12 9 7),
+ (7889, T 2400), (7890, T 531), (7891, Q 18 5 1),
+ (7892, T 1113), (7893, Q 20 5 2), (7894, Q 21 16 13),
+ (7895, T 197), (7896, Q 45 39 7), (7897, T 940),
+ (7898, Q 29 8 2), (7899, Q 11 10 2), (7900, T 1681),
+ (7901, Q 17 13 10), (7902, T 2729), (7903, T 612),
+ (7904, Q 45 34 25), (7905, T 1612), (7906, Q 15 11 1),
+ (7907, Q 20 10 6), (7908, T 1333), (7909, Q 20 2 1),
+ (7910, T 221), (7911, T 197), (7912, Q 7 3 2),
+ (7913, T 1466), (7914, Q 29 11 4), (7915, Q 32 22 6),
+ (7916, Q 25 12 4), (7917, Q 27 26 23),
+ (7918, Q 19 6 1), (7919, T 756), (7920, Q 20 19 5),
+ (7921, T 2206), (7922, T 1335), (7923, Q 26 21 14),
+ (7924, T 1089), (7925, Q 10 3 2), (7926, T 1653),
+ (7927, T 321), (7928, Q 23 15 5), (7929, T 1178),
+ (7930, Q 17 10 5), (7931, Q 27 24 17), (7932, T 515),
+ (7933, Q 15 11 10), (7934, T 137), (7935, T 133),
+ (7936, Q 40 23 21), (7937, T 617), (7938, T 891),
+ (7939, Q 11 4 2), (7940, T 795), (7941, Q 15 14 2),
+ (7942, T 1057), (7943, T 80), (7944, Q 14 7 1),
+ (7945, T 2967), (7946, T 51), (7947, Q 18 13 10),
+ (7948, T 3001), (7949, Q 28 17 7), (7950, Q 38 27 6),
+ (7951, T 498), (7952, Q 19 13 2), (7953, T 413),
+ (7954, Q 23 21 20), (7955, Q 16 11 1), (7956, T 1557),
+ (7957, Q 26 14 1), (7958, T 1121), (7959, T 424),
+ (7960, Q 19 13 12), (7961, T 1412), (7962, T 1463),
+ (7963, Q 11 7 2), (7964, T 1253), (7965, Q 36 31 15),
+ (7966, T 1153), (7967, T 483), (7968, Q 27 13 12),
+ (7969, T 1054), (7970, Q 29 19 3), (7971, Q 18 16 15),
+ (7972, T 1695), (7973, Q 21 14 3), (7974, Q 13 12 10),
+ (7975, T 387), (7976, Q 44 5 3), (7977, T 1249),
+ (7978, Q 14 4 3), (7979, Q 24 2 1), (7980, T 15),
+ (7981, Q 20 15 14), (7982, Q 25 8 4), (7983, T 2678),
+ (7984, Q 37 18 2), (7985, T 504), (7986, Q 28 10 3),
+ (7987, Q 7 6 1), (7988, T 1679), (7989, Q 24 22 12),
+ (7990, T 1041), (7991, T 2160), (7992, Q 26 25 17),
+ (7993, T 2073), (7994, T 2423), (7995, Q 17 12 8),
+ (7996, T 2581), (7997, Q 16 3 2), (7998, T 1989),
+ (7999, T 952), (8000, Q 16 3 1), (8001, T 127),
+ (8002, Q 12 4 3), (8003, Q 26 21 2), (8004, T 3087),
+ (8005, Q 18 16 11), (8006, T 2201), (8007, T 554),
+ (8008, Q 23 22 17), (8009, T 3159), (8010, T 687),
+ (8011, Q 20 16 5), (8012, T 1541), (8013, Q 28 26 20),
+ (8014, T 1753), (8015, T 776), (8016, Q 31 30 25),
+ (8017, T 141), (8018, Q 18 15 9), (8019, Q 39 33 16),
+ (8020, T 1713), (8021, Q 32 18 3), (8022, T 917),
+ (8023, Q 16 11 9), (8024, Q 21 14 11), (8025, T 229),
+ (8026, T 1843), (8027, Q 11 10 9), (8028, T 279),
+ (8029, Q 33 19 16), (8030, T 53), (8031, Q 13 12 3),
+ (8032, Q 19 15 13), (8033, T 2240), (8034, T 695),
+ (8035, Q 30 24 4), (8036, T 131), (8037, Q 34 33 30),
+ (8038, Q 13 9 8), (8039, T 98), (8040, Q 39 13 7),
+ (8041, T 1305), (8042, Q 15 8 5), (8043, Q 25 17 16),
+ (8044, T 3627), (8045, Q 18 8 3), (8046, T 1389),
+ (8047, T 1444), (8048, Q 30 23 3), (8049, T 1009),
+ (8050, Q 31 12 11), (8051, Q 24 15 5),
+ (8052, Q 11 9 2), (8053, Q 20 19 12), (8054, T 1025),
+ (8055, T 1069), (8056, Q 27 16 5), (8057, T 960),
+ (8058, T 1115), (8059, Q 34 21 6), (8060, T 297),
+ (8061, Q 10 7 2), (8062, T 2449), (8063, T 273),
+ (8064, Q 27 23 9), (8065, T 253), (8066, Q 32 27 15),
+ (8067, Q 42 29 17), (8068, T 1603), (8069, Q 15 14 4),
+ (8070, T 413), (8071, T 358), (8072, Q 23 11 6),
+ (8073, T 883), (8074, Q 28 26 3), (8075, Q 29 24 16),
+ (8076, T 1731), (8077, Q 30 27 18), (8078, T 669),
+ (8079, T 1523), (8080, Q 39 14 11), (8081, T 768),
+ (8082, T 239), (8083, Q 31 17 6), (8084, T 2519),
+ (8085, Q 31 22 13), (8086, T 1597), (8087, T 989),
+ (8088, Q 25 10 8), (8089, T 967), (8090, T 3759),
+ (8091, Q 16 9 1), (8092, T 351), (8093, Q 20 5 3),
+ (8094, T 2889), (8095, T 907), (8096, Q 32 11 2),
+ (8097, T 2513), (8098, T 2667), (8099, Q 28 25 23),
+ (8100, T 9), (8101, Q 15 6 4), (8102, Q 31 2 1),
+ (8103, T 2333), (8104, Q 30 23 17), (8105, T 1611),
+ (8106, T 771), (8107, Q 25 16 1), (8108, T 627),
+ (8109, Q 15 9 4), (8110, T 217), (8111, T 1130),
+ (8112, Q 15 12 2), (8113, T 3058), (8114, T 1667),
+ (8115, Q 20 17 5), (8116, T 1057), (8117, Q 32 15 14),
+ (8118, Q 21 15 1), (8119, T 10), (8120, Q 8 3 2),
+ (8121, T 3494), (8122, Q 19 12 4), (8123, Q 47 22 18),
+ (8124, T 269), (8125, Q 26 18 10), (8126, Q 28 25 15),
+ (8127, T 218), (8128, Q 25 24 19), (8129, T 548),
+ (8130, T 719), (8131, Q 25 7 6), (8132, Q 9 5 4),
+ (8133, Q 30 19 18), (8134, T 25), (8135, T 468),
+ (8136, Q 11 3 2), (8137, T 739), (8138, T 1043),
+ (8139, Q 24 12 10), (8140, T 1683), (8141, Q 32 8 6),
+ (8142, Q 29 28 20), (8143, T 1890), (8144, Q 28 27 17),
+ (8145, T 728), (8146, T 1911), (8147, Q 22 8 1),
+ (8148, T 133), (8149, Q 18 8 4), (8150, T 89),
+ (8151, T 3841), (8152, Q 29 25 14), (8153, T 1020),
+ (8154, T 995), (8155, Q 18 10 5), (8156, T 3641),
+ (8157, Q 19 16 14), (8158, Q 23 17 7), (8159, T 1026),
+ (8160, Q 52 45 10), (8161, T 292), (8162, T 1391),
+ (8163, Q 29 28 25), (8164, T 471), (8165, Q 29 26 9),
+ (8166, T 381), (8167, T 2553), (8168, Q 25 16 6),
+ (8169, T 481), (8170, Q 17 6 5), (8171, Q 21 17 8),
+ (8172, T 539), (8173, Q 11 8 7), (8174, Q 21 9 8),
+ (8175, T 661), (8176, Q 43 32 21), (8177, T 905),
+ (8178, T 2611), (8179, Q 24 21 13), (8180, T 185),
+ (8181, Q 9 6 4), (8182, T 1477), (8183, T 1139),
+ (8184, Q 32 27 6), (8185, T 777), (8186, Q 10 7 3),
+ (8187, Q 29 22 16), (8188, T 1155), (8189, Q 41 10 4),
+ (8190, T 1869), (8191, T 714), (8192, Q 9 5 2),
+ (8193, T 1055), (8194, T 3847), (8195, Q 15 14 4),
+ (8196, T 2477), (8197, Q 21 8 2), (8198, T 657),
+ (8199, T 2758), (8200, Q 18 15 3), (8201, T 365),
+ (8202, Q 15 12 11), (8203, Q 33 28 23), (8204, T 1727),
+ (8205, Q 21 18 13), (8206, Q 16 14 9), (8207, T 5),
+ (8208, Q 19 13 11), (8209, T 943), (8210, T 3507),
+ (8211, Q 34 18 13), (8212, T 1773), (8213, Q 24 10 4),
+ (8214, Q 21 16 3), (8215, T 469), (8216, Q 27 24 17),
+ (8217, T 94), (8218, T 1443), (8219, Q 29 27 10),
+ (8220, T 327), (8221, Q 24 22 11), (8222, T 2345),
+ (8223, T 308), (8224, Q 39 36 25), (8225, T 2588),
+ (8226, T 447), (8227, Q 25 18 12), (8228, Q 23 18 6),
+ (8229, Q 36 29 3), (8230, T 2149), (8231, T 3564),
+ (8232, Q 22 15 9), (8233, T 1407), (8234, T 215),
+ (8235, Q 38 36 21), (8236, T 351), (8237, Q 23 18 11),
+ (8238, Q 15 5 3), (8239, T 1462), (8240, Q 14 13 7),
+ (8241, T 1694), (8242, Q 36 35 2), (8243, Q 35 14 2),
+ (8244, T 343), (8245, Q 18 16 14), (8246, T 173),
+ (8247, T 2050), (8248, Q 25 15 13), (8249, Q 20 11 9),
+ (8250, T 3399), (8251, Q 13 10 3), (8252, T 2861),
+ (8253, Q 9 5 2), (8254, T 3157), (8255, T 1496),
+ (8256, Q 32 21 14), (8257, T 1530), (8258, T 1407),
+ (8259, Q 21 15 4), (8260, T 225), (8261, Q 20 17 14),
+ (8262, T 693), (8263, T 2232), (8264, Q 15 6 3),
+ (8265, T 161), (8266, Q 12 7 6), (8267, Q 21 16 2),
+ (8268, T 477), (8269, Q 24 13 2), (8270, Q 21 17 4),
+ (8271, T 44), (8272, Q 32 25 23), (8273, T 3500),
+ (8274, T 419), (8275, Q 35 10 9), (8276, T 915),
+ (8277, Q 30 8 3), (8278, T 193), (8279, T 2439),
+ (8280, Q 30 19 9), (8281, T 226), (8282, T 351),
+ (8283, Q 25 23 4), (8284, T 2197), (8285, Q 47 42 24),
+ (8286, T 3957), (8287, T 1755), (8288, Q 27 5 4),
+ (8289, T 98), (8290, Q 43 24 14), (8291, Q 28 26 19),
+ (8292, T 637), (8293, Q 14 12 8), (8294, Q 21 12 11),
+ (8295, T 938), (8296, Q 37 19 6), (8297, T 2846),
+ (8298, Q 21 14 11), (8299, Q 29 28 8), (8300, T 185),
+ (8301, Q 27 13 10), (8302, T 1305), (8303, T 3789),
+ (8304, Q 32 17 15), (8305, T 417), (8306, Q 17 12 9),
+ (8307, Q 19 17 10), (8308, Q 16 9 8),
+ (8309, Q 28 26 10), (8310, T 3333), (8311, T 1470),
+ (8312, Q 45 44 30), (8313, T 4117), (8314, Q 18 15 9),
+ (8315, Q 20 15 2), (8316, T 405), (8317, Q 30 28 19),
+ (8318, Q 21 16 10), (8319, T 458), (8320, Q 41 39 5),
+ (8321, T 2985), (8322, Q 7 5 2), (8323, Q 35 12 10),
+ (8324, T 1149), (8325, Q 31 14 10), (8326, Q 14 5 4),
+ (8327, T 596), (8328, Q 37 23 14), (8329, T 775),
+ (8330, T 1107), (8331, Q 37 34 10), (8332, T 651),
+ (8333, Q 26 18 14), (8334, T 3285), (8335, T 129),
+ (8336, Q 33 10 2), (8337, T 643), (8338, Q 16 15 7),
+ (8339, Q 13 12 7), (8340, T 553), (8341, Q 50 48 19),
+ (8342, T 2921), (8343, T 1667), (8344, Q 27 15 1),
+ (8345, T 777), (8346, Q 26 25 10), (8347, Q 29 7 6),
+ (8348, T 1737), (8349, Q 29 22 7), (8350, T 3177),
+ (8351, T 170), (8352, Q 35 18 14), (8353, T 2548),
+ (8354, T 1515), (8355, Q 18 6 5), (8356, Q 22 18 13),
+ (8357, Q 22 12 5), (8358, T 677), (8359, T 1905),
+ (8360, Q 15 14 5), (8361, Q 24 20 8), (8362, T 655),
+ (8363, Q 20 3 2), (8364, T 2443), (8365, Q 22 12 4),
+ (8366, T 2381), (8367, T 154), (8368, Q 35 17 4),
+ (8369, Q 29 15 1), (8370, T 1643), (8371, Q 13 8 2),
+ (8372, T 17), (8373, Q 14 5 2), (8374, T 4125),
+ (8375, T 2316), (8376, Q 45 39 17), (8377, T 2035),
+ (8378, T 3851), (8379, Q 26 15 8), (8380, T 1815),
+ (8381, Q 22 15 5), (8382, Q 32 22 13),
+ (8383, Q 23 13 8), (8384, Q 19 4 2), (8385, T 2369),
+ (8386, T 907), (8387, Q 14 12 3), (8388, T 691),
+ (8389, Q 39 16 13), (8390, T 3797), (8391, T 1336),
+ (8392, Q 17 11 1), (8393, T 312), (8394, Q 30 10 3),
+ (8395, Q 18 12 4), (8396, Q 17 14 11),
+ (8397, Q 25 6 1), (8398, T 3481), (8399, T 4191),
+ (8400, Q 29 28 11), (8401, T 1105), (8402, T 287),
+ (8403, Q 22 6 1), (8404, T 805), (8405, Q 32 22 16),
+ (8406, Q 30 9 1), (8407, T 1557), (8408, Q 20 9 2),
+ (8409, T 2506), (8410, Q 33 17 5), (8411, Q 30 27 5),
+ (8412, T 1049), (8413, Q 26 25 24), (8414, T 3197),
+ (8415, T 1061), (8416, Q 40 33 22), (8417, T 2240),
+ (8418, T 2187), (8419, Q 15 10 1), (8420, T 2751),
+ (8421, Q 27 26 20), (8422, Q 33 22 9), (8423, T 168),
+ (8424, Q 33 31 28), (8425, T 3), (8426, T 1539),
+ (8427, Q 14 13 8), (8428, T 129), (8429, Q 35 14 6),
+ (8430, T 361), (8431, T 97), (8432, Q 17 15 13),
+ (8433, T 1255), (8434, T 1459), (8435, Q 33 28 26),
+ (8436, T 401), (8437, Q 34 27 15), (8438, Q 17 10 7),
+ (8439, T 43), (8440, Q 18 9 6), (8441, T 992),
+ (8442, T 1863), (8443, Q 16 12 6), (8444, T 905),
+ (8445, Q 38 6 5), (8446, T 3201), (8447, T 213),
+ (8448, Q 21 17 6), (8449, T 25), (8450, Q 38 36 7),
+ (8451, Q 13 5 2), (8452, Q 11 8 6), (8453, Q 14 11 5),
+ (8454, Q 21 6 4), (8455, T 412), (8456, Q 15 13 8),
+ (8457, T 230), (8458, Q 19 10 6), (8459, Q 10 9 7),
+ (8460, T 127), (8461, Q 24 22 14), (8462, Q 33 32 31),
+ (8463, T 397), (8464, Q 34 15 5), (8465, T 936),
+ (8466, T 451), (8467, Q 31 24 21), (8468, Q 15 11 3),
+ (8469, Q 26 14 13), (8470, T 1713), (8471, T 827),
+ (8472, Q 30 21 5), (8473, T 2398), (8474, Q 37 6 1),
+ (8475, Q 6 4 1), (8476, T 85), (8477, Q 46 34 26),
+ (8478, T 405), (8479, T 1425), (8480, Q 21 6 3),
+ (8481, T 641), (8482, T 331), (8483, Q 26 19 10),
+ (8484, T 1421), (8485, Q 23 10 5), (8486, Q 22 21 19),
+ (8487, T 4112), (8488, Q 13 6 3), (8489, T 3096),
+ (8490, Q 26 16 13), (8491, Q 35 32 25), (8492, T 497),
+ (8493, Q 33 26 23), (8494, Q 10 7 4), (8495, T 122),
+ (8496, Q 25 19 3), (8497, T 540), (8498, Q 15 14 11),
+ (8499, Q 28 18 15), (8500, T 753), (8501, Q 37 36 31),
+ (8502, T 3157), (8503, T 91), (8504, Q 35 24 10),
+ (8505, T 109), (8506, T 3555), (8507, Q 31 6 5),
+ (8508, T 1207), (8509, Q 19 16 15), (8510, T 2709),
+ (8511, T 4177), (8512, Q 33 27 4), (8513, T 3044),
+ (8514, Q 19 14 8), (8515, Q 27 10 7), (8516, T 1221),
+ (8517, Q 14 8 5), (8518, T 721), (8519, T 36),
+ (8520, Q 28 15 13), (8521, T 2646), (8522, T 3603),
+ (8523, Q 21 18 5), (8524, T 1575), (8525, Q 36 19 2),
+ (8526, T 637), (8527, T 435), (8528, Q 15 4 2),
+ (8529, T 2296), (8530, T 2019), (8531, Q 18 2 1),
+ (8532, T 787), (8533, Q 23 20 4), (8534, Q 27 7 1),
+ (8535, T 2996), (8536, Q 19 10 3), (8537, T 242),
+ (8538, Q 20 11 4), (8539, Q 12 9 4), (8540, T 465),
+ (8541, Q 26 9 5), (8542, Q 30 28 9), (8543, T 969),
+ (8544, Q 31 5 2), (8545, T 1944), (8546, Q 19 11 10),
+ (8547, Q 21 13 10), (8548, T 519), (8549, Q 41 23 6),
+ (8550, T 893), (8551, T 639), (8552, Q 29 10 1),
+ (8553, T 4171), (8554, Q 33 17 7), (8555, Q 14 13 7),
+ (8556, T 2011), (8557, Q 30 23 17), (8558, T 4193),
+ (8559, T 2161), (8560, Q 21 13 3), (8561, Q 15 5 1),
+ (8562, T 939), (8563, Q 13 5 2), (8564, T 801),
+ (8565, Q 33 14 11), (8566, T 2581), (8567, Q 24 16 11),
+ (8568, Q 28 25 10), (8569, T 1429), (8570, Q 37 10 3),
+ (8571, Q 12 8 2), (8572, T 1081), (8573, Q 22 14 4),
+ (8574, Q 22 13 2), (8575, T 457), (8576, Q 19 9 1),
+ (8577, T 439), (8578, Q 30 7 4), (8579, Q 13 11 6),
+ (8580, T 143), (8581, Q 8 7 3), (8582, T 1817),
+ (8583, T 3448), (8584, Q 32 15 13), (8585, T 137),
+ (8586, T 407), (8587, Q 34 8 2), (8588, T 29),
+ (8589, Q 15 12 10), (8590, Q 27 23 17), (8591, T 431),
+ (8592, Q 23 5 4), (8593, T 94), (8594, Q 21 20 5),
+ (8595, Q 17 13 10), (8596, Q 13 7 6),
+ (8597, Q 33 27 26), (8598, Q 23 14 1), (8599, T 2385),
+ (8600, Q 21 14 3), (8601, T 734), (8602, T 1431),
+ (8603, Q 16 9 1), (8604, T 1381), (8605, Q 30 23 7),
+ (8606, Q 19 17 7), (8607, T 203), (8608, Q 47 44 33),
+ (8609, T 434), (8610, Q 21 17 14), (8611, Q 25 18 1),
+ (8612, T 287), (8613, Q 24 15 14), (8614, T 1585),
+ (8615, T 3713), (8616, Q 22 19 11), (8617, T 1150),
+ (8618, T 1947), (8619, Q 29 28 5), (8620, T 1197),
+ (8621, Q 22 10 2), (8622, Q 33 24 19), (8623, T 1483),
+ (8624, Q 4 3 2), (8625, T 256), (8626, T 103),
+ (8627, Q 38 15 11), (8628, Q 25 24 7),
+ (8629, Q 33 16 11), (8630, Q 20 6 3), (8631, T 857),
+ (8632, Q 41 32 3), (8633, T 3234), (8634, Q 19 14 8),
+ (8635, Q 23 14 13), (8636, T 2345), (8637, Q 20 13 7),
+ (8638, T 3961), (8639, T 441), (8640, Q 23 10 4),
+ (8641, T 81), (8642, Q 15 11 6), (8643, Q 26 18 2),
+ (8644, T 103), (8645, Q 17 14 12), (8646, T 4293),
+ (8647, T 145), (8648, Q 31 17 6), (8649, T 280),
+ (8650, T 783), (8651, Q 26 11 3), (8652, T 833),
+ (8653, Q 26 18 10), (8654, T 2529), (8655, T 2863),
+ (8656, Q 39 14 4), (8657, T 884), (8658, T 3323),
+ (8659, Q 14 9 4), (8660, T 1157), (8661, Q 30 7 1),
+ (8662, Q 31 22 18), (8663, T 2306), (8664, Q 29 19 11),
+ (8665, T 2416), (8666, T 2111), (8667, Q 22 21 18),
+ (8668, T 1839), (8669, Q 20 12 3), (8670, T 1061),
+ (8671, T 1329), (8672, Q 29 23 12), (8673, T 28),
+ (8674, T 3403), (8675, Q 18 17 10), (8676, T 927),
+ (8677, Q 13 11 6), (8678, Q 25 19 15), (8679, T 1370),
+ (8680, Q 32 7 2), (8681, T 1175), (8682, T 947),
+ (8683, Q 19 18 11), (8684, T 3815), (8685, Q 31 9 6),
+ (8686, T 2653), (8687, Q 21 18 3), (8688, Q 25 20 7),
+ (8689, T 855), (8690, Q 24 14 11), (8691, Q 40 17 5),
+ (8692, T 1095), (8693, Q 32 24 15), (8694, T 1809),
+ (8695, T 2283), (8696, Q 25 20 6), (8697, T 164),
+ (8698, T 2583), (8699, Q 26 20 3), (8700, T 1295),
+ (8701, Q 33 5 2), (8702, Q 24 17 15), (8703, T 281),
+ (8704, Q 39 20 2), (8705, T 59), (8706, Q 25 22 6),
+ (8707, Q 8 6 1), (8708, T 417), (8709, Q 19 16 10),
+ (8710, Q 26 25 18), (8711, T 360), (8712, Q 30 13 3),
+ (8713, T 1785), (8714, T 231), (8715, Q 33 32 8),
+ (8716, Q 36 22 21), (8717, Q 37 18 16), (8718, T 3465),
+ (8719, T 7), (8720, Q 27 17 5), (8721, T 467),
+ (8722, T 1551), (8723, Q 32 12 2), (8724, T 2279),
+ (8725, Q 25 9 6), (8726, Q 21 19 8), (8727, T 748),
+ (8728, Q 13 7 1), (8729, T 68), (8730, T 959),
+ (8731, Q 30 26 16), (8732, T 525), (8733, Q 40 32 31),
+ (8734, T 2817), (8735, T 1326), (8736, Q 35 33 24),
+ (8737, T 3235), (8738, Q 28 18 11), (8739, Q 28 20 2),
+ (8740, T 2835), (8741, Q 32 27 21), (8742, T 1053),
+ (8743, T 90), (8744, Q 45 12 11), (8745, T 79),
+ (8746, T 4183), (8747, Q 18 14 7), (8748, T 63),
+ (8749, Q 29 22 6), (8750, T 53), (8751, T 1922),
+ (8752, Q 30 29 11), (8753, T 693), (8754, T 2871),
+ (8755, Q 25 24 14), (8756, T 1181), (8757, Q 35 26 12),
+ (8758, Q 17 8 4), (8759, T 3675), (8760, Q 27 9 4),
+ (8761, Q 27 25 15), (8762, T 2159), (8763, Q 18 17 5),
+ (8764, Q 10 3 1), (8765, Q 14 9 3), (8766, T 1677),
+ (8767, T 70), (8768, Q 27 10 8), (8769, T 188),
+ (8770, T 603), (8771, Q 37 4 2), (8772, T 37),
+ (8773, Q 20 5 3), (8774, Q 30 29 11), (8775, T 508),
+ (8776, Q 26 19 9), (8777, T 257), (8778, Q 16 5 2),
+ (8779, Q 45 5 2), (8780, T 495), (8781, Q 34 10 1),
+ (8782, Q 33 10 4), (8783, T 860), (8784, Q 26 25 7),
+ (8785, T 1597), (8786, Q 30 18 3), (8787, Q 49 45 22),
+ (8788, Q 22 15 13), (8789, Q 27 7 2), (8790, Q 17 2 1),
+ (8791, T 463), (8792, Q 24 9 2), (8793, T 272),
+ (8794, Q 14 7 2), (8795, Q 12 5 3), (8796, T 1585),
+ (8797, Q 26 18 7), (8798, T 1301), (8799, T 656),
+ (8800, Q 25 14 6), (8801, T 309), (8802, T 2139),
+ (8803, Q 31 21 4), (8804, T 549), (8805, Q 42 16 9),
+ (8806, T 1773), (8807, T 3569), (8808, Q 15 9 6),
+ (8809, T 1089), (8810, Q 24 17 7), (8811, Q 22 8 2),
+ (8812, T 2295), (8813, Q 37 4 2), (8814, T 1497),
+ (8815, T 1174), (8816, Q 17 8 6), (8817, T 1654),
+ (8818, Q 29 11 9), (8819, Q 15 13 4), (8820, T 147),
+ (8821, Q 28 24 23), (8822, Q 32 28 25), (8823, T 1028),
+ (8824, Q 19 14 6), (8825, T 303), (8826, T 4275),
+ (8827, Q 30 17 10), (8828, T 1133), (8829, Q 15 9 8),
+ (8830, T 3889), (8831, T 891), (8832, Q 15 9 6),
+ (8833, T 328), (8834, T 683), (8835, Q 20 16 5),
+ (8836, T 1171), (8837, Q 20 10 6), (8838, T 1653),
+ (8839, T 285), (8840, Q 33 22 16), (8841, T 539),
+ (8842, T 4143), (8843, Q 33 20 17), (8844, T 355),
+ (8845, Q 31 24 2), (8846, Q 21 20 12), (8847, T 1100),
+ (8848, Q 33 4 3), (8849, T 2324), (8850, T 1191),
+ (8851, Q 33 14 4), (8852, T 1697), (8853, Q 23 17 16),
+ (8854, Q 12 5 1), (8855, T 138), (8856, Q 14 5 2),
+ (8857, T 2493), (8858, Q 29 23 17), (8859, Q 35 30 27),
+ (8860, T 3577), (8861, Q 18 16 10), (8862, T 49),
+ (8863, T 1099), (8864, Q 37 12 7), (8865, T 2713),
+ (8866, Q 29 16 5), (8867, Q 32 9 5), (8868, T 623),
+ (8869, Q 34 19 7), (8870, T 1029), (8871, T 2422),
+ (8872, Q 51 4 2), (8873, T 689), (8874, T 2239),
+ (8875, Q 19 18 1), (8876, T 381), (8877, Q 21 13 10),
+ (8878, T 3949), (8879, T 2369), (8880, Q 36 9 6),
+ (8881, T 990), (8882, Q 17 11 6), (8883, Q 28 27 10),
+ (8884, T 2121), (8885, Q 30 26 20), (8886, T 469),
+ (8887, T 1107), (8888, Q 43 13 9), (8889, T 1216),
+ (8890, T 2007), (8891, Q 10 9 4), (8892, T 249),
+ (8893, Q 27 7 6), (8894, Q 17 6 5), (8895, T 958),
+ (8896, Q 41 10 6), (8897, T 1439), (8898, T 287),
+ (8899, Q 29 2 1), (8900, T 2285), (8901, Q 17 12 2),
+ (8902, Q 10 9 2), (8903, T 222), (8904, Q 40 25 10),
+ (8905, T 433), (8906, Q 35 16 13), (8907, Q 22 21 16),
+ (8908, T 3031), (8909, Q 22 17 9), (8910, T 1749),
+ (8911, T 963), (8912, Q 18 17 1), (8913, T 158),
+ (8914, Q 16 4 3), (8915, Q 11 6 5), (8916, T 2259),
+ (8917, Q 28 21 3), (8918, Q 16 10 9), (8919, T 2479),
+ (8920, Q 33 32 31), (8921, T 6), (8922, T 787),
+ (8923, Q 11 8 6), (8924, T 797), (8925, Q 22 11 7),
+ (8926, T 853), (8927, T 1425), (8928, Q 35 29 2),
+ (8929, T 358), (8930, T 83), (8931, Q 17 6 5),
+ (8932, T 507), (8933, Q 24 10 4), (8934, T 1125),
+ (8935, T 861), (8936, Q 17 3 1), (8937, T 3733),
+ (8938, T 2295), (8939, Q 22 21 14), (8940, T 529),
+ (8941, Q 36 35 31), (8942, Q 21 16 13), (8943, T 3635),
+ (8944, Q 39 34 1), (8945, T 563), (8946, T 967),
+ (8947, Q 28 20 6), (8948, T 2637), (8949, Q 29 22 13),
+ (8950, Q 9 5 1), (8951, T 506), (8952, Q 27 14 2),
+ (8953, T 25), (8954, Q 25 23 1), (8955, Q 18 13 1),
+ (8956, T 4231), (8957, Q 16 10 3), (8958, T 1029),
+ (8959, T 225), (8960, Q 12 7 5), (8961, T 176),
+ (8962, T 691), (8963, Q 30 26 10), (8964, T 939),
+ (8965, Q 30 7 5), (8966, T 1233), (8967, T 2744),
+ (8968, Q 29 11 10), (8969, T 435), (8970, T 2191),
+ (8971, Q 23 5 4), (8972, T 1619), (8973, Q 24 19 12),
+ (8974, T 981), (8975, T 1128), (8976, Q 23 8 2),
+ (8977, T 966), (8978, Q 18 17 5), (8979, Q 29 22 16),
+ (8980, T 3093), (8981, Q 22 2 1), (8982, T 169),
+ (8983, T 345), (8984, Q 9 8 6), (8985, T 2674),
+ (8986, T 495), (8987, Q 16 12 10), (8988, T 1513),
+ (8989, Q 15 7 2), (8990, T 333), (8991, T 2020),
+ (8992, Q 35 6 2), (8993, T 2079), (8994, T 1051),
+ (8995, Q 19 16 13), (8996, Q 25 16 12),
+ (8997, Q 33 22 1), (8998, Q 23 10 2), (8999, T 1386),
+ (9000, Q 28 19 17), (9001, T 1599), (9002, T 3995),
+ (9003, Q 37 20 10), (9004, T 649), (9005, Q 19 14 4),
+ (9006, T 1477), (9007, T 222), (9008, Q 31 17 7),
+ (9009, T 29), (9010, Q 17 12 1), (9011, Q 31 14 10),
+ (9012, T 1053), (9013, Q 32 9 7), (9014, T 1217),
+ (9015, Q 12 3 1), (9016, Q 23 21 8), (9017, T 155),
+ (9018, T 1327), (9019, Q 26 22 15), (9020, T 287),
+ (9021, Q 28 22 10), (9022, T 861), (9023, T 4350),
+ (9024, Q 32 29 11), (9025, T 744), (9026, T 35),
+ (9027, Q 23 14 3), (9028, T 2935), (9029, Q 36 26 1),
+ (9030, Q 32 8 1), (9031, T 714), (9032, Q 45 19 1),
+ (9033, T 1615), (9034, T 2095), (9035, Q 30 22 5),
+ (9036, T 449), (9037, Q 28 14 5), (9038, Q 21 9 8),
+ (9039, T 1741), (9040, Q 9 6 4), (9041, T 813),
+ (9042, T 103), (9043, Q 27 26 23), (9044, T 2819),
+ (9045, Q 33 8 6), (9046, Q 36 30 15), (9047, T 287),
+ (9048, Q 23 16 10), (9049, T 2490), (9050, T 1319),
+ (9051, Q 17 10 7), (9052, T 2725), (9053, Q 21 15 12),
+ (9054, T 609), (9055, T 946), (9056, Q 11 3 2),
+ (9057, T 2345), (9058, T 235), (9059, Q 24 15 6),
+ (9060, T 151), (9061, Q 26 18 7), (9062, T 3929),
+ (9063, T 2320), (9064, Q 33 4 2), (9065, T 2022),
+ (9066, Q 15 6 1), (9067, Q 9 2 1), (9068, T 2565),
+ (9069, Q 36 31 12), (9070, Q 23 13 3), (9071, T 2276),
+ (9072, Q 45 38 6), (9073, Q 20 16 5), (9074, T 207),
+ (9075, Q 30 17 15), (9076, T 2395), (9077, Q 16 6 4),
+ (9078, T 2681), (9079, T 2179), (9080, Q 17 10 7),
+ (9081, T 190), (9082, Q 19 17 14), (9083, Q 31 18 5),
+ (9084, T 1699), (9085, Q 26 13 5), (9086, T 2445),
+ (9087, Q 23 19 7), (9088, Q 33 31 1), (9089, T 440),
+ (9090, Q 18 7 3), (9091, Q 20 9 7), (9092, T 29),
+ (9093, Q 11 8 4), (9094, T 2769), (9095, T 2546),
+ (9096, Q 27 26 11), (9097, T 1260), (9098, Q 25 15 14),
+ (9099, Q 16 9 1), (9100, T 55), (9101, Q 14 8 6),
+ (9102, Q 15 14 2), (9103, T 4200), (9104, Q 47 33 24),
+ (9105, T 1493), (9106, T 1723), (9107, Q 28 13 6),
+ (9108, T 575), (9109, Q 9 5 2), (9110, Q 32 17 8),
+ (9111, T 487), (9112, Q 9 7 5), (9113, T 3563),
+ (9114, T 539), (9115, Q 30 9 7), (9116, T 1841),
+ (9117, Q 18 16 7), (9118, Q 21 11 10), (9119, T 917),
+ (9120, Q 35 25 5), (9121, T 249), (9122, Q 47 29 23),
+ (9123, Q 15 13 10), (9124, Q 23 17 12),
+ (9125, Q 26 12 10), (9126, T 181), (9127, T 1120),
+ (9128, Q 39 25 22), (9129, T 23), (9130, T 2991),
+ (9131, Q 7 5 4), (9132, T 207), (9133, Q 26 9 4),
+ (9134, T 1545), (9135, T 944), (9136, Q 21 14 1),
+ (9137, T 2163), (9138, T 2671), (9139, Q 10 3 1),
+ (9140, T 1365), (9141, Q 36 7 1), (9142, T 4545),
+ (9143, T 1268), (9144, Q 35 25 4), (9145, T 546),
+ (9146, Q 12 2 1), (9147, Q 31 16 2), (9148, T 1921),
+ (9149, Q 30 28 7), (9150, T 469), (9151, T 1330),
+ (9152, Q 33 29 7), (9153, T 682), (9154, T 3087),
+ (9155, Q 25 11 6), (9156, T 281), (9157, Q 30 10 7),
+ (9158, T 809), (9159, T 3470), (9160, Q 22 15 3),
+ (9161, T 1046), (9162, T 2807), (9163, Q 20 7 6),
+ (9164, T 1913), (9165, Q 13 12 3), (9166, Q 19 10 3),
+ (9167, Q 12 3 2), (9168, Q 15 10 4), (9169, T 229),
+ (9170, T 1103), (9171, Q 38 5 4), (9172, Q 33 26 8),
+ (9173, Q 31 17 12), (9174, Q 29 23 8), (9175, T 2806),
+ (9176, Q 43 37 30), (9177, T 884), (9178, Q 19 17 8),
+ (9179, Q 10 6 5), (9180, T 1153), (9181, Q 23 13 6),
+ (9182, T 1769), (9183, Q 30 13 1), (9184, Q 33 26 14),
+ (9185, T 207), (9186, T 3159), (9187, Q 20 18 4),
+ (9188, T 4305), (9189, Q 26 14 8), (9190, T 2217),
+ (9191, T 3936), (9192, Q 21 18 13), (9193, T 1216),
+ (9194, Q 16 10 5), (9195, Q 14 13 1),
+ (9196, Q 31 12 5), (9197, Q 14 12 5), (9198, T 1365),
+ (9199, T 109), (9200, Q 31 24 2), (9201, T 146),
+ (9202, T 211), (9203, Q 28 20 6), (9204, T 645),
+ (9205, Q 14 11 3), (9206, T 4085), (9207, T 397),
+ (9208, Q 35 10 9), (9209, T 2181), (9210, T 2603),
+ (9211, Q 36 19 17), (9212, T 3839), (9213, Q 38 7 5),
+ (9214, T 397), (9215, T 1217), (9216, Q 21 14 8),
+ (9217, T 1956), (9218, T 2919), (9219, Q 30 6 4),
+ (9220, T 1875), (9221, Q 33 26 5), (9222, Q 33 23 11),
+ (9223, T 1023), (9224, Q 35 21 7), (9225, T 181),
+ (9226, T 4315), (9227, Q 38 29 3), (9228, T 145),
+ (9229, Q 20 19 17), (9230, Q 17 12 8), (9231, T 3899),
+ (9232, Q 49 18 8), (9233, T 545), (9234, T 315),
+ (9235, Q 23 22 2), (9236, Q 22 14 9),
+ (9237, Q 18 16 12), (9238, T 49), (9239, T 1629),
+ (9240, Q 17 11 7), (9241, T 909), (9242, T 239),
+ (9243, Q 5 2 1), (9244, T 441), (9245, Q 43 35 18),
+ (9246, Q 27 18 3), (9247, T 48), (9248, Q 37 18 13),
+ (9249, T 1663), (9250, T 531), (9251, Q 8 3 2),
+ (9252, T 327), (9253, Q 42 28 10), (9254, Q 24 17 13),
+ (9255, T 298), (9256, Q 19 6 4), (9257, T 1364),
+ (9258, T 3843), (9259, Q 22 16 6), (9260, T 2729),
+ (9261, Q 30 18 10), (9262, T 1549), (9263, T 3173),
+ (9264, Q 39 17 14), (9265, T 1123), (9266, Q 23 14 6),
+ (9267, Q 23 8 5), (9268, T 3183), (9269, Q 42 18 14),
+ (9270, T 837), (9271, T 1488), (9272, Q 13 4 3),
+ (9273, T 502), (9274, T 1219), (9275, Q 10 6 2),
+ (9276, T 135), (9277, Q 11 3 2), (9278, T 2145),
+ (9279, T 1526), (9280, Q 23 7 2), (9281, T 2049),
+ (9282, T 2307), (9283, Q 20 7 6), (9284, T 1883),
+ (9285, Q 29 6 5), (9286, Q 25 20 14), (9287, T 2520),
+ (9288, Q 49 43 18), (9289, T 358), (9290, T 1731),
+ (9291, Q 8 5 1), (9292, T 3087), (9293, Q 20 18 3),
+ (9294, T 3373), (9295, T 2149), (9296, Q 29 17 15),
+ (9297, T 1838), (9298, T 2139), (9299, Q 22 21 1),
+ (9300, T 135), (9301, Q 35 25 18), (9302, T 605),
+ (9303, T 208), (9304, Q 27 13 9), (9305, T 3344),
+ (9306, T 675), (9307, Q 31 25 4), (9308, T 1559),
+ (9309, Q 19 16 10), (9310, T 3141), (9311, T 2657),
+ (9312, Q 21 19 16), (9313, T 924), (9314, Q 27 23 12),
+ (9315, Q 26 21 8), (9316, T 1233), (9317, Q 23 20 2),
+ (9318, Q 18 6 3), (9319, T 477), (9320, Q 55 22 8),
+ (9321, T 2627), (9322, T 4027), (9323, Q 18 4 1),
+ (9324, T 665), (9325, Q 18 16 1), (9326, Q 35 23 20),
+ (9327, T 4165), (9328, Q 21 14 8), (9329, T 2910),
+ (9330, T 4263), (9331, Q 31 30 2), (9332, T 2081),
+ (9333, Q 26 14 8), (9334, T 3141), (9335, T 1176),
+ (9336, Q 17 5 3), (9337, T 546), (9338, Q 23 8 5),
+ (9339, Q 23 14 1), (9340, T 1339), (9341, Q 19 18 14),
+ (9342, Q 19 10 8), (9343, T 2700), (9344, Q 51 44 5),
+ (9345, T 353), (9346, Q 18 10 3), (9347, Q 16 14 7),
+ (9348, Q 19 9 3), (9349, Q 25 18 2), (9350, T 1221),
+ (9351, T 56), (9352, Q 31 26 15), (9353, T 3221),
+ (9354, Q 16 7 4), (9355, Q 22 16 4), (9356, T 1773),
+ (9357, Q 35 34 2), (9358, T 453), (9359, T 1227),
+ (9360, Q 28 23 1), (9361, T 369), (9362, Q 23 13 1),
+ (9363, Q 26 21 17), (9364, T 3297), (9365, Q 21 20 7),
+ (9366, T 2245), (9367, T 3172), (9368, Q 38 7 1),
+ (9369, T 116), (9370, T 2311), (9371, Q 28 21 17),
+ (9372, T 269), (9373, Q 28 10 4), (9374, Q 18 9 2),
+ (9375, T 4459), (9376, Q 23 5 1), (9377, T 914),
+ (9378, T 1347), (9379, Q 14 9 5), (9380, T 561),
+ (9381, Q 19 9 6), (9382, T 3297), (9383, T 1124),
+ (9384, Q 17 11 6), (9385, T 523), (9386, T 3863),
+ (9387, Q 31 30 9), (9388, Q 24 7 3), (9389, Q 20 7 3),
+ (9390, T 2601), (9391, T 1239), (9392, Q 29 24 11),
+ (9393, T 623), (9394, T 3471), (9395, Q 17 15 4),
+ (9396, T 369), (9397, Q 32 14 7), (9398, T 2769),
+ (9399, T 1295), (9400, Q 18 13 1), (9401, T 429),
+ (9402, T 267), (9403, Q 30 8 1), (9404, T 2009),
+ (9405, Q 18 4 1), (9406, Q 28 27 7), (9407, T 260),
+ (9408, Q 28 15 6), (9409, T 405), (9410, Q 32 11 8),
+ (9411, Q 24 22 1), (9412, Q 11 9 2), (9413, Q 11 10 9),
+ (9414, T 673), (9415, T 1678), (9416, Q 19 11 6),
+ (9417, T 218), (9418, T 823), (9419, Q 30 19 13),
+ (9420, T 2701), (9421, Q 14 9 5), (9422, Q 22 10 9),
+ (9423, T 1280), (9424, Q 22 9 6), (9425, T 699),
+ (9426, Q 21 6 5), (9427, Q 23 18 8), (9428, Q 21 17 7),
+ (9429, Q 21 9 2), (9430, Q 37 18 5), (9431, T 3113),
+ (9432, Q 52 43 25), (9433, T 42), (9434, Q 19 14 12),
+ (9435, Q 7 5 4), (9436, T 225), (9437, Q 14 12 1),
+ (9438, Q 15 13 6), (9439, T 105), (9440, Q 25 22 14),
+ (9441, T 479), (9442, T 4611), (9443, Q 30 19 2),
+ (9444, T 3513), (9445, Q 34 14 12), (9446, Q 12 5 3),
+ (9447, T 458), (9448, Q 23 21 20), (9449, T 584),
+ (9450, T 1431), (9451, Q 13 12 3), (9452, Q 18 14 13),
+ (9453, Q 32 29 23), (9454, T 4189), (9455, T 2807),
+ (9456, Q 35 19 5), (9457, T 4), (9458, Q 25 16 6),
+ (9459, Q 36 18 13), (9460, Q 20 17 1),
+ (9461, Q 32 28 6), (9462, Q 34 14 5), (9463, T 327),
+ (9464, Q 37 18 13), (9465, T 197), (9466, Q 23 14 1),
+ (9467, Q 27 14 7), (9468, T 1695), (9469, Q 28 22 18),
+ (9470, T 2289), (9471, T 1459), (9472, Q 45 40 15),
+ (9473, T 656), (9474, Q 23 20 7), (9475, Q 29 25 2),
+ (9476, T 2583), (9477, Q 26 11 7), (9478, T 909),
+ (9479, T 200), (9480, Q 18 9 2), (9481, T 4060),
+ (9482, Q 19 12 4), (9483, Q 20 10 5), (9484, T 853),
+ (9485, Q 23 22 9), (9486, T 945), (9487, T 211),
+ (9488, Q 25 12 7), (9489, T 2089), (9490, T 999),
+ (9491, Q 19 6 5), (9492, T 373), (9493, Q 38 22 3),
+ (9494, T 477), (9495, Q 23 20 18), (9496, Q 29 17 15),
+ (9497, T 2301), (9498, Q 41 17 10), (9499, Q 29 20 10),
+ (9500, T 1175), (9501, Q 29 26 4), (9502, T 621),
+ (9503, T 99), (9504, Q 19 15 6), (9505, Q 15 10 1),
+ (9506, Q 12 7 5), (9507, Q 29 28 14), (9508, T 1141),
+ (9509, Q 13 9 2), (9510, T 2349), (9511, T 399),
+ (9512, Q 39 17 16), (9513, T 686), (9514, Q 28 21 9),
+ (9515, Q 18 9 2), (9516, T 903), (9517, Q 32 18 11),
+ (9518, T 1797), (9519, T 1573), (9520, Q 13 5 2),
+ (9521, T 116), (9522, T 243), (9523, Q 8 4 2),
+ (9524, T 3207), (9525, Q 30 27 2), (9526, Q 16 10 1),
+ (9527, T 1650), (9528, Q 37 33 22), (9529, T 43),
+ (9530, T 1623), (9531, Q 32 14 2), (9532, T 2103),
+ (9533, Q 36 31 5), (9534, T 1193), (9535, T 1119),
+ (9536, Q 31 26 6), (9537, T 565), (9538, Q 24 9 3),
+ (9539, Q 38 27 13), (9540, T 3059), (9541, Q 31 21 14),
+ (9542, T 1185), (9543, T 533), (9544, Q 43 32 9),
+ (9545, T 539), (9546, T 47), (9547, Q 12 8 2),
+ (9548, T 335), (9549, Q 37 34 32), (9550, Q 19 15 11),
+ (9551, T 126), (9552, Q 11 4 1), (9553, T 1498),
+ (9554, Q 29 28 15), (9555, Q 24 22 10),
+ (9556, Q 21 9 1), (9557, Q 27 20 1), (9558, T 2041),
+ (9559, T 702), (9560, Q 27 13 2), (9561, T 3059),
+ (9562, T 687), (9563, Q 25 9 2), (9564, T 387),
+ (9565, Q 6 5 4), (9566, T 1901), (9567, T 1883),
+ (9568, Q 49 26 14), (9569, T 60), (9570, T 487),
+ (9571, Q 24 16 5), (9572, Q 31 19 9), (9573, Q 8 6 5),
+ (9574, Q 38 37 8), (9575, T 888), (9576, Q 29 25 7),
+ (9577, T 1668), (9578, T 1503), (9579, Q 34 33 6),
+ (9580, T 1771), (9581, Q 12 7 4), (9582, T 3177),
+ (9583, T 790), (9584, Q 36 29 27), (9585, T 2524),
+ (9586, T 1867), (9587, Q 36 29 22), (9588, T 525),
+ (9589, Q 28 22 15), (9590, T 2061), (9591, T 841),
+ (9592, Q 15 8 1), (9593, T 284), (9594, T 499),
+ (9595, Q 28 18 15), (9596, Q 18 11 5),
+ (9597, Q 28 25 22), (9598, T 4309), (9599, T 14),
+ (9600, Q 19 6 4), (9601, T 963), (9602, Q 21 5 2),
+ (9603, Q 19 10 4), (9604, Q 13 11 9),
+ (9605, Q 37 26 12), (9606, Q 15 12 1), (9607, T 262),
+ (9608, Q 14 13 1), (9609, T 1526), (9610, T 2883),
+ (9611, Q 14 6 5), (9612, T 93), (9613, Q 32 16 3),
+ (9614, T 4577), (9615, T 361), (9616, Q 25 8 2),
+ (9617, T 1385), (9618, Q 16 3 1), (9619, Q 29 14 10),
+ (9620, T 557), (9621, Q 29 20 11), (9622, T 2145),
+ (9623, T 2429), (9624, Q 31 17 7), (9625, T 508),
+ (9626, Q 7 6 1), (9627, Q 25 19 18), (9628, T 31),
+ (9629, Q 16 15 10), (9630, T 37), (9631, T 295),
+ (9632, Q 30 23 5), (9633, T 2333), (9634, T 3075),
+ (9635, Q 26 21 10), (9636, T 515), (9637, Q 21 18 6),
+ (9638, Q 21 19 13), (9639, T 700), (9640, Q 33 7 3),
+ (9641, T 3287), (9642, T 3591), (9643, Q 18 14 11),
+ (9644, T 1671), (9645, Q 9 7 6), (9646, Q 31 30 17),
+ (9647, T 1227), (9648, Q 31 24 21), (9649, T 657),
+ (9650, Q 32 18 11), (9651, Q 22 14 4), (9652, T 2733),
+ (9653, Q 22 15 2), (9654, T 1969), (9655, T 3558),
+ (9656, Q 19 16 2), (9657, T 1192), (9658, T 3691),
+ (9659, Q 15 14 8), (9660, T 57), (9661, Q 22 14 6),
+ (9662, Q 22 9 8), (9663, T 446), (9664, Q 35 21 1),
+ (9665, T 2763), (9666, T 435), (9667, Q 34 22 6),
+ (9668, T 225), (9669, Q 29 27 24), (9670, Q 35 34 3),
+ (9671, T 1086), (9672, Q 17 9 3), (9673, T 3538),
+ (9674, T 759), (9675, Q 44 25 23), (9676, T 3367),
+ (9677, Q 30 27 12), (9678, T 4277), (9679, T 864),
+ (9680, Q 25 6 2), (9681, T 910), (9682, T 3175),
+ (9683, Q 46 37 21), (9684, T 2405), (9685, Q 17 14 4),
+ (9686, T 2333), (9687, T 2054), (9688, Q 20 9 2),
+ (9689, T 84), (9690, T 1503), (9691, Q 17 14 1),
+ (9692, T 3381), (9693, Q 10 6 3), (9694, Q 50 18 17),
+ (9695, T 207), (9696, Q 36 27 21), (9697, T 1201),
+ (9698, Q 38 27 24), (9699, Q 30 6 1), (9700, T 565),
+ (9701, Q 23 12 3), (9702, T 1533), (9703, Q 13 7 1),
+ (9704, Q 7 3 2), (9705, T 1802), (9706, Q 22 15 11),
+ (9707, Q 26 15 1), (9708, T 1753), (9709, Q 16 13 10),
+ (9710, Q 30 15 9), (9711, T 917), (9712, Q 27 19 17),
+ (9713, T 2933), (9714, T 1227), (9715, Q 27 10 6),
+ (9716, T 263), (9717, Q 9 6 2), (9718, Q 46 29 11),
+ (9719, T 3492), (9720, Q 37 4 2), (9721, T 171),
+ (9722, Q 12 11 8), (9723, Q 32 29 25),
+ (9724, Q 30 28 15), (9725, Q 14 8 5),
+ (9726, Q 29 28 23), (9727, T 760), (9728, Q 30 5 2),
+ (9729, T 938), (9730, T 663), (9731, Q 16 12 10),
+ (9732, T 3747), (9733, Q 22 21 8), (9734, T 4125),
+ (9735, T 2086), (9736, Q 15 7 6), (9737, T 275),
+ (9738, T 3663), (9739, Q 15 14 2), (9740, T 3015),
+ (9741, Q 11 8 1), (9742, Q 30 18 15), (9743, T 869),
+ (9744, Q 36 9 2), (9745, T 2361), (9746, T 2559),
+ (9747, Q 26 8 1), (9748, T 889), (9749, Q 20 7 6),
+ (9750, T 833), (9751, T 1093), (9752, Q 42 17 3),
+ (9753, T 1078), (9754, T 3891), (9755, Q 6 5 1),
+ (9756, T 1701), (9757, Q 22 14 6), (9758, T 1557),
+ (9759, T 706), (9760, Q 56 49 47), (9761, T 2588),
+ (9762, T 4455), (9763, Q 30 18 1), (9764, Q 25 13 9),
+ (9765, Q 28 17 11), (9766, T 585), (9767, T 1668),
+ (9768, Q 41 23 22), (9769, T 1390), (9770, T 1091),
+ (9771, Q 29 8 1), (9772, T 741), (9773, Q 32 10 6),
+ (9774, T 401), (9775, T 537), (9776, Q 24 19 1),
+ (9777, T 773), (9778, Q 24 18 15), (9779, Q 40 21 20),
+ (9780, T 711), (9781, Q 40 28 15), (9782, T 161),
+ (9783, T 88), (9784, Q 38 37 9), (9785, T 2036),
+ (9786, T 4147), (9787, Q 20 13 9), (9788, T 2007),
+ (9789, Q 17 8 2), (9790, T 177), (9791, T 390),
+ (9792, Q 27 26 21), (9793, T 339), (9794, Q 24 15 6),
+ (9795, Q 26 5 4), (9796, T 321), (9797, Q 35 32 2),
+ (9798, T 2677), (9799, T 139), (9800, Q 42 41 10),
+ (9801, T 284), (9802, Q 12 10 3), (9803, Q 18 10 2),
+ (9804, T 1165), (9805, Q 22 21 18), (9806, Q 30 9 8),
+ (9807, T 337), (9808, Q 43 32 21), (9809, Q 19 15 10),
+ (9810, T 711), (9811, Q 41 28 27), (9812, Q 31 30 22),
+ (9813, Q 26 17 12), (9814, T 1545), (9815, Q 27 26 8),
+ (9816, Q 46 33 22), (9817, T 4420), (9818, Q 30 19 10),
+ (9819, Q 18 4 3), (9820, T 105), (9821, Q 34 23 18),
+ (9822, T 305), (9823, T 144), (9824, Q 13 10 3),
+ (9825, T 2563), (9826, Q 22 10 7), (9827, Q 13 12 5),
+ (9828, T 207), (9829, Q 4 3 1), (9830, T 1541),
+ (9831, T 1159), (9832, Q 39 37 25), (9833, T 104),
+ (9834, Q 32 25 7), (9835, Q 32 29 1),
+ (9836, Q 18 13 10), (9837, Q 35 16 2),
+ (9838, Q 25 19 12), (9839, T 389), (9840, Q 49 47 13),
+ (9841, T 1788), (9842, Q 35 28 24), (9843, Q 18 12 2),
+ (9844, T 565), (9845, Q 38 18 11), (9846, T 2349),
+ (9847, T 3537), (9848, Q 25 23 10), (9849, T 329),
+ (9850, Q 19 16 4), (9851, Q 11 6 5), (9852, T 3379),
+ (9853, Q 18 11 10), (9854, T 317), (9855, T 803),
+ (9856, Q 36 15 1), (9857, T 4386), (9858, T 4235),
+ (9859, Q 34 28 1), (9860, T 2997), (9861, Q 33 18 16),
+ (9862, Q 13 10 3), (9863, T 1809), (9864, Q 35 32 21),
+ (9865, T 2604), (9866, Q 34 27 14), (9867, Q 26 8 2),
+ (9868, T 339), (9869, Q 23 8 6), (9870, T 2681),
+ (9871, T 903), (9872, Q 13 11 3), (9873, T 3842),
+ (9874, T 4279), (9875, Q 19 18 2), (9876, T 183),
+ (9877, Q 19 16 15), (9878, T 573), (9879, T 1181),
+ (9880, Q 35 28 5), (9881, Q 27 7 5), (9882, T 747),
+ (9883, Q 35 34 11), (9884, T 389), (9885, Q 38 15 3),
+ (9886, T 3673), (9887, T 710), (9888, Q 33 6 4),
+ (9889, T 2019), (9890, T 2583), (9891, Q 46 38 7),
+ (9892, Q 31 4 1), (9893, Q 32 28 18), (9894, Q 27 7 1),
+ (9895, T 787), (9896, Q 39 38 26), (9897, T 430),
+ (9898, Q 23 13 5), (9899, Q 34 21 13), (9900, T 11),
+ (9901, Q 10 4 3), (9902, Q 27 19 10), (9903, T 40),
+ (9904, Q 21 10 2), (9905, T 219), (9906, T 2027),
+ (9907, Q 10 7 1), (9908, T 2699), (9909, Q 11 10 7),
+ (9910, Q 27 16 15), (9911, T 483), (9912, Q 42 35 15),
+ (9913, T 1899), (9914, T 95), (9915, Q 29 17 8),
+ (9916, T 4483), (9917, Q 32 9 6), (9918, T 381),
+ (9919, T 1185), (9920, Q 49 18 14), (9921, T 901),
+ (9922, T 2691), (9923, Q 37 33 26), (9924, Q 30 29 26),
+ (9925, Q 12 9 7), (9926, T 1445), (9927, T 1987),
+ (9928, Q 39 38 31), (9929, T 1382), (9930, T 331),
+ (9931, Q 34 10 3), (9932, T 2397), (9933, Q 23 6 2),
+ (9934, Q 34 7 3), (9935, T 2216), (9936, Q 22 21 1),
+ (9937, T 451), (9938, Q 25 19 9), (9939, Q 32 26 17),
+ (9940, T 2059), (9941, Q 29 12 10), (9942, T 133),
+ (9943, T 3069), (9944, Q 15 14 6), (9945, T 1882),
+ (9946, T 2355), (9947, Q 23 17 8), (9948, T 1535),
+ (9949, Q 32 24 10), (9950, T 2453), (9951, T 1334),
+ (9952, Q 31 30 11), (9953, T 539), (9954, T 343),
+ (9955, Q 9 8 5), (9956, T 851), (9957, Q 25 11 4),
+ (9958, Q 17 14 4), (9959, T 381), (9960, Q 30 15 10),
+ (9961, T 2707), (9962, Q 20 14 3), (9963, Q 34 29 20),
+ (9964, T 2691), (9965, Q 34 24 23), (9966, T 1701),
+ (9967, T 4399), (9968, Q 36 3 2), (9969, T 295),
+ (9970, T 2587), (9971, Q 11 8 5), (9972, T 519),
+ (9973, Q 27 24 12), (9974, T 2045), (9975, T 124),
+ (9976, Q 21 19 5), (9977, T 2954), (9978, T 1483),
+ (9979, Q 26 10 2), (9980, T 707), (9981, Q 30 27 22),
+ (9982, T 993), (9983, T 785), (9984, Q 27 10 7),
+ (9985, T 1974), (9986, T 1143), (9987, Q 14 11 10),
+ (9988, T 3129), (9989, Q 21 20 6), (9990, T 573),
+ (9991, T 495), (9992, Q 7 4 2), (9993, T 121),
+ (9994, Q 29 22 3), (9995, Q 41 40 31), (9996, T 1447),
+ (9997, Q 26 10 6), (9998, T 4013), (9999, T 2951),
+ (10000, Q 19 13 9)]
