@@ -1,14 +1,16 @@
 {-|
- - Maintainer: Thomas.DuBuisson@gmail.com
- - Stability: beta
- - Portability: portable 
- -
- - PKCS5 (RFC 1423) and IPSec ESP (RFC 4303) padding methods are implemented both
- - as trivial functions operating on bytestrings and as 'Put' routines usable from
- - the "Data.Serialize" module.  These methods do not work for algorithms or pad
- - sizes in excess of 255 bytes (2040 bits, so extremely large as far as cipher needs
- - are concerned).
- -}
+  Maintainer: Thomas.DuBuisson@gmail.com
+  Stability: beta
+  Portability: portable
+
+PKCS5 (RFC 1423) and IPSec ESP (RFC 4303)
+padding methods are implemented both as trivial functions operating on
+bytestrings and as 'Put' routines usable from the "Data.Serialize"
+module.  These methods do not work for algorithms or pad sizes in
+excess of 255 bytes (2040 bits, so extremely large as far as cipher
+needs are concerned).
+
+-}
 
 module Crypto.Padding
 	(
@@ -35,13 +37,14 @@ import qualified Data.ByteString.Lazy as L
 padPKCS5 :: ByteLength -> B.ByteString -> B.ByteString
 padPKCS5 len bs = runPut $ putPaddedPKCS5 len bs
 
--- |
+-- | Ex:
+--
 -- @
 --     putPaddedPKCS5 m bs
 -- @
 --
--- Will pad out @bs@ to a byte multiple
--- of @m@ and put both the bytestring and it's padding via 'Put'
+-- Will pad out `bs` to a byte multiple
+-- of `m` and put both the bytestring and it's padding via 'Put'
 -- (this saves on copying if you are already using Cereal).
 putPaddedPKCS5 :: ByteLength -> B.ByteString -> Put
 putPaddedPKCS5 0 bs = putByteString bs >> putWord8 1
@@ -74,7 +77,8 @@ unpadPKCS5safe bs
   pLen = fromIntegral padLen
   (msg,pad) = B.splitAt (bsLen - pLen) bs
 
--- |unpad a strict bytestring without checking the pad bytes and length any more than necessary.
+-- |unpad a strict bytestring without checking the pad bytes and
+-- length any more than necessary.
 unpadPKCS5 :: B.ByteString -> B.ByteString
 unpadPKCS5 bs = if bsLen == 0 then bs else msg
   where
@@ -130,7 +134,7 @@ putPadESP l bs = do
   padLen = l - ((B.length bs + 1) `rem` l)
   pLen = fromIntegral padLen
 
--- A static espPad allows reuse of a single B.pack'ed pad for all calls to padESP
+-- |A static espPad allows reuse of a single B.pack'ed pad for all calls to padESP
 espPad = B.pack [1..255]
 
 -- | unpad and return the padded message (Nothing is returned if the padding is invalid)

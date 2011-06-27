@@ -132,9 +132,11 @@ class ( Serialize k) => BlockCipher k where
   buildKey	:: B.ByteString -> Maybe k		-- ^ smart constructor for keys from a bytestring.
   keyLength	:: Tagged k BitLength			-- ^ length of the cryptographic key
 
+-- |The number of bytes in a block cipher block
 blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
 blockSizeBytes = fmap (`div` 8) blockSize
 
+-- |Build a symmetric key using the system entropy (see 'System.Crypto.Random')
 buildKeyIO :: (BlockCipher k) => IO k
 buildKeyIO = go 0
   where
@@ -157,6 +159,7 @@ class (Serialize p, Serialize v) => AsymCipher p v where
   publicKeyLength  :: p -> BitLength
   privateKeyLength :: v -> BitLength
 
+-- |Build a pair of asymmetric keys using the system random generator.
 buildKeyPairIO :: AsymCipher p v => BitLength -> IO (Either GenError (p,v))
 buildKeyPairIO bl = do
 	g <- newGenIO :: IO SystemRandom
@@ -173,6 +176,7 @@ class (Serialize k) => StreamCipher k iv | k -> iv where
   decryptStream 	:: k -> iv -> B.ByteString -> (B.ByteString, iv)
   streamKeyLength	:: Tagged k BitLength
 
+-- |Build a stream key using the system random generator
 buildStreamKeyIO :: StreamCipher k iv => IO k
 buildStreamKeyIO = go 0
   where
@@ -196,6 +200,7 @@ class (Serialize p, Serialize v) => Signing p v | p -> v, v -> p  where
   signingKeyLength :: v -> BitLength
   verifyingKeyLength :: p -> BitLength
 
+-- |Build a signing key using the system random generator
 buildSigningKeyPairIO :: (Signing p v) => BitLength -> IO (Either GenError (p,v))
 buildSigningKeyPairIO bl = do
 	g <- newGenIO :: IO SystemRandom

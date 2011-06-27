@@ -5,12 +5,12 @@
  Portability: portable 
  Authors: Thomas DuBuisson, Francisco Blas Izquierdo Riera (klondike)
 
- Generic mode implementations useable by any correct BlockCipher instance 
- 
- Be aware there are no tests for CFB mode yet.  See "Test.Crypto".
+
+ Generic mode implementations useable by any correct BlockCipher
+instance Be aware there are no tests for CFB mode yet.  See
+'Test.Crypto'. 
 -}
-module Crypto.Modes
-	(
+module Crypto.Modes (
 	-- * Initialization Vector Type, Modifiers (for all ciphers, all modes that use IVs)
 	  IV
 	, getIV, getIVIO, zeroIV
@@ -55,13 +55,14 @@ import Data.List (genericDrop,genericReplicate,genericLength)
 import Data.Proxy
 #endif
 
--- |Initilization Vectors for BlockCipher implementations (IV k) are used
--- for various modes and guarrenteed to be blockSize bits long.  The common
--- ways to obtain an IV are to generate one ('getIV' or 'getIVIO') or to
--- use one provided with the ciphertext (using the 'Serialize' instance of IV).
+-- |Initilization Vectors for BlockCipher implementations (IV k) are
+-- used for various modes and guarrenteed to be blockSize bits long.
+-- The common ways to obtain an IV are to generate one ('getIV' or
+-- 'getIVIO') or to use one provided with the ciphertext (using the
+-- 'Serialize' instance of IV).
 --
--- 'zeroIV' also exists and is of particular use for starting 'ctr' mode with
--- a fresh key.
+-- 'zeroIV' also exists and is of particular use for starting 'ctr'
+-- mode with a fresh key.
 data IV k = IV { initializationVector :: {-# UNPACK #-} !B.ByteString } deriving (Eq, Ord, Show)
 
 -- gather a specified number of bytes from the list of bytestrings
@@ -93,10 +94,11 @@ chunkFor' k = go
 {-# INLINE chunkFor' #-}
 
 -- |zipWith xor + Pack
--- This is written intentionally to take advantage of the bytestring
--- libraries 'zipWith'' rewrite rule but at the extra cost of the
--- resulting lazy bytestring being more fragmented than either of the
--- two inputs.
+-- 
+-- This is written intentionally to take advantage
+-- of the bytestring libraries 'zipWith'' rewrite rule but at the
+-- extra cost of the resulting lazy bytestring being more fragmented
+-- than either of the two inputs.
 zwp :: L.ByteString -> L.ByteString -> L.ByteString
 zwp  a b = 
 	let as = L.toChunks a
@@ -115,8 +117,10 @@ zwp  a b =
 {-# INLINEABLE zwp #-}
 
 -- |zipWith xor + Pack
--- As a result of rewrite rules, this should automatically be optimized (at compile time) 
--- to use the bytestring libraries 'zipWith'' function.
+--
+-- As a result of rewrite rules, this should automatically be
+-- optimized (at compile time) to use the bytestring libraries
+-- 'zipWith'' function.
 zwp' :: B.ByteString -> B.ByteString -> B.ByteString
 zwp' a = B.pack . B.zipWith xor a
 {-# INLINEABLE zwp' #-}
@@ -209,8 +213,8 @@ unCtr' f k (IV iv) msg =
            newIV = head $ genericDrop ((ivLen - 1 + B.length msg) `div` ivLen) ivStr
        in (zwp' (B.concat $ collect (B.length msg) (map (encryptBlock k . initializationVector) ivStr)) msg, newIV)
 
--- |Generate cmac subkeys
--- |The usage of seq tries to force evaluation of both keys avoiding posible timing attacks
+-- |Generate cmac subkeys.  The usage of seq tries to force evaluation
+-- of both keys avoiding posible timing attacks
 cMacSubk :: BlockCipher k => k -> (IV k, IV k)
 cMacSubk k = (k1, k2) `seq` (k1, k2)
   where
@@ -218,8 +222,9 @@ cMacSubk k = (k1, k2) `seq` (k1, k2)
        k1 = dblIV $ IV $ encryptBlock k $ B.replicate bSize 0
        k2 = dblIV $ k1
 
--- |Pad the string as required by the cmac algorithm. In theory this should work
--- | at bit level but since the API works at byte level we do the same
+-- |Pad the string as required by the cmac algorithm. In theory this
+--  should work at bit level but since the API works at byte level we
+--  do the same
 cMacPad :: ([Word8], Bool, Int) -> Maybe (Word8,([Word8], Bool, Int))
 cMacPad (_, _, 0) = Nothing
 cMacPad ([], False, n) = Just (0,([], False, n-1))
@@ -264,7 +269,7 @@ cMac' k = cMacWithSubK' k (cMacSubk k)
 xorend  :: Int -> (Int,[Word8]) -> Maybe (Word8,(Int,[Word8]))
 xorend bsize (0, []) = Nothing
 xorend bsize (n, x:xs) | n <= bsize = Just (x,((n-1),xs))
-                      | otherwise = Just (0,((n-1),(x:xs)))
+                       | otherwise = Just (0,((n-1),(x:xs)))
 
 -- |Obtain the CMAC* on lazy bytestrings
 cMacStar :: BlockCipher k => k -> [L.ByteString] -> L.ByteString
@@ -298,44 +303,41 @@ sivMask b = snd $ B.mapAccumR (go) 0 b
        go 56 w = (64,clearBit w 7)
        go n w = (n+8,w)
 
--- |SIV (Synthetic IV) mode for lazy bytestrings
--- |First argument is the optional list of bytestrings to be authenticated
--- | but not encrypted
--- |As required by the specification this algorithm may return nothing when
--- | certain constraints aren't met.
+-- |SIV (Synthetic IV) mode for lazy bytestrings. First argument is
+-- the optional list of bytestrings to be authenticated but not
+-- encrypted As required by the specification this algorithm may
+-- return nothing when certain constraints aren't met.
 siv :: BlockCipher k => k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
 siv k1 k2 xs m | length xs > bSizeb - 1 = Nothing
-              | otherwise = Just $ L.append iv $ fst $ ctr incIV k2 (IV $ sivMask $ B.concat $ L.toChunks iv) m
+               | otherwise = Just $ L.append iv $ fst $ ctr incIV k2 (IV $ sivMask $ B.concat $ L.toChunks iv) m
   where
        bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
        iv = cMacStar k1 $ xs ++ [m]
 
 
--- |SIV (Synthetic IV) for lazy bytestrings
--- |First argument is the optional list of bytestrings to be authenticated
--- | but not encrypted
--- |As required by the specification this algorithm may return nothing when
--- | authentication fails
+-- |SIV (Synthetic IV) for lazy bytestrings.  First argument is the
+-- optional list of bytestrings to be authenticated but not encrypted.
+-- As required by the specification this algorithm may return nothing
+-- when authentication fails.
 unSiv :: BlockCipher k => k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
 unSiv k1 k2 xs c | length xs > bSizeb - 1 = Nothing
-                | L.length c < fromIntegral bSize = Nothing
-                | iv /= (cMacStar k1 $ xs ++ [dm]) = Nothing
-                | otherwise = Just dm
+                 | L.length c < fromIntegral bSize = Nothing
+                 | iv /= (cMacStar k1 $ xs ++ [dm]) = Nothing
+                 | otherwise = Just dm
   where
        bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
        (iv,m) = L.splitAt (fromIntegral bSize) c
        dm = fst $ unCtr incIV k2 (IV $ sivMask $ B.concat $ L.toChunks iv) m
 
--- |SIV (Synthetic IV) mode for strict bytestrings
--- |First argument is the optional list of bytestrings to be authenticated
--- | but not encrypted
--- |As required by the specification this algorithm may return nothing when
--- | certain constraints aren't met.
+-- |SIV (Synthetic IV) mode for strict bytestrings.  First argument is
+-- the optional list of bytestrings to be authenticated but not
+-- encrypted.  As required by the specification this algorithm may
+-- return nothing when certain constraints aren't met.
 siv' :: BlockCipher k => k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
 siv' k1 k2 xs m | length xs > bSizeb - 1 = Nothing
-               | otherwise = Just $ B.append iv $ fst $ ctr' incIV k2 (IV $ sivMask iv) m
+                | otherwise = Just $ B.append iv $ fst $ ctr' incIV k2 (IV $ sivMask iv) m
   where
        bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
@@ -343,24 +345,23 @@ siv' k1 k2 xs m | length xs > bSizeb - 1 = Nothing
 
 
 
--- |SIV (Synthetic IV) for strict bytestrings
--- |First argument is the optional list of bytestrings to be authenticated
--- | but not encrypted
--- |As required by the specification this algorithm may return nothing when
--- | authentication fails
+-- |SIV (Synthetic IV) for strict bytestrings First argument is the
+-- optional list of bytestrings to be authenticated but not encrypted
+-- As required by the specification this algorithm may return nothing
+-- when authentication fails.
 unSiv' :: BlockCipher k => k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
 unSiv' k1 k2 xs c | length xs > bSizeb - 1 = Nothing
-                 | B.length c < bSize = Nothing
-                 | iv /= (cMacStar' k1 $ xs ++ [dm]) = Nothing
-                 | otherwise = Just dm
+                  | B.length c < bSize = Nothing
+                  | iv /= (cMacStar' k1 $ xs ++ [dm]) = Nothing
+                  | otherwise = Just dm
   where
        bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
        (iv,m) = B.splitAt bSize c
        dm = fst $ unCtr' incIV k2 (IV $ sivMask iv) m
 
--- |Increase an `IV` by one
--- |This is way faster than decoding, increasing, encoding 
+-- |Increase an `IV` by one.  This is way faster than decoding,
+-- increasing, encoding
 incIV :: BlockCipher k => IV k -> IV k
 incIV (IV b) = IV $ snd $ B.mapAccumR (incw) True b
   where
@@ -403,9 +404,9 @@ dblL b | L.null b = b
 decodeB :: B.ByteString -> Integer
 decodeB = B.foldl' (\acc w -> (shift acc 8) + toInteger(w)) 0
 
--- |Cast an Integer into a bigEndian ByteString of size k
--- |It will drop the MSBs in case the number is bigger than k and add 00s if it
--- |is smaller
+-- |Cast an Integer into a bigEndian ByteString of size k.  It will
+-- drop the MSBs in case the number is bigger than k and add 00s if it
+-- is smaller.
 encodeB :: (Ord a,Num a) => a -> Integer -> B.ByteString
 encodeB k n = B.pack $ if lr > k then takel (lr - k) r else pad (k - lr) r
   where
@@ -422,9 +423,9 @@ encodeB k n = B.pack $ if lr > k then takel (lr - k) r else pad (k - lr) r
 decodeL :: L.ByteString -> Integer
 decodeL = L.foldl' (\acc w -> (shift acc 8) + toInteger(w)) 0
 
--- |Cast an Integer into a bigEndian ByteString of size k
--- |It will drop the MSBs in case the number is bigger than k and add 00s if it
--- |is smaller
+-- |Cast an Integer into a bigEndian ByteString of size k.  It will
+-- drop the MSBs in case the number is bigger than k and add 00s if it
+-- is smaller.
 encodeL :: (Ord a,Num a) => a -> Integer -> L.ByteString
 encodeL k n = L.pack $ if lr > k then takel (lr - k) r else pad (k - lr) r
   where go 0 xs = xs 
@@ -468,7 +469,8 @@ unEcb' k ct =
 	in B.concat $ map (decryptBlock k) chunks
 {-# INLINEABLE unEcb' #-}
 
--- |Ciphertext feed-back encryption mode for lazy bytestrings (with s == blockSize)
+-- |Ciphertext feed-back encryption mode for lazy bytestrings (with s
+-- == blockSize)
 cfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 cfb k (IV v) msg =
 	let blks = chunkFor k msg
@@ -482,7 +484,8 @@ cfb k (IV v) msg =
 	in (c:cs, ivFinal)
 {-# INLINEABLE cfb #-}
 
--- |Ciphertext feed-back decryption mode for lazy bytestrings (with s == blockSize)
+-- |Ciphertext feed-back decryption mode for lazy bytestrings (with s
+-- == blockSize)
 unCfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 unCfb k (IV v) msg = 
 	let blks = chunkFor k msg
@@ -496,7 +499,8 @@ unCfb k (IV v) msg =
 	in (p:ps, ivF)
 {-# INLINEABLE unCfb #-}
 
--- |Ciphertext feed-back encryption mode for strict bytestrings (with s == blockSize)
+-- |Ciphertext feed-back encryption mode for strict bytestrings (with
+-- s == blockSize)
 cfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 cfb' k (IV v) msg =
 	let blks = chunkFor' k msg
@@ -567,7 +571,7 @@ getIV g =
 			| otherwise		-> Left (GenErrorOther "Generator failed to provide requested number of bytes")
 {-# INLINEABLE getIV #-}
 
--- | Obtain an `IV` using the system entropy (see "System.Crypto.Random")
+-- | Obtain an 'IV' using the system entropy (see 'System.Crypto.Random')
 getIVIO :: (BlockCipher k) => IO (IV k)
 getIVIO = do
 	let p = Proxy

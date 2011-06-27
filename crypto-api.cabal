@@ -1,5 +1,5 @@
 name:           crypto-api
-version:        0.6.2
+version:        0.6.2.1
 license:        BSD3
 license-file:   LICENSE
 copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike) (see AUTHORS)
