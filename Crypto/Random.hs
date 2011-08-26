@@ -22,38 +22,48 @@ use case of using the system random number generator
 -}
 
 module Crypto.Random
-	( -- * Basic Interface
-	  CryptoRandomGen(..)
-	, GenError (..)
-	  -- * Helper functions and expanded interface
-	, splitGen
-	  -- * Instances
-	, SystemRandom
-	) where
+       ( -- * Basic Interface
+         CryptoRandomGen(..)
+       , GenError (..)
+         -- * Helper functions and expanded interface
+       , splitGen
+         -- * Instances
+       , SystemRandom
+       ) where
 
-import System.Crypto.Random
-import Crypto.Types
 import Control.Monad (liftM)
-import qualified Data.ByteString as B
-import qualified Data.ByteString.Lazy as L
-import Data.Tagged
+import Crypto.Types
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
+import Data.Tagged
+import System.Entropy
 import System.IO.Unsafe(unsafeInterleaveIO)
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as L
 import qualified Foreign.ForeignPtr as FP
 
 #if MIN_VERSION_tagged(0,2,0)
 import Data.Proxy
 #endif
 
--- |many generators have these error conditions in common
+-- |Generator failures should always return the appropriate GenError.
 data GenError =
 	  GenErrorOther String	-- ^ Misc
-	| RequestedTooManyBytes	-- ^ Requested more bytes than a single pass can generate (The maximum request is generator dependent)
-	| RangeInvalid		-- ^ When using @genInteger g (l,h)@ and @logBase 2 (h - l) > (maxBound :: Int)@.
-	| NeedReseed		-- ^ Some generators cease operation after too high a count without a reseed (ex: NIST SP 800-90)
-	| NotEnoughEntropy	-- ^ For instantiating new generators (or reseeding)
-	| NeedsInfiniteSeed	-- ^ This generator can not be instantiated or reseeded with a finite seed (ex: 'SystemRandom')
+	| RequestedTooManyBytes	-- ^ Requested more bytes than a
+                                -- single pass can generate (The
+                                -- maximum request is generator
+                                -- dependent)
+	| RangeInvalid		-- ^ When using @genInteger g (l,h)@
+                                -- and @logBase 2 (h - l) > (maxBound
+                                -- :: Int)@.
+	| NeedReseed		-- ^ Some generators cease operation
+                                -- after too high a count without a
+                                -- reseed (ex: NIST SP 800-90)
+	| NotEnoughEntropy	-- ^ For instantiating new generators
+                                -- (or reseeding)
+	| NeedsInfiniteSeed	-- ^ This generator can not be
+                                -- instantiated or reseeded with a
+                                -- finite seed (ex: 'SystemRandom')
   deriving (Eq, Ord, Show)
 
 -- |A class of random bit generators that allows for the possibility
@@ -128,7 +138,9 @@ class CryptoRandomGen g where
 	newGenIO :: IO g
 	newGenIO = go 0
 	  where
-	  go 1000 = error "The generator instance requested by newGenIO never instantiates (1000 tries).  It must be broken."
+	  go 1000 = error $ "The generator instance requested by" ++
+                          "newGenIO never instantiates (1000 tries). " ++
+                          "It must be broken."
 	  go i = do
 		let p = Proxy
 		    getTypedGen :: (CryptoRandomGen g) => Proxy g -> IO (Either GenError g)
@@ -164,17 +176,18 @@ getSystemGen = do
 data SystemRandom = SysRandom L.ByteString
 
 instance CryptoRandomGen SystemRandom where
-        newGen _ = Left NeedsInfiniteSeed
-        genSeedLength = Tagged maxBound
-        genBytes req (SysRandom bs) =
-                let reqI = fromIntegral req
-                    rnd = L.take reqI bs
-                    rest = L.drop reqI bs
-                in if L.length rnd == reqI
-                        then Right (B.concat $ L.toChunks rnd, SysRandom rest)
-                        else Left $ GenErrorOther "Error obtaining enough bytes from system random for given request"
-        reseed _ _ = Left NeedsInfiniteSeed
-        newGenIO = getSystemGen
+  newGen _ = Left NeedsInfiniteSeed
+  genSeedLength = Tagged maxBound
+  genBytes req (SysRandom bs) =
+    let reqI = fromIntegral req
+        rnd = L.take reqI bs
+        rest = L.drop reqI bs
+    in if L.length rnd == reqI
+        then Right (B.concat $ L.toChunks rnd, SysRandom rest)
+        else Left $ GenErrorOther "Error obtaining enough bytes \
+                                 \from system random for given request"
+  reseed _ _ = Left NeedsInfiniteSeed
+  newGenIO = getSystemGen
 
 -- | While the safety and wisdom of a splitting function depends on the
 -- properties of the generator being split, several arguments from
@@ -182,14 +195,14 @@ instance CryptoRandomGen SystemRandom where
 -- generators.  (see libraries\@haskell.org discussion around Sept, Oct
 -- 2010)
 splitGen :: CryptoRandomGen g => g -> Either GenError (g,g)
-splitGen g = do
-	let e = genBytes (genSeedLength `for` g) g
-	case e of
+splitGen g =
+  let e = genBytes (genSeedLength `for` g) g
+  in case e of
+    Left e -> Left e
+    Right (ent,g') -> 
+       case newGen ent of
+		Right new -> Right (g',new)
 		Left e -> Left e
-		Right (ent,g') -> 
-			case newGen ent of
-				Right new -> Right (g',new)
-				Left e -> Left e
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b

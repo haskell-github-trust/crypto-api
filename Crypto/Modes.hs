@@ -45,7 +45,7 @@ import Crypto.Classes
 import Crypto.Random
 import Crypto.Util
 import Crypto.CPoly
-import System.Crypto.Random (getEntropy)
+import System.Entropy (getEntropy)
 import Control.Monad (liftM, forM_)
 import Data.List (genericDrop)
 import Data.Word (Word8)

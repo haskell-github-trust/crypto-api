@@ -44,7 +44,7 @@ import Data.Word (Word64)
 import Data.Tagged
 import Crypto.Types
 import Crypto.Random
-import System.Crypto.Random
+import System.Entropy
 
 -- |The Hash class is intended as the generic interface
 -- targeted by maintainers of Haskell digest implementations.
@@ -80,14 +80,18 @@ hash' msg = res
   remlen = B.length msg - (B.length msg `rem` bLen)
   bLen = blockLength `for` res `div` 8
 
--- |Obtain a lazy hash function from a digest
+-- |Obtain a lazy hash function whose result is the same type
+-- as the given digest, which is discarded.  If the type is already inferred then
+-- consider using the 'hash' function instead.
 hashFunc :: Hash c d => d -> (L.ByteString -> d)
 hashFunc d = f
   where
   f = hash
   a = f undefined `asTypeOf` d
 
--- |Obtain a strict hash function from a digest
+-- |Obtain a strict hash function whose result is the same type
+-- as the given digest, which is discarded.  If the type is already inferred then
+-- consider using the 'hash'' function instead.
 hashFunc' :: Hash c d => d -> (B.ByteString -> d)
 hashFunc' d = f
   where

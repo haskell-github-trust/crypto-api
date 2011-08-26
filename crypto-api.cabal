@@ -1,5 +1,5 @@
 name:           crypto-api
-version:        0.6.2.1
+version:        0.6.4
 license:        BSD3
 license-file:   LICENSE
 copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike) (see AUTHORS)
@@ -53,14 +53,11 @@ Library
                  bytestring >= 0.9 && < 0.10,
                  cereal >= 0.2 && < 0.4,
                  tagged >= 0.1 && < 0.3,
-                 largeword >= 1.0.0, array
-  ghc-options:   -O2
+                 largeword >= 1.0.0, array, entropy
+  ghc-options:
   hs-source-dirs:
-  exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, System.Crypto.Random, Crypto.Random, Crypto.Padding
+  exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, Crypto.Random, Crypto.Padding, System.Crypto.Random
   other-modules: Crypto.Util, Crypto.CPoly
-  if os(windows)
-    cpp-options: -DisWindows
-    extra-libraries: advapi32
   if flag(tests)
     exposed-modules: Test.Crypto, Test.AES, Test.SHA, Test.HMAC, Test.ParseNistKATs, Test.TwoFish
     build-depends: QuickCheck >= 2.3 && < 2.4, directory >= 1.0.1.0 && < 1.2, filepath
