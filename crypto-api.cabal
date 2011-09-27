@@ -6,8 +6,7 @@ copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Iz
 author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike)
 maintainer:     Thomas DuBuisson <thomas.dubuisson@gmail.com>
 description:    A generic interface for cryptographic operations,
-                platform independent quality RNG, property tests
-                and known-answer tests (KATs) for common algorithms,
+                platform independent quality RNG
                 and a basic benchmark infrastructure.
 
                 Maintainers of hash and cipher implementations are
@@ -26,27 +25,12 @@ bug-reports:    http://trac.haskell.org/crypto-api/report/1
 stability:      stable
 build-type:     Simple
 cabal-version:  >= 1.6
-tested-with:    GHC == 6.12.1
-data-files:
-         Test/KAT_AES/*.txt
-       , Test/KAT_SHA/*.txt
-       , Test/KAT_HMAC/*.txt
-       , Test/KAT_TWOFISH/*.TXT
-extra-source-files:
-         Test/KAT_AES/*.txt
-       , Test/KAT_SHA/*.txt
-       , Test/KAT_HMAC/*.txt
-       , Test/KAT_TWOFISH/*.TXT
+tested-with:    GHC == 7.0.3
 
-
-flag tests
-  description: Include Test.Crypto module for testing hash and cipher instances
-  default: False
 
 flag benchmarks
   description: Include benchmarking tools for cryptographic operations
   default: False
-
 
 Library
   Build-Depends: base == 4.*,
@@ -58,10 +42,6 @@ Library
   hs-source-dirs:
   exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, Crypto.Random, Crypto.Padding, System.Crypto.Random
   other-modules: Crypto.Util, Crypto.CPoly
-  if flag(tests)
-    exposed-modules: Test.Crypto, Test.AES, Test.SHA, Test.HMAC, Test.ParseNistKATs, Test.TwoFish
-    build-depends: QuickCheck >= 2.3 && < 2.4, directory >= 1.0.1.0 && < 1.2, filepath
-    other-modules: Paths_crypto_api
   if flag(benchmarks)
     exposed-modules: Benchmark.Crypto
     build-depends: criterion >= 0.5, deepseq
