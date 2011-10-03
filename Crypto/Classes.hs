@@ -33,12 +33,14 @@ module Crypto.Classes
 	-- * Misc helper functions
 	, for
 	, (.::.)
+        , safeEq, safeCompare
 	) where
 
 import Data.Serialize
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Internal as I
+import Data.Bits ((.|.), xor)
 import Data.List (foldl')
 import Data.Word (Word64)
 import Data.Tagged
@@ -113,14 +115,6 @@ makeBlocks msg len = go (L.toChunks msg)
 	case xs of
 		[] -> ([], x)
 		(a:as) -> go (B.append x a : as)
-
--- |Obtain a tagged value for a given type
-for :: Tagged a b -> a -> b
-for t _ = unTagged t
-
--- |Infix `for` operator
-(.::.) :: Tagged a b -> a -> b
-(.::.) = for
 
 -- |The BlockCipher class is intended as the generic interface
 -- targeted by maintainers of Haskell cipher implementations.
@@ -211,3 +205,41 @@ buildSigningKeyPairIO bl = do
 	case buildSigningPair g bl of
 		Left err -> return $ Left err
 		Right (k,_) -> return $ Right k
+
+-- |Obtain a tagged value for a given type
+for :: Tagged a b -> a -> b
+for t _ = unTagged t
+
+-- |Infix `for` operator
+(.::.) :: Tagged a b -> a -> b
+(.::.) = for
+
+-- | Checks two bytestrings for equality without breaches for
+-- timing attacks.
+--
+-- Semantically, @safeEq = (==)@.  However, @x == y@ takes less
+-- time when the first byte is different than when the first byte
+-- is equal.  This side channel allows an attacker to mount a
+-- timing attack.  On the other hand, @safeEq@ always takes the
+-- same time regardless of the bytestrings' contents.
+--
+-- You should always use @safeEq@ when comparing hashes,
+-- otherwise you may leave a significant security hole
+-- (cf. <http://codahale.com/a-lesson-in-timing-attacks/>).
+safeEq :: B.ByteString -> B.ByteString -> Bool
+safeEq s1 s2 =
+  B.length s1 == B.length s2 &&
+  foldl' (.|.) 0 (B.zipWith xor s1 s2) == 0
+
+-- | Like 'safeEq', safeCompare can be used to compare two
+-- bytestrings in a way that is less suceptible to timing
+-- attacks.  Semantically @safeEq == (== EQ) . safeCompare@
+-- and @safeCompare == compare@.
+safeCompare :: B.ByteString -> B.ByteString -> Ordering
+safeCompare s1 s2 =
+  let len = compare (B.length s1) (B.length s2)
+      f EQ x = x `seq` x
+      f x y  = y `seq` x
+      ls = B.zipWith compare s1 s2
+  in if len /= EQ then len else foldl' f len ls
+
