@@ -34,7 +34,7 @@ Library
                  largeword >= 1.0.0, array, entropy
   ghc-options:
   hs-source-dirs:
-  exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, Crypto.Random, Crypto.Padding, System.Crypto.Random
+  exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, Crypto.Random, Crypto.Padding
   other-modules: Crypto.Util, Crypto.CPoly
 
 source-repository head
