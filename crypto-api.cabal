@@ -1,12 +1,11 @@
 name:           crypto-api
-version:        0.7.1
+version:        0.8
 license:        BSD3
 license-file:   LICENSE
 copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike) (see AUTHORS)
 author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike)
 maintainer:     Thomas DuBuisson <thomas.dubuisson@gmail.com>
-description:    A generic interface for cryptographic operations,
-                and a platform independent quality RNG.
+description:    A generic interface for cryptographic operations (hashes, ciphers, randomness).
 
                 Maintainers of hash and cipher implementations are
                 encouraged to add instances for the classes defined
