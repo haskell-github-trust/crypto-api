@@ -1,13 +1,12 @@
 name:           crypto-api
-version:        0.6.4
+version:        0.7.1
 license:        BSD3
 license-file:   LICENSE
 copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike) (see AUTHORS)
 author:         Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike)
 maintainer:     Thomas DuBuisson <thomas.dubuisson@gmail.com>
 description:    A generic interface for cryptographic operations,
-                platform independent quality RNG
-                and a basic benchmark infrastructure.
+                and a platform independent quality RNG.
 
                 Maintainers of hash and cipher implementations are
                 encouraged to add instances for the classes defined
@@ -28,10 +27,6 @@ cabal-version:  >= 1.6
 tested-with:    GHC == 7.0.3
 
 
-flag benchmarks
-  description: Include benchmarking tools for cryptographic operations
-  default: False
-
 Library
   Build-Depends: base == 4.*,
                  bytestring >= 0.9 && < 0.10,
@@ -42,9 +37,7 @@ Library
   hs-source-dirs:
   exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, Crypto.Random, Crypto.Padding, System.Crypto.Random
   other-modules: Crypto.Util, Crypto.CPoly
-  if flag(benchmarks)
-    exposed-modules: Benchmark.Crypto
-    build-depends: criterion >= 0.5, deepseq
+
 source-repository head
-    type:     darcs
-    location: http://code.haskell.org/crypto-api
+  type:     git
+  location: https://github.com/TomMD/crypto-api
