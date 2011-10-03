@@ -24,6 +24,9 @@ stability:      stable
 build-type:     Simple
 cabal-version:  >= 1.6
 tested-with:    GHC == 7.0.3
+extra-source-files:
+  c_impl/misc.c
+  c_impl/misc.h
 
 
 Library
@@ -36,6 +39,8 @@ Library
   hs-source-dirs:
   exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, Crypto.Random, Crypto.Padding
   other-modules: Crypto.Util, Crypto.CPoly
+  extensions: ForeignFunctionInterface
+  c-sources: c_impl/misc.c
 
 source-repository head
   type:     git

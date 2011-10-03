@@ -2,9 +2,9 @@
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
- Portability: portable 
+ Portability: portable
 
-This is the heart of the crypto-api package.  By making (or having) 
+This is the heart of the crypto-api package.  By making (or having)
 an instance of Hash, AsymCipher, BlockCipher or StreamCipher you provide (or obtain)
 access to any infrastructure built on these primitives include block cipher modes
 of operation, hashing, hmac, signing, etc.  These classes allow users to build
@@ -13,7 +13,7 @@ as changing a type signature.
 -}
 
 module Crypto.Classes
-	( 
+	(
 	-- * Hash class and helper functions
 	  Hash(..)
 	, hash
@@ -40,12 +40,15 @@ import Data.Serialize
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Internal as I
+import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
 import Data.Bits ((.|.), xor)
 import Data.List (foldl')
 import Data.Word (Word64)
 import Data.Tagged
 import Crypto.Types
 import Crypto.Random
+import Foreign (Ptr, unsafePerformIO)
+import Foreign.C (CChar, CInt)
 import System.Entropy
 
 -- |The Hash class is intended as the generic interface
@@ -227,9 +230,25 @@ for t _ = unTagged t
 -- otherwise you may leave a significant security hole
 -- (cf. <http://codahale.com/a-lesson-in-timing-attacks/>).
 safeEq :: B.ByteString -> B.ByteString -> Bool
+-- Fast C implementation.
+safeEq s1 s2 =
+    unsafePerformIO $
+    unsafeUseAsCStringLen s1 $ \(s1_ptr, s1_len) ->
+    unsafeUseAsCStringLen s2 $ \(s2_ptr, s2_len) ->
+      if s1_len /= s2_len
+      then return False
+      else (== 0) `fmap` c_safeEq s1_ptr s2_ptr (fromIntegral s1_len)
+
+foreign import ccall unsafe
+  c_safeEq :: Ptr CChar -> Ptr CChar -> CInt -> IO CInt
+
+{-
+-- Haskell only implementation.
 safeEq s1 s2 =
   B.length s1 == B.length s2 &&
   foldl' (.|.) 0 (B.zipWith xor s1 s2) == 0
+-}
+
 
 -- | Like 'safeEq', safeCompare can be used to compare two
 -- bytestrings in a way that is less suceptible to timing
