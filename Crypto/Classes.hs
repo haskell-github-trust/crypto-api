@@ -33,7 +33,7 @@ module Crypto.Classes
 	-- * Misc helper functions
 	, for
 	, (.::.)
-        , safeEq, safeCompare
+        , constTimeEq
 	) where
 
 import Data.Serialize
@@ -217,29 +217,16 @@ for t _ = unTagged t
 -- | Checks two bytestrings for equality without breaches for
 -- timing attacks.
 --
--- Semantically, @safeEq = (==)@.  However, @x == y@ takes less
+-- Semantically, @constTimeEq = (==)@.  However, @x == y@ takes less
 -- time when the first byte is different than when the first byte
 -- is equal.  This side channel allows an attacker to mount a
--- timing attack.  On the other hand, @safeEq@ always takes the
+-- timing attack.  On the other hand, @constTimeEq@ always takes the
 -- same time regardless of the bytestrings' contents.
 --
--- You should always use @safeEq@ when comparing hashes,
+-- You should always use @constTimeEq@ when comparing hashes,
 -- otherwise you may leave a significant security hole
 -- (cf. <http://codahale.com/a-lesson-in-timing-attacks/>).
-safeEq :: B.ByteString -> B.ByteString -> Bool
-safeEq s1 s2 =
+constTimeEq :: B.ByteString -> B.ByteString -> Bool
+constTimeEq s1 s2 =
   B.length s1 == B.length s2 &&
   foldl' (.|.) 0 (B.zipWith xor s1 s2) == 0
-
--- | Like 'safeEq', safeCompare can be used to compare two
--- bytestrings in a way that is less suceptible to timing
--- attacks.  Semantically @safeEq == (== EQ) . safeCompare@
--- and @safeCompare == compare@.
-safeCompare :: B.ByteString -> B.ByteString -> Ordering
-safeCompare s1 s2 =
-  let len = compare (B.length s1) (B.length s2)
-      f EQ x = x `seq` x
-      f x y  = y `seq` x
-      ls = B.zipWith compare s1 s2
-  in if len /= EQ then len else foldl' f len ls
-
