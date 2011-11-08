@@ -223,7 +223,7 @@ for t _ = unTagged t
 -- timing attack.  On the other hand, @constTimeEq@ always takes the
 -- same time regardless of the bytestrings' contents.
 --
--- You should always use @constTimeEq@ when comparing hashes,
+-- You should always use @constTimeEq@ when comparing secrets,
 -- otherwise you may leave a significant security hole
 -- (cf. <http://codahale.com/a-lesson-in-timing-attacks/>).
 constTimeEq :: B.ByteString -> B.ByteString -> Bool
