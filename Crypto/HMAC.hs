@@ -1,7 +1,7 @@
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
- Portability: portable 
+ Portability: portable
 -}
 
 module Crypto.HMAC
@@ -16,11 +16,11 @@ import Crypto.Classes
 import Data.Serialize (encode)
 import Data.Bits (xor)
 
-newtype MacKey = MacKey B.ByteString deriving (Eq, Ord, Show)
+newtype MacKey c d = MacKey B.ByteString deriving (Eq, Ord, Show)
 
 -- |Message authentication code calculation for lazy bytestrings.
 -- @hmac k msg@ will compute an authentication code for @msg@ using key @k@
-hmac :: (Hash c d) => MacKey -> L.ByteString -> d
+hmac :: (Hash c d) => MacKey c d -> L.ByteString -> d
 hmac (MacKey k) msg = res
   where
   res = hash' . B.append ko . encode  . f . L.append ki $ msg
@@ -36,5 +36,5 @@ hmac (MacKey k) msg = res
   fc = L.fromChunks . \s -> [s]
 
 -- | @hmac k msg@ will compute an authentication code for @msg@ using key @k@
-hmac' :: (Hash c d) => MacKey -> B.ByteString -> d
+hmac' :: (Hash c d) => MacKey c d -> B.ByteString -> d
 hmac' k = hmac k . L.fromChunks . return
