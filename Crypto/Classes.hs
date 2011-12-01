@@ -13,7 +13,7 @@ as changing a type signature.
 -}
 
 module Crypto.Classes
-	( 
+	(
 	-- * Hash class and helper functions
 	  Hash(..)
 	, hash
@@ -40,12 +40,16 @@ import Data.Serialize
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Internal as I
+import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
 import Data.Bits ((.|.), xor)
 import Data.List (foldl')
 import Data.Word (Word64)
 import Data.Tagged
 import Crypto.Types
 import Crypto.Random
+import System.IO.Unsafe (unsafePerformIO)
+import Foreign (Ptr)
+import Foreign.C (CChar, CInt)
 import System.Entropy
 
 -- |The Hash class is intended as the generic interface
@@ -221,12 +225,20 @@ for t _ = unTagged t
 -- time when the first byte is different than when the first byte
 -- is equal.  This side channel allows an attacker to mount a
 -- timing attack.  On the other hand, @constTimeEq@ always takes the
--- same time regardless of the bytestrings' contents.
+-- same time regardless of the bytestrings' contents, unless they are
+-- of difference size.
 --
 -- You should always use @constTimeEq@ when comparing hashes,
 -- otherwise you may leave a significant security hole
 -- (cf. <http://codahale.com/a-lesson-in-timing-attacks/>).
 constTimeEq :: B.ByteString -> B.ByteString -> Bool
 constTimeEq s1 s2 =
-  B.length s1 == B.length s2 &&
-  foldl' (.|.) 0 (B.zipWith xor s1 s2) == 0
+    unsafePerformIO $
+    unsafeUseAsCStringLen s1 $ \(s1_ptr, s1_len) ->
+    unsafeUseAsCStringLen s2 $ \(s2_ptr, s2_len) ->
+    if s1_len /= s2_len
+      then return False
+      else (== 0) `fmap` c_constTimeEq s1_ptr s2_ptr (fromIntegral s1_len)
+
+foreign import ccall unsafe
+   c_constTimeEq :: Ptr CChar -> Ptr CChar -> CInt -> IO CInt

@@ -1,3 +1,10 @@
+0.8.1
+* Moved to a C implementation for constant time equality.
+
+0.8
+* Altered the HMAC Key type to carry phantom types
+* Added a constant time equality checker
+
 0.5.3
 * Add reasonably performing cnt' mode of operation (good for BlockCipher based RNGs)
 

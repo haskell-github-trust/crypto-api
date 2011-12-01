@@ -1,5 +1,5 @@
 name:           crypto-api
-version:        0.8
+version:        0.8.1
 license:        BSD3
 license-file:   LICENSE
 copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>, Francisco Blas Izquierdo Riera (klondike) (see AUTHORS)
@@ -23,7 +23,10 @@ bug-reports:    http://trac.haskell.org/crypto-api/report/1
 stability:      stable
 build-type:     Simple
 cabal-version:  >= 1.6
-tested-with:    GHC == 7.0.3
+tested-with:    GHC == 7.2.2
+extra-source-files:
+  cbits/misc.c
+  cbits/misc.h
 
 
 Library
@@ -34,8 +37,13 @@ Library
                  largeword >= 1.0.0, array, entropy
   ghc-options:
   hs-source-dirs:
-  exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, Crypto.Modes, Crypto.Random, Crypto.Padding
+  exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC, 
+                   Crypto.Modes, Crypto.Random, Crypto.Padding
   other-modules: Crypto.Util, Crypto.CPoly
+  extensions: ForeignFunctionInterface, MultiParamTypeClasses,
+              BangPatterns, FunctionalDependencies, FlexibleInstances,
+              TypeSynonymInstances
+  c-sources: cbits/misc.c
 
 source-repository head
   type:     git
