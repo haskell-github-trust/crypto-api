@@ -44,6 +44,7 @@ Library
               BangPatterns, FunctionalDependencies, FlexibleInstances,
               TypeSynonymInstances
   c-sources: cbits/misc.c
+  include-dirs: cbits
 
 source-repository head
   type:     git
