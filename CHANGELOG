@@ -1,3 +1,8 @@
+0.9
+* Crypto.Classes now exports 'Data.Serialize.encode' mostly for folks who want their hashes as bytestrings
+* AsymCipher now has proper fundeps
+* cpolysArr is no longer one big line
+
 0.8.1
 * Moved to a C implementation for constant time equality.
 
