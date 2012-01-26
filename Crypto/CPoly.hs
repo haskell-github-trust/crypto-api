@@ -41,6 +41,7 @@ cpolys i
  | i < 2 || i > 10000 = error $ "The CMAC polynomial for the value" ++ show i ++ "hasn't been precomputed"
  | otherwise = cpolysArr ! i
 
+cpolysArr :: Array Int Poly
 cpolysArr = listArray (2,10000) [
   T 1,T 1,T 1,T 2,T 1,T 1,Q 4 3 1,T 1,T 3,T 2,T 3,Q 4 3 1,T 5,T 1,Q 5 3 1,
   T 3,T 3,Q 5 2 1,T 3,T 2,T 1,T 5,Q 4 3 1,T 3,Q 4 3 1,Q 5 2 1,T 1,T 2,T 1,

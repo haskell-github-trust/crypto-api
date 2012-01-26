@@ -34,6 +34,7 @@ module Crypto.Classes
 	, for
 	, (.::.)
         , constTimeEq
+        , encode
 	) where
 
 import Data.Serialize
