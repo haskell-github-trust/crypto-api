@@ -154,7 +154,7 @@ buildKeyIO = go 0
 		Just k  -> return $ k `asTaggedTypeOf` bs
 
 -- |Asymetric ciphers (common ones being RSA or EC based)
-class (Serialize p, Serialize v) => AsymCipher p v where
+class (Serialize p, Serialize v) => AsymCipher p v | p -> v, v -> p where
   buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Either GenError ((p,v),g) -- ^ build a public/private key pair using the provided generator
   encryptAsym      :: (CryptoRandomGen g) => g -> p -> B.ByteString -> Either GenError (B.ByteString,g)	-- ^ Asymetric encryption
   decryptAsym      :: v -> B.ByteString -> Maybe B.ByteString  -- ^ Asymetric decryption
