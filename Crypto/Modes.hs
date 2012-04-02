@@ -139,10 +139,12 @@ cbc' k (IV v) plaintext =
 	in (c:cs, ivFinal)
 {-# INLINEABLE cbc' #-}
 
+-- |Cipher block chaining message authentication
 cbcMac' :: BlockCipher k => k -> B.ByteString -> B.ByteString
 cbcMac' k pt = encode $ snd $ cbc' k zeroIV pt
 {-# INLINEABLE cbcMac' #-}
 
+-- |Cipher block chaining message authentication
 cbcMac :: BlockCipher k => k -> L.ByteString -> L.ByteString
 cbcMac k pt = L.fromChunks [encode $ snd $ cbc k zeroIV pt]
 {-# INLINEABLE cbcMac #-}
@@ -444,25 +446,28 @@ zeroIV = iv
   where bytes = ivBlockSizeBytes iv
         iv  = IV $ B.replicate  bytes 0
 
-
+-- |Cook book mode - not really a mode at all.  If you don't know what you're doing, don't use this mode^H^H^H^H library.
 ecb :: BlockCipher k => k -> L.ByteString -> L.ByteString
 ecb k msg =
 	let chunks = chunkFor k msg
 	in L.fromChunks $ map (encryptBlock k) chunks
 {-# INLINEABLE ecb #-}
 
+-- |ECB decrypt, complementary to `ecb`.
 unEcb :: BlockCipher k => k -> L.ByteString -> L.ByteString
 unEcb k msg =
 	let chunks = chunkFor k msg
 	in L.fromChunks $ map (decryptBlock k) chunks
 {-# INLINEABLE unEcb #-}
 
+-- | Like `ecb` but for strict bytestrings
 ecb' :: BlockCipher k => k -> B.ByteString -> B.ByteString
 ecb' k msg =
 	let chunks = chunkFor' k msg
 	in B.concat $ map (encryptBlock k) chunks
 {-# INLINEABLE ecb' #-}
 
+-- |Decryption complement to `ecb'`
 unEcb' :: BlockCipher k => k -> B.ByteString -> B.ByteString
 unEcb' k ct =
 	let chunks = chunkFor' k ct

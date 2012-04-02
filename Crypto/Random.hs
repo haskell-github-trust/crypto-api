@@ -1,11 +1,11 @@
-{-# LANGUAGE FlexibleInstances, TypeSynonymInstances, CPP #-}
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances, DeriveDataTypeable, CPP #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
  Portability: portable 
 
 
- This module is for instantiating cryptographically strong
+ This module is for instantiating cryptographicly strong
 determinitic random bit generators (DRBGs, aka PRNGs) For the simple
 use case of using the system random number generator
 ('System.Crypto.Random') to seed the DRBG:
@@ -32,10 +32,12 @@ module Crypto.Random
        ) where
 
 import Control.Monad (liftM)
+import Control.Exception
 import Crypto.Types
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
 import Data.Tagged
+import Data.Typeable
 import System.Entropy
 import System.IO.Unsafe(unsafeInterleaveIO)
 import qualified Data.ByteString as B
@@ -47,6 +49,10 @@ import Data.Proxy
 #endif
 
 -- |Generator failures should always return the appropriate GenError.
+-- Note 'GenError' in an instance of exception but wether or not an
+-- exception is thrown depends on if the selected generator (read:
+-- if you don't want execptions from code that uses 'throw' then
+-- pass in a generator that never has an error for the used functions)
 data GenError =
 	  GenErrorOther String	-- ^ Misc
 	| RequestedTooManyBytes	-- ^ Requested more bytes than a
@@ -64,7 +70,9 @@ data GenError =
 	| NeedsInfiniteSeed	-- ^ This generator can not be
                                 -- instantiated or reseeded with a
                                 -- finite seed (ex: 'SystemRandom')
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Typeable)
+
+instance Exception GenError
 
 -- |A class of random bit generators that allows for the possibility
 -- of failure, reseeding, providing entropy at the same time as
@@ -138,7 +146,8 @@ class CryptoRandomGen g where
 	newGenIO :: IO g
 	newGenIO = go 0
 	  where
-	  go 1000 = error $ "The generator instance requested by" ++
+	  go 1000 = throw $ GenErrorOther $ 
+                          "The generator instance requested by" ++
                           "newGenIO never instantiates (1000 tries). " ++
                           "It must be broken."
 	  go i = do

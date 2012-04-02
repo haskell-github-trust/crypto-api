@@ -1,3 +1,6 @@
+0.10
+* Add Typeable and Exception instances to GenError in response to users.
+
 0.9
 * Crypto.Classes now exports 'Data.Serialize.encode' mostly for folks who want their hashes as bytestrings
 * AsymCipher now has proper fundeps

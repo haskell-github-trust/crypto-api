@@ -1,3 +1,4 @@
+-- |A small selection of utilities that might be of use to others working with bytestring/number combinations.
 module Crypto.Util where
 import qualified Data.ByteString as B
 import Data.ByteString.Unsafe (unsafeIndex)

@@ -16,6 +16,8 @@ import Crypto.Classes
 import Data.Serialize (encode)
 import Data.Bits (xor)
 
+-- | A key carrying phantom types @c@ and @d@, forcing the key data to only be used
+-- by particular hash algorithms.
 newtype MacKey c d = MacKey B.ByteString deriving (Eq, Ord, Show)
 
 -- |Message authentication code calculation for lazy bytestrings.
