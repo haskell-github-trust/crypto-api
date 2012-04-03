@@ -27,6 +27,7 @@ module Crypto.Random
        , GenError (..)
          -- * Helper functions and expanded interface
        , splitGen
+       , throwLeft
          -- * Instances
        , SystemRandom
        ) where
@@ -212,6 +213,12 @@ splitGen g =
        case newGen ent of
 		Right new -> Right (g',new)
 		Left e -> Left e
+
+-- | Useful utility to extract the result of a generator operation
+-- and translate error results to exceptions.
+throwLeft :: Exception e => Either e a -> a
+throwLeft (Left e)  = throw e
+throwLeft (Right a) = a
 
 -- |Obtain a tagged value for a particular instantiated type.
 for :: Tagged a b -> a -> b
