@@ -1,5 +1,9 @@
+0.10.1
+* Updated build deps
+
 0.10
 * Add Typeable and Exception instances to GenError in response to users.
+* Added throw left
 
 0.9
 * Crypto.Classes now exports 'Data.Serialize.encode' mostly for folks who want their hashes as bytestrings
