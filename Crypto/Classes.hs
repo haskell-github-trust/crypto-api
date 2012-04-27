@@ -50,7 +50,7 @@ import Crypto.Types
 import Crypto.Random
 import System.IO.Unsafe (unsafePerformIO)
 import Foreign (Ptr)
-import Foreign.C (CChar, CInt)
+import Foreign.C (CChar(..), CInt(..))
 import System.Entropy
 
 -- |The Hash class is intended as the generic interface
