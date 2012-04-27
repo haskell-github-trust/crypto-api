@@ -1,3 +1,7 @@
+0.10.2
+* Update bytestring dep
+* Import CInt constructor because GHC HEAD is evidently inferior to 7.4 in some manner
+
 0.10.1
 * Updated build deps
 
