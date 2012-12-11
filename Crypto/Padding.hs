@@ -137,14 +137,14 @@ putPadESP l bs = do
 -- |A static espPad allows reuse of a single B.pack'ed pad for all calls to padESP
 espPad = B.pack [1..255]
 
--- | unpad and return the padded message (Nothing is returned if the padding is invalid)
+-- | unpad and return the padded message ('Nothing' is returned if the padding is invalid)
 unpadESP :: B.ByteString -> Maybe B.ByteString
 unpadESP bs =
-        if bsLen == 0 || B.take pLen pad /= B.take pLen espPad
+        if bsLen == 0 || not (constTimeEq (B.take pLen pad) (B.take pLen espPad))
                 then Nothing
                 else Just msg
   where
-  bsLen = B.length bs
+  bsLen  = B.length bs
   padLen = B.last bs
-  pLen = fromIntegral padLen
+  pLen   = fromIntegral padLen
   (msg,pad) = B.splitAt (bsLen - (pLen + 1)) bs

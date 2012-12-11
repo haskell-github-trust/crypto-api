@@ -59,7 +59,10 @@ import System.Entropy
 -- such as 'hash' and 'hash'' provide a useful API
 -- for comsumers of hash implementations.
 --
--- Any instantiated implementation must handle unaligned data
+-- Any instantiated implementation must handle unaligned data.
+--
+-- Minimum complete definition: 'outputLength', 'blockLength', 'initialCtx',
+-- 'updateCtx', and 'finalize'.
 class (Serialize d, Eq d, Ord d)
     => Hash ctx d | d -> ctx, ctx -> d where
   outputLength  :: Tagged d BitLength         -- ^ The size of the digest when encoded
@@ -69,23 +72,23 @@ class (Serialize d, Eq d, Ord d)
                                               --   must operate correctly for imputs of @n*blockLength@ bytes for @n `elem` [0..]@
   finalize      :: ctx -> B.ByteString -> d   -- ^ Finializing a context, plus any message data less than the block size, into a digest
 
--- |Hash a lazy ByteString, creating a digest
-hash :: (Hash ctx d) => L.ByteString -> d
-hash msg = res
-  where
-  res = finalize ctx end
-  ctx = foldl' updateCtx initialCtx blks
-  (blks,end) = makeBlocks msg blockLen
-  blockLen = (blockLength .::. res) `div` 8
+  -- |Hash a lazy ByteString, creating a digest
+  hash :: (Hash ctx d) => L.ByteString -> d
+  hash msg = res
+    where
+    res = finalize ctx end
+    ctx = foldl' updateCtx initialCtx blks
+    (blks,end) = makeBlocks msg blockLen
+    blockLen = (blockLength .::. res) `div` 8
 
--- |Hash a strict ByteString, creating a digest
-hash' :: (Hash ctx d) => B.ByteString -> d
-hash' msg = res
-  where
-  res = finalize (updateCtx initialCtx top) end
-  (top, end) = B.splitAt remlen msg
-  remlen = B.length msg - (B.length msg `rem` bLen)
-  bLen = blockLength `for` res `div` 8
+  -- |Hash a strict ByteString, creating a digest
+  hash' :: (Hash ctx d) => B.ByteString -> d
+  hash' msg = res
+    where
+    res = finalize (updateCtx initialCtx top) end
+    (top, end) = B.splitAt remlen msg
+    remlen = B.length msg - (B.length msg `rem` bLen)
+    bLen = blockLength `for` res `div` 8
 
 -- |Obtain a lazy hash function whose result is the same type
 -- as the given digest, which is discarded.  If the type is already inferred then
@@ -105,7 +108,7 @@ hashFunc' d = f
   f = hash'
   a = f undefined `asTypeOf` d
 
-{-# INLINE makeBlocks #-}
+{-# INLINABLE makeBlocks #-}
 makeBlocks :: L.ByteString -> ByteLength -> ([B.ByteString], B.ByteString)
 makeBlocks msg len = go (L.toChunks msg)
   where
