@@ -5,10 +5,10 @@
 -}
 
 module Crypto.HMAC
-	( hmac
-	, hmac'
-	, MacKey(..)
-	) where
+        ( hmac
+        , hmac'
+        , MacKey(..)
+        ) where
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L

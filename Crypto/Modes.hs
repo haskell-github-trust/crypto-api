@@ -11,28 +11,28 @@ instance Be aware there are no tests for CFB mode yet.  See
 'Test.Crypto'. 
 -}
 module Crypto.Modes (
-	-- * Initialization Vector Type, Modifiers (for all ciphers, all modes that use IVs)
-	  IV
-	, getIV, getIVIO, zeroIV
-	, incIV, dblIV
-	-- * Blockcipher modes. Names with a prime (') means strict, without a prime means lazy bytestrings.
-	, ecb, unEcb
-	, cbc, unCbc
-	, cfb, unCfb
-	, ofb, unOfb
-	, ecb', unEcb'
-	, cbc', unCbc'
-	, cfb', unCfb'
-	, ofb', unOfb'
-	, ctr, unCtr, ctr', unCtr'
-	, siv, unSiv, siv', unSiv'
-	-- * Authentication modes
-	, cbcMac', cbcMac, cMac, cMac'
-	-- * Combined modes (nothing here yet)
-	-- , gmc
-	-- , xts
-	-- , ccm
-	) where
+        -- * Initialization Vector Type, Modifiers (for all ciphers, all modes that use IVs)
+          IV
+        , getIV, getIVIO, zeroIV
+        , incIV, dblIV
+        -- * Blockcipher modes. Names with a prime (') means strict, without a prime means lazy bytestrings.
+        , ecb, unEcb
+        , cbc, unCbc
+        , cfb, unCfb
+        , ofb, unOfb
+        , ecb', unEcb'
+        , cbc', unCbc'
+        , cfb', unCfb'
+        , ofb', unOfb'
+        , ctr, unCtr, ctr', unCtr'
+        , siv, unSiv, siv', unSiv'
+        -- * Authentication modes
+        , cbcMac', cbcMac, cMac, cMac'
+        -- * Combined modes (nothing here yet)
+        -- , gmc
+        -- , xts
+        -- , ccm
+        ) where
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
@@ -70,7 +70,7 @@ collect :: Int -> [B.ByteString] -> [B.ByteString]
 collect 0 _ = []
 collect _ [] = []
 collect i (b:bs)
-	| len < i  = b : collect (i - len) bs
+        | len < i  = b : collect (i - len) bs
         | len >= i = [B.take i b]
   where
   len = B.length b
@@ -101,19 +101,19 @@ chunkFor' k = go
 -- than either of the two inputs.
 zwp :: L.ByteString -> L.ByteString -> L.ByteString
 zwp  a b = 
-	let as = L.toChunks a
-	    bs = L.toChunks b
-	in L.fromChunks (go as bs)
+        let as = L.toChunks a
+            bs = L.toChunks b
+        in L.fromChunks (go as bs)
   where
   go [] _ = []
   go _ [] = []
   go (a:as) (b:bs) =
-	let l = min (B.length a) (B.length b)
-	    (a',ar) = B.splitAt l a
-	    (b',br) = B.splitAt l b
-	    as' = if B.length ar == 0 then as else ar : as
-	    bs' = if B.length br == 0 then bs else br : bs
-	in (zwp' a' b') : go as' bs'
+        let l = min (B.length a) (B.length b)
+            (a',ar) = B.splitAt l a
+            (b',br) = B.splitAt l b
+            as' = if B.length ar == 0 then as else ar : as
+            bs' = if B.length br == 0 then bs else br : bs
+        in (zwp' a' b') : go as' bs'
 {-# INLINEABLE zwp #-}
 
 -- |zipWith xor + Pack
@@ -128,15 +128,15 @@ zwp' a = B.pack . B.zipWith xor a
 -- |Cipher block chaining encryption mode on strict bytestrings
 cbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 cbc' k (IV v) plaintext =
-	let blks = chunkFor' k plaintext
-	    (cts, iv) = go blks v
-	in (B.concat cts, IV iv)
+        let blks = chunkFor' k plaintext
+            (cts, iv) = go blks v
+        in (B.concat cts, IV iv)
   where
   go [] iv = ([], iv)
   go (b:bs) iv =
-	let c = encryptBlock k (zwp' iv b)
-	    (cs, ivFinal) = go bs c
-	in (c:cs, ivFinal)
+        let c = encryptBlock k (zwp' iv b)
+            (cs, ivFinal) = go bs c
+        in (c:cs, ivFinal)
 {-# INLINEABLE cbc' #-}
 
 -- |Cipher block chaining message authentication
@@ -152,43 +152,43 @@ cbcMac k pt = L.fromChunks [encode $ snd $ cbc k zeroIV pt]
 -- |Cipher block chaining decryption for strict bytestrings
 unCbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 unCbc' k (IV v) ciphertext =
-	let blks = chunkFor' k ciphertext
-	    (pts, iv) = go blks v
-	in (B.concat pts, IV iv)
+        let blks = chunkFor' k ciphertext
+            (pts, iv) = go blks v
+        in (B.concat pts, IV iv)
   where
   go [] iv = ([], iv)
   go (c:cs) iv =
-	let p = zwp' (decryptBlock k c) iv
-	    (ps, ivFinal) = go cs c
-	in (p:ps, ivFinal)
+        let p = zwp' (decryptBlock k c) iv
+            (ps, ivFinal) = go cs c
+        in (p:ps, ivFinal)
 {-# INLINEABLE unCbc' #-}
 
 -- |Cipher block chaining encryption for lazy bytestrings
 cbc :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 cbc k (IV v) plaintext =
-	let blks = chunkFor k plaintext
-	    (cts, iv) = go blks v
-	in (L.fromChunks cts, IV iv)
+        let blks = chunkFor k plaintext
+            (cts, iv) = go blks v
+        in (L.fromChunks cts, IV iv)
   where
   go [] iv = ([], iv)
   go (b:bs) iv =
-	let c = encryptBlock k (zwp' iv b)
-	    (cs, ivFinal) = go bs c
-	in (c:cs, ivFinal)
+        let c = encryptBlock k (zwp' iv b)
+            (cs, ivFinal) = go bs c
+        in (c:cs, ivFinal)
 {-# INLINEABLE cbc #-}
 
 -- |Cipher block chaining decryption for lazy bytestrings
 unCbc :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 unCbc k (IV v) ciphertext =
-	let blks = chunkFor k ciphertext
-	    (pts, iv) = go blks v
-	in (L.fromChunks pts, IV iv)
+        let blks = chunkFor k ciphertext
+            (pts, iv) = go blks v
+        in (L.fromChunks pts, IV iv)
   where
   go [] iv = ([], iv)
   go (c:cs) iv =
-	let p = zwp' (decryptBlock k c) iv
-	    (ps, ivFinal) = go cs c
-	in (p:ps, ivFinal)
+        let p = zwp' (decryptBlock k c) iv
+            (ps, ivFinal) = go cs c
+        in (p:ps, ivFinal)
 {-# INLINEABLE unCbc #-}
 
 -- |Counter mode for lazy bytestrings
@@ -449,88 +449,88 @@ zeroIV = iv
 -- |Cook book mode - not really a mode at all.  If you don't know what you're doing, don't use this mode^H^H^H^H library.
 ecb :: BlockCipher k => k -> L.ByteString -> L.ByteString
 ecb k msg =
-	let chunks = chunkFor k msg
-	in L.fromChunks $ map (encryptBlock k) chunks
+        let chunks = chunkFor k msg
+        in L.fromChunks $ map (encryptBlock k) chunks
 {-# INLINEABLE ecb #-}
 
 -- |ECB decrypt, complementary to `ecb`.
 unEcb :: BlockCipher k => k -> L.ByteString -> L.ByteString
 unEcb k msg =
-	let chunks = chunkFor k msg
-	in L.fromChunks $ map (decryptBlock k) chunks
+        let chunks = chunkFor k msg
+        in L.fromChunks $ map (decryptBlock k) chunks
 {-# INLINEABLE unEcb #-}
 
 -- | Like `ecb` but for strict bytestrings
 ecb' :: BlockCipher k => k -> B.ByteString -> B.ByteString
 ecb' k msg =
-	let chunks = chunkFor' k msg
-	in B.concat $ map (encryptBlock k) chunks
+        let chunks = chunkFor' k msg
+        in B.concat $ map (encryptBlock k) chunks
 {-# INLINEABLE ecb' #-}
 
 -- |Decryption complement to `ecb'`
 unEcb' :: BlockCipher k => k -> B.ByteString -> B.ByteString
 unEcb' k ct =
-	let chunks = chunkFor' k ct
-	in B.concat $ map (decryptBlock k) chunks
+        let chunks = chunkFor' k ct
+        in B.concat $ map (decryptBlock k) chunks
 {-# INLINEABLE unEcb' #-}
 
 -- |Ciphertext feed-back encryption mode for lazy bytestrings (with s
 -- == blockSize)
 cfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 cfb k (IV v) msg =
-	let blks = chunkFor k msg
-	    (cs,ivF) = go v blks
-	in (L.fromChunks cs, IV ivF)
+        let blks = chunkFor k msg
+            (cs,ivF) = go v blks
+        in (L.fromChunks cs, IV ivF)
   where
   go iv [] = ([],iv)
   go iv (b:bs) =
-	let c = zwp' (encryptBlock k iv) b
-	    (cs,ivFinal) = go c bs
-	in (c:cs, ivFinal)
+        let c = zwp' (encryptBlock k iv) b
+            (cs,ivFinal) = go c bs
+        in (c:cs, ivFinal)
 {-# INLINEABLE cfb #-}
 
 -- |Ciphertext feed-back decryption mode for lazy bytestrings (with s
 -- == blockSize)
 unCfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 unCfb k (IV v) msg = 
-	let blks = chunkFor k msg
-	    (ps, ivF) = go v blks
-	in (L.fromChunks ps, IV ivF)
+        let blks = chunkFor k msg
+            (ps, ivF) = go v blks
+        in (L.fromChunks ps, IV ivF)
   where
   go iv [] = ([], iv)
   go iv (b:bs) =
-	let p = zwp' (encryptBlock k iv) b
-	    (ps, ivF) = go b bs
-	in (p:ps, ivF)
+        let p = zwp' (encryptBlock k iv) b
+            (ps, ivF) = go b bs
+        in (p:ps, ivF)
 {-# INLINEABLE unCfb #-}
 
 -- |Ciphertext feed-back encryption mode for strict bytestrings (with
 -- s == blockSize)
 cfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 cfb' k (IV v) msg =
-	let blks = chunkFor' k msg
-	    (cs,ivF) = go v blks
-	in (B.concat cs, IV ivF)
+        let blks = chunkFor' k msg
+            (cs,ivF) = go v blks
+        in (B.concat cs, IV ivF)
   where
   go iv [] = ([],iv)
   go iv (b:bs) =
-	let c = zwp' (encryptBlock k iv) b
-	    (cs,ivFinal) = go c bs
-	in (c:cs, ivFinal)
+        let c = zwp' (encryptBlock k iv) b
+            (cs,ivFinal) = go c bs
+        in (c:cs, ivFinal)
 {-# INLINEABLE cfb' #-}
 
 -- |Ciphertext feed-back decryption mode for strict bytestrings (with s == blockSize)
 unCfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 unCfb' k (IV v) msg =
-	let blks = chunkFor' k msg
-	    (ps, ivF) = go v blks
-	in (B.concat ps, IV ivF)
+        let blks = chunkFor' k msg
+            (ps, ivF) = go v blks
+        in (B.concat ps, IV ivF)
   where
   go iv [] = ([], iv)
   go iv (b:bs) =
-	let p = zwp' (encryptBlock k iv) b
-	    (ps, ivF) = go b bs
-	in (p:ps, ivF)
+        let p = zwp' (encryptBlock k iv) b
+            (ps, ivF) = go b bs
+        in (p:ps, ivF)
 {-# INLINEABLE unCfb' #-}
 
 -- |Output feedback mode for lazy bytestrings
@@ -541,10 +541,10 @@ ofb = unOfb
 -- |Output feedback mode for lazy bytestrings
 unOfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 unOfb k (IV iv) msg =
-	let ivStr = drop 1 (iterate (encryptBlock k) iv)
-	    ivLen = fromIntegral (B.length iv)
-	    newIV = IV . B.concat . L.toChunks . L.take ivLen . L.drop (L.length msg) . L.fromChunks $ ivStr
-	in (zwp (L.fromChunks ivStr) msg, newIV)
+        let ivStr = drop 1 (iterate (encryptBlock k) iv)
+            ivLen = fromIntegral (B.length iv)
+            newIV = IV . B.concat . L.toChunks . L.take ivLen . L.drop (L.length msg) . L.fromChunks $ ivStr
+        in (zwp (L.fromChunks ivStr) msg, newIV)
 {-# INLINEABLE unOfb #-}
 
 -- |Output feedback mode for strict bytestrings
@@ -555,35 +555,35 @@ ofb' = unOfb'
 -- |Output feedback mode for strict bytestrings
 unOfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 unOfb' k (IV iv) msg =
-	let ivStr = collect (B.length msg + ivLen) (drop 1 (iterate (encryptBlock k) iv))
-	    ivLen = B.length iv
-	    mLen = fromIntegral (B.length msg)
-	    newIV = IV . B.concat . L.toChunks . L.take (fromIntegral ivLen) . L.drop mLen . L.fromChunks $ ivStr
-	in (zwp' (B.concat ivStr) msg, newIV)
+        let ivStr = collect (B.length msg + ivLen) (drop 1 (iterate (encryptBlock k) iv))
+            ivLen = B.length iv
+            mLen = fromIntegral (B.length msg)
+            newIV = IV . B.concat . L.toChunks . L.take (fromIntegral ivLen) . L.drop mLen . L.fromChunks $ ivStr
+        in (zwp' (B.concat ivStr) msg, newIV)
 {-# INLINEABLE unOfb' #-}
 
 -- |Obtain an `IV` using the provided CryptoRandomGenerator.
 getIV :: (BlockCipher k, CryptoRandomGen g) => g -> Either GenError (IV k, g)
 getIV g =
-	let bytes = ivBlockSizeBytes iv
-	    gen = genBytes bytes g
-	    fromRight (Right x) = x
-	    iv  = IV (fst  . fromRight $ gen)
-	in case gen of
-		Left err -> Left err
-		Right (bs,g')
-			| B.length bs == bytes	-> Right (iv, g')
-			| otherwise		-> Left (GenErrorOther "Generator failed to provide requested number of bytes")
+        let bytes = ivBlockSizeBytes iv
+            gen = genBytes bytes g
+            fromRight (Right x) = x
+            iv  = IV (fst  . fromRight $ gen)
+        in case gen of
+                Left err -> Left err
+                Right (bs,g')
+                        | B.length bs == bytes  -> Right (iv, g')
+                        | otherwise             -> Left (GenErrorOther "Generator failed to provide requested number of bytes")
 {-# INLINEABLE getIV #-}
 
 -- | Obtain an 'IV' using the system entropy (see 'System.Crypto.Random')
 getIVIO :: (BlockCipher k) => IO (IV k)
 getIVIO = do
-	let p = Proxy
-	    getTypedIV :: BlockCipher k => Proxy k -> IO (IV k)
-	    getTypedIV pr = liftM IV (getEntropy (proxy blockSize pr `div` 8))
-	iv <- getTypedIV p
-	return (iv `asProxyTypeOf` ivProxy p)
+        let p = Proxy
+            getTypedIV :: BlockCipher k => Proxy k -> IO (IV k)
+            getTypedIV pr = liftM IV (getEntropy (proxy blockSize pr `div` 8))
+        iv <- getTypedIV p
+        return (iv `asProxyTypeOf` ivProxy p)
 {-# INLINEABLE getIVIO #-}
 
 ivProxy :: Proxy k -> Proxy (IV k)
@@ -597,18 +597,18 @@ proxyOf = const Proxy
 
 ivBlockSizeBytes :: BlockCipher k => IV k -> Int
 ivBlockSizeBytes iv =
-	let p = deIVProxy (proxyOf iv)
-	in proxy blockSize p `div` 8
+        let p = deIVProxy (proxyOf iv)
+        in proxy blockSize p `div` 8
 {-# INLINEABLE ivBlockSizeBytes #-}
 
 instance (BlockCipher k) => Serialize (IV k) where
-	get = do
-		let p = Proxy
-		    doGet :: BlockCipher k => Proxy k -> Get (IV k)
-	            doGet pr = liftM IV (SG.getByteString (proxy blockSizeBytes pr))
-		iv <- doGet p
-		return (iv `asProxyTypeOf` ivProxy p)
-	put (IV iv) = SP.putByteString iv
+        get = do
+                let p = Proxy
+                    doGet :: BlockCipher k => Proxy k -> Get (IV k)
+                    doGet pr = liftM IV (SG.getByteString (proxy blockSizeBytes pr))
+                iv <- doGet p
+                return (iv `asProxyTypeOf` ivProxy p)
+        put (IV iv) = SP.putByteString iv
 
 -- TODO: GCM, GMAC
 -- Consider the AES-only modes of XTS, CCM

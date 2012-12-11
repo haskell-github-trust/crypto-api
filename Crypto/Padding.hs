@@ -13,18 +13,18 @@ needs are concerned).
 -}
 
 module Crypto.Padding
-	(
-	-- * PKCS5 (RFC 1423) based [un]padding routines
-	  padPKCS5
-	, padBlockSize
-	, putPaddedPKCS5
-	, unpadPKCS5safe
-	, unpadPKCS5
-	-- * ESP (RFC 4303) [un]padding routines
-	, padESP, unpadESP
-	, padESPBlockSize
-	, putPadESPBlockSize, putPadESP
-	) where
+        (
+        -- * PKCS5 (RFC 1423) based [un]padding routines
+          padPKCS5
+        , padBlockSize
+        , putPaddedPKCS5
+        , unpadPKCS5safe
+        , unpadPKCS5
+        -- * ESP (RFC 4303) [un]padding routines
+        , padESP, unpadESP
+        , padESPBlockSize
+        , putPadESPBlockSize, putPadESP
+        ) where
 
 import Data.Serialize.Put
 import Crypto.Classes
@@ -69,8 +69,8 @@ putPaddedBlockSize k bs = putPaddedPKCS5 (blockSizeBytes `for` k) bs
 -- This routine verifies all pad bytes and pad length match correctly.
 unpadPKCS5safe :: B.ByteString -> Maybe B.ByteString
 unpadPKCS5safe bs
-	| bsLen > 0 && B.all (== padLen) pad && B.length pad == pLen = Just msg
-	| otherwise = Nothing
+        | bsLen > 0 && B.all (== padLen) pad && B.length pad == pLen = Just msg
+        | otherwise = Nothing
   where
   bsLen = B.length bs
   padLen = B.last bs
@@ -126,9 +126,9 @@ putPadESPBlockSize k bs = putPadESP (blockSizeBytes `for` k) bs
 putPadESP :: Int -> B.ByteString -> Put
 putPadESP 0 bs = putByteString bs >> putWord8 0
 putPadESP l bs = do
-	putByteString bs
-	putByteString pad
-	putWord8 pLen
+        putByteString bs
+        putByteString pad
+        putWord8 pLen
   where
   pad = B.take padLen espPad
   padLen = l - ((B.length bs + 1) `rem` l)
@@ -140,9 +140,9 @@ espPad = B.pack [1..255]
 -- | unpad and return the padded message (Nothing is returned if the padding is invalid)
 unpadESP :: B.ByteString -> Maybe B.ByteString
 unpadESP bs =
-	if bsLen == 0 || B.take pLen pad /= B.take pLen espPad
-		then Nothing
-		else Just msg
+        if bsLen == 0 || B.take pLen pad /= B.take pLen espPad
+                then Nothing
+                else Just msg
   where
   bsLen = B.length bs
   padLen = B.last bs
