@@ -1,8 +1,12 @@
 Original Author:
 Thomas M. DuBuisson
 
+
 Additional Authors:
-Francisco Blas Izquierdo Riera (klondike)
-	Modes of: siv, cnt, cmac
-	CPoly.hs
-	minor modifications
+
+Francisco Blas Izquierdo Riera (klondike) had contributed the siv and cmac
+modes of operation which have since been removed due to a lack of users and
+constant complaints of compile time (due to the CPoly module).  I regard the
+compile time issue as a bug in GHC but the only realistic action I can take is
+to avoid the bug. Prospective users can find this code in the repo and are
+encoraged to fork it / upload to hackage as a stand-alone package.
