@@ -137,24 +137,36 @@ class ( Serialize k) => BlockCipher k where
   decryptBlock  :: k -> B.ByteString -> B.ByteString    -- ^ decrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb decryption)
   buildKey      :: B.ByteString -> Maybe k              -- ^ smart constructor for keys from a bytestring.
   keyLength     :: Tagged k BitLength                   -- ^ length of the cryptographic key
+
+  -- * Modes of operation over strict bytestrings
+  -- | Electronic Cookbook (encryption)
   ecb           :: k -> B.ByteString -> B.ByteString
   ecb = modeEcb'
+  -- | Electronic Cookbook (decryption)
   unEcb         :: k -> B.ByteString -> B.ByteString
   unEcb = modeUnEcb'
+  -- | Cipherblock Chaining (encryption)
   cbc           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   cbc = modeCbc'
+  -- | Cipherblock Chaining (decryption)
   unCbc         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   unCbc = modeUnCbc'
+  -- | Counter (encryption)
   ctr           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   ctr = modeCtr' incIV
+  -- | Counter (decryption)
   unCtr         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   unCtr = modeUnCtr' incIV
+  -- | Ciphertext feedback (encryption)
   cfb           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   cfb = modeCfb'
+  -- | Ciphertext feedback (decryption)
   unCfb         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   unCfb = modeUnCfb'
+  -- | Output feedback (encryption)
   ofb           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   ofb = modeOfb'
+  -- | Output feedback (decryption)
   unOfb         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   unOfb = modeUnOfb'
 
