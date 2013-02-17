@@ -16,8 +16,6 @@ module Crypto.Classes
         (
         -- * Hash class and helper functions
           Hash(..)
-        , hash
-        , hash'
         , hashFunc
         , hashFunc'
         -- * Cipher classes and helper functions
@@ -43,8 +41,8 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Internal as I
 import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
 import Data.Bits ((.|.), xor)
-import Data.List (foldl')
-import Data.Word (Word64)
+import Data.List (foldl', genericDrop)
+import Data.Word (Word8, Word64)
 import Data.Tagged
 import Crypto.Types
 import Crypto.Random
@@ -137,6 +135,26 @@ class ( Serialize k) => BlockCipher k where
   decryptBlock  :: k -> B.ByteString -> B.ByteString    -- ^ decrypt data of size @n*blockSize@ where @n `elem` [0..]@  (ecb decryption)
   buildKey      :: B.ByteString -> Maybe k              -- ^ smart constructor for keys from a bytestring.
   keyLength     :: Tagged k BitLength                   -- ^ length of the cryptographic key
+  ecb           :: k -> B.ByteString -> B.ByteString
+  ecb = modeEcb'
+  unEcb         :: k -> B.ByteString -> B.ByteString
+  unEcb = modeUnEcb'
+  cbc           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+  cbc = modeCbc'
+  unCbc         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+  unCbc = modeUnCbc'
+  ctr           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+  ctr = modeCtr' incIV
+  unCtr         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+  unCtr = modeUnCtr' incIV
+  cfb           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+  cfb = modeCfb'
+  unCfb         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+  unCfb = modeUnCfb'
+  ofb           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+  ofb = modeOfb'
+  unOfb         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+  unOfb = modeUnOfb'
 
 -- |The number of bytes in a block cipher block
 blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
@@ -246,3 +264,142 @@ constTimeEq s1 s2 =
 
 foreign import ccall unsafe
    c_constTimeEq :: Ptr CChar -> Ptr CChar -> CInt -> IO CInt
+
+-- | Like `ecb` but for strict bytestrings
+modeEcb' :: BlockCipher k => k -> B.ByteString -> B.ByteString
+modeEcb' k msg =
+        let chunks = chunkFor' k msg
+        in B.concat $ map (encryptBlock k) chunks
+{-# INLINE modeEcb' #-}
+
+-- |Decryption complement to `ecb'`
+modeUnEcb' :: BlockCipher k => k -> B.ByteString -> B.ByteString
+modeUnEcb' k ct =
+        let chunks = chunkFor' k ct
+        in B.concat $ map (decryptBlock k) chunks
+{-# INLINE modeUnEcb' #-}
+
+-- |Cipher block chaining encryption mode on strict bytestrings
+modeCbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+modeCbc' k (IV v) plaintext =
+        let blks = chunkFor' k plaintext
+            (cts, iv) = go blks v
+        in (B.concat cts, IV iv)
+  where
+  go [] iv = ([], iv)
+  go (b:bs) iv =
+        let c = encryptBlock k (zwp' iv b)
+            (cs, ivFinal) = go bs c
+        in (c:cs, ivFinal)
+{-# INLINEABLE modeCbc' #-}
+
+-- |Cipher block chaining decryption for strict bytestrings
+modeUnCbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+modeUnCbc' k (IV v) ciphertext =
+        let blks = chunkFor' k ciphertext
+            (pts, iv) = go blks v
+        in (B.concat pts, IV iv)
+  where
+  go [] iv = ([], iv)
+  go (c:cs) iv =
+        let p = zwp' (decryptBlock k c) iv
+            (ps, ivFinal) = go cs c
+        in (p:ps, ivFinal)
+{-# INLINEABLE modeUnCbc' #-}
+
+-- |Output feedback mode for strict bytestrings
+modeOfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+modeOfb' = modeUnOfb'
+{-# INLINEABLE modeOfb' #-}
+
+-- |Output feedback mode for strict bytestrings
+modeUnOfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+modeUnOfb' k (IV iv) msg =
+        let ivStr = collect (B.length msg + ivLen) (drop 1 (iterate (encryptBlock k) iv))
+            ivLen = B.length iv
+            mLen = fromIntegral (B.length msg)
+            newIV = IV . B.concat . L.toChunks . L.take (fromIntegral ivLen) . L.drop mLen . L.fromChunks $ ivStr
+        in (zwp' (B.concat ivStr) msg, newIV)
+{-# INLINEABLE modeUnOfb' #-}
+
+-- |Counter mode for strict bytestrings
+modeCtr' :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+modeCtr' = modeUnCtr'
+{-# INLINEABLE modeCtr' #-}
+
+-- |Counter mode for strict bytestrings
+modeUnCtr' :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+modeUnCtr' f k (IV iv) msg =
+       let ivStr = iterate f $ IV iv
+           ivLen = fromIntegral $ B.length iv
+           newIV = head $ genericDrop ((ivLen - 1 + B.length msg) `div` ivLen) ivStr
+       in (zwp' (B.concat $ collect (B.length msg) (map (encryptBlock k . initializationVector) ivStr)) msg, newIV)
+{-# INLINEABLE modeUnCtr' #-}
+
+-- |Ciphertext feed-back encryption mode for strict bytestrings (with
+-- s == blockSize)
+modeCfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+modeCfb' k (IV v) msg =
+        let blks = chunkFor' k msg
+            (cs,ivF) = go v blks
+        in (B.concat cs, IV ivF)
+  where
+  go iv [] = ([],iv)
+  go iv (b:bs) =
+        let c = zwp' (encryptBlock k iv) b
+            (cs,ivFinal) = go c bs
+        in (c:cs, ivFinal)
+{-# INLINEABLE modeCfb' #-}
+
+-- |Ciphertext feed-back decryption mode for strict bytestrings (with s == blockSize)
+modeUnCfb' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
+modeUnCfb' k (IV v) msg =
+        let blks = chunkFor' k msg
+            (ps, ivF) = go v blks
+        in (B.concat ps, IV ivF)
+  where
+  go iv [] = ([], iv)
+  go iv (b:bs) =
+        let p = zwp' (encryptBlock k iv) b
+            (ps, ivF) = go b bs
+        in (p:ps, ivF)
+{-# INLINEABLE modeUnCfb' #-}
+
+
+
+chunkFor' :: (BlockCipher k) => k -> B.ByteString -> [B.ByteString]
+chunkFor' k = go
+  where
+  blkSz = (blockSize `for` k) `div` 8
+  go bs | B.length bs < blkSz = []
+        | otherwise           = let (blk,rest) = B.splitAt blkSz bs in blk : go rest
+{-# INLINE chunkFor' #-}
+
+-- |Increase an `IV` by one.  This is way faster than decoding,
+-- increasing, encoding
+incIV :: BlockCipher k => IV k -> IV k
+incIV (IV b) = IV $ snd $ B.mapAccumR (incw) True b
+  where
+       incw :: Bool -> Word8 -> (Bool, Word8)
+       incw True w = (w == maxBound, w + 1)
+       incw False w = (False, w)
+
+-- |zipWith xor + Pack
+--
+-- As a result of rewrite rules, this should automatically be
+-- optimized (at compile time) to use the bytestring libraries
+-- 'zipWith'' function.
+zwp' :: B.ByteString -> B.ByteString -> B.ByteString
+zwp' a = B.pack . B.zipWith xor a
+{-# INLINEABLE zwp' #-}
+
+-- gather a specified number of bytes from the list of bytestrings
+collect :: Int -> [B.ByteString] -> [B.ByteString]
+collect 0 _ = []
+collect _ [] = []
+collect i (b:bs)
+        | len < i  = b : collect (i - len) bs
+        | len >= i = [B.take i b]
+  where
+  len = B.length b
+{-# INLINE collect #-}
