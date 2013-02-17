@@ -40,6 +40,8 @@ import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Internal as I
 import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
+import Control.Monad.Trans.Class (lift)
+import Control.Monad.Trans.State (StateT(..), runStateT)
 import Data.Bits ((.|.), xor)
 import Data.List (foldl', genericDrop)
 import Data.Word (Word8, Word64)
@@ -162,18 +164,25 @@ blockSizeBytes = fmap (`div` 8) blockSize
 
 -- |Build a symmetric key using the system entropy (see 'System.Crypto.Random')
 buildKeyIO :: (BlockCipher k) => IO k
-buildKeyIO = go 0
+buildKeyIO = buildKeyM getEntropy fail
+
+-- |Build a symmetric key using a given 'Crypto.Random.CryptoRandomGen'
+buildKeyGen :: (BlockCipher k, CryptoRandomGen g) => g -> Either GenError (k, g)
+buildKeyGen = runStateT (buildKeyM (StateT . genBytes) (lift . Left . GenErrorOther))
+
+buildKeyM :: (BlockCipher k, Monad m) => (Int -> m B.ByteString) -> (String -> m k) -> m k
+buildKeyM getMore err = go (0::Int)
   where
-  go 1000 = error "Tried 1000 times to generate a key from the system entropy.\
-                  \  No keys were returned! Perhaps the system entropy is broken\
-                  \ or perhaps the BlockCipher instance being used has a non-flat\
-                  \ keyspace."
+  go 1000 = err "Tried 1000 times to generate a key from the system entropy.\
+                \  No keys were returned! Perhaps the system entropy is broken\
+                \ or perhaps the BlockCipher instance being used has a non-flat\
+                \ keyspace."
   go i = do
-        let bs = keyLength
-        kd <- getEntropy ((7 + untag bs) `div` 8)
-        case buildKey kd of
-                Nothing -> go (i+1)
-                Just k  -> return $ k `asTaggedTypeOf` bs
+    let bs = keyLength
+    kd <- getMore ((7 + untag bs) `div` 8)
+    case buildKey kd of
+        Nothing -> go (i+1)
+        Just k  -> return $ k `asTaggedTypeOf` bs
 
 -- |Asymetric ciphers (common ones being RSA or EC based)
 class (Serialize p, Serialize v) => AsymCipher p v | p -> v, v -> p where
@@ -191,6 +200,10 @@ buildKeyPairIO bl = do
                 Left err -> return (Left err)
                 Right (k,_) -> return (Right k)
 
+-- |Flipped 'buildKeyPair' for ease of use with state monads.
+buildKeyPairGen :: (CryptoRandomGen g, AsymCipher p v) => BitLength -> g -> Either GenError ((p,v),g)
+buildKeyPairGen = flip buildKeyPair
+
 -- | A stream cipher class.  Instance are expected to work on messages as small as one byte
 -- The length of the resulting cipher text should be equal
 -- to the length of the input message.
@@ -202,18 +215,25 @@ class (Serialize k) => StreamCipher k iv | k -> iv where
 
 -- |Build a stream key using the system random generator
 buildStreamKeyIO :: StreamCipher k iv => IO k
-buildStreamKeyIO = go 0
+buildStreamKeyIO = buildStreamKeyM getEntropy fail
+
+-- |Build a stream key using the provided random generator
+buildStreamKeyGen :: (StreamCipher k iv, CryptoRandomGen g) => g -> Either GenError (k, g)
+buildStreamKeyGen = runStateT (buildStreamKeyM (StateT . genBytes) (lift . Left . GenErrorOther))
+
+buildStreamKeyM :: (Monad m, StreamCipher k iv) => (Int -> m B.ByteString) -> (String -> m k) -> m k
+buildStreamKeyM getMore err = go (0::Int)
   where
-  go 1000 = error "Tried 1000 times to generate a stream key from the system entropy.\
-                  \  No keys were returned! Perhaps the system entropy is broken\
-                  \ or perhaps the BlockCipher instance being used has a non-flat\
-                  \ keyspace."
+  go 1000 = err "Tried 1000 times to generate a stream key from the system entropy.\
+                \  No keys were returned! Perhaps the system entropy is broken\
+                \ or perhaps the BlockCipher instance being used has a non-flat\
+                \ keyspace."
   go i = do
-        let k = streamKeyLength
-        kd <- getEntropy ((untag k + 7) `div` 8)
-        case buildStreamKey kd of
-                Nothing -> go (i+1)
-                Just k' -> return $ k' `asTaggedTypeOf` k
+    let k = streamKeyLength
+    kd <- getMore ((untag k + 7) `div` 8)
+    case buildStreamKey kd of
+        Nothing -> go (i+1)
+        Just k' -> return $ k' `asTaggedTypeOf` k
 
 -- | A class for signing operations which inherently can not be as generic
 -- as asymetric ciphers (ex: DSA).
@@ -231,6 +251,10 @@ buildSigningKeyPairIO bl = do
         case buildSigningPair g bl of
                 Left err -> return $ Left err
                 Right (k,_) -> return $ Right k
+
+-- |Flipped 'buildSigningPair' for ease of use with state monads.
+buildSigningKeyPairGen :: (Signing p v, CryptoRandomGen g) => BitLength -> g -> Either GenError ((p, v), g)
+buildSigningKeyPairGen = flip buildSigningPair
 
 -- |Obtain a tagged value for a given type
 for :: Tagged a b -> a -> b
