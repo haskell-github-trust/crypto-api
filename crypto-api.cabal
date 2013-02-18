@@ -18,8 +18,8 @@ description:    A generic interface for cryptographic operations (hashes, cipher
                 scope of this package.
 synopsis:       A generic interface for cryptographic operations
 category:       Data, Cryptography
-homepage:       http://trac.haskell.org/crypto-api/wiki
-bug-reports:    http://trac.haskell.org/crypto-api/report/1
+homepage:       https://github.com/TomMD/crypto-api
+bug-reports:    https://github.com/TomMD/crypto-api
 stability:      stable
 build-type:     Simple
 cabal-version:  >= 1.6
