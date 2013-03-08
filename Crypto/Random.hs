@@ -1,4 +1,5 @@
-{-# LANGUAGE FlexibleInstances, TypeSynonymInstances, DeriveDataTypeable, CPP #-}
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances, DeriveDataTypeable, CPP,
+             BangPatterns #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -76,8 +77,8 @@ data GenError =
   deriving (Eq, Ord, Show, Read, Typeable)
 
 data ReseedInfo
-    = InXBytes Word64   -- ^ Generator needs reseeded in X bytes
-    | InXCalls Word64   -- ^ Generator needs reseeded in X calls
+    = InXBytes {-# UNPACK #-} !Word64   -- ^ Generator needs reseeded in X bytes
+    | InXCalls {-# UNPACK #-} !Word64   -- ^ Generator needs reseeded in X calls
     | NotSoon           -- ^ The bound is over 2^64 bytes or calls
     | Never             -- ^ This generator never reseeds (ex: 'SystemRandom')
   deriving (Eq, Ord, Show, Read, Typeable)
