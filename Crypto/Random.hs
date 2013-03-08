@@ -25,6 +25,7 @@ module Crypto.Random
        ( -- * Basic Interface
          CryptoRandomGen(..)
        , GenError (..)
+       , ReseedInfo (..)
          -- * Helper functions and expanded interface
        , splitGen
        , throwLeft
@@ -71,7 +72,14 @@ data GenError =
         | NeedsInfiniteSeed     -- ^ This generator can not be
                                 -- instantiated or reseeded with a
                                 -- finite seed (ex: 'SystemRandom')
-  deriving (Eq, Ord, Show, Typeable)
+  deriving (Eq, Ord, Show, Read, Typeable)
+
+data ReseedInfo
+    = InXBytes Word64   -- ^ Generator needs reseeded in X bytes
+    | InXCalls Word64   -- ^ Generator needs reseeded in X calls
+    | NotSoon           -- ^ The bound is over 2^64 bytes or calls
+    | NeverNeeded       -- ^ This generator never reseeds (ex: 'SystemRandom')
+  deriving (Eq, Ord, Show, Read, Typeable)
 
 instance Exception GenError
 
@@ -103,6 +111,9 @@ class CryptoRandomGen g where
         -- without a reseed (usually this is in the ball-park of 2^48
         -- requests).  Suggested error in this cases is `NeedReseed`
         genBytes        :: ByteLength -> g -> Either GenError (B.ByteString, g)
+
+        -- |Indicates how soon the reseed is needed
+        reseedInfo :: g -> ReseedInfo
 
         -- |@genBytesWithEntropy g i entropy@ generates @i@ random
         -- bytes and use the additional input @entropy@ in the
@@ -194,8 +205,7 @@ instance CryptoRandomGen SystemRandom where
         rest = L.drop reqI bs
     in if L.length rnd == reqI
         then Right (B.concat $ L.toChunks rnd, SysRandom rest)
-        else Left $ GenErrorOther "Error obtaining enough bytes \
-                                 \from system random for given request"
+        else Left $ RequestedTooManyBytes
   reseed _ _ = Left NeedsInfiniteSeed
   newGenIO = getSystemGen
 
