@@ -40,6 +40,7 @@ import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
 import Data.Tagged
 import Data.Typeable
+import Data.Word
 import System.Entropy
 import System.IO.Unsafe(unsafeInterleaveIO)
 import qualified Data.ByteString as B
@@ -78,7 +79,7 @@ data ReseedInfo
     = InXBytes Word64   -- ^ Generator needs reseeded in X bytes
     | InXCalls Word64   -- ^ Generator needs reseeded in X calls
     | NotSoon           -- ^ The bound is over 2^64 bytes or calls
-    | NeverNeeded       -- ^ This generator never reseeds (ex: 'SystemRandom')
+    | Never             -- ^ This generator never reseeds (ex: 'SystemRandom')
   deriving (Eq, Ord, Show, Read, Typeable)
 
 instance Exception GenError
@@ -112,7 +113,7 @@ class CryptoRandomGen g where
         -- requests).  Suggested error in this cases is `NeedReseed`
         genBytes        :: ByteLength -> g -> Either GenError (B.ByteString, g)
 
-        -- |Indicates how soon the reseed is needed
+        -- |Indicates how soon a reseed is needed
         reseedInfo :: g -> ReseedInfo
 
         -- |@genBytesWithEntropy g i entropy@ generates @i@ random
@@ -208,6 +209,7 @@ instance CryptoRandomGen SystemRandom where
         else Left $ RequestedTooManyBytes
   reseed _ _ = Left NeedsInfiniteSeed
   newGenIO = getSystemGen
+  reseedInfo _ = Never
 
 -- | While the safety and wisdom of a splitting function depends on the
 -- properties of the generator being split, several arguments from
