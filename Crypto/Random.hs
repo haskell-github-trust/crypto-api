@@ -90,7 +90,7 @@ instance Exception GenError
 -- requesting bytes
 --
 -- Minimum complete definition: `newGen`, `genSeedLength`, `genBytes`,
--- `reseed`.
+-- `reseed`, `reseedInfo`, `reseedPeriod`.
 class CryptoRandomGen g where
         -- |Instantiate a new random bit generator.  The provided
         -- bytestring should be of length >= genSeedLength.  If the
@@ -114,8 +114,11 @@ class CryptoRandomGen g where
         -- requests).  Suggested error in this cases is `NeedReseed`
         genBytes        :: ByteLength -> g -> Either GenError (B.ByteString, g)
 
-        -- |Indicates how soon a reseed is needed
+        -- | Indicates how soon a reseed is needed
         reseedInfo :: g -> ReseedInfo
+
+        -- | Indicates the period between reseeds (constant for most generators).
+        reseedPeriod :: g -> ReseedInfo
 
         -- |@genBytesWithEntropy g i entropy@ generates @i@ random
         -- bytes and use the additional input @entropy@ in the
@@ -211,6 +214,7 @@ instance CryptoRandomGen SystemRandom where
   reseed _ _ = Left NeedsInfiniteSeed
   newGenIO = getSystemGen
   reseedInfo _ = Never
+  reseedPeriod _ = Never
 
 -- | While the safety and wisdom of a splitting function depends on the
 -- properties of the generator being split, several arguments from

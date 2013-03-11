@@ -1,5 +1,5 @@
 name:           crypto-api
-version:        0.11
+version:        0.12
 license:        BSD3
 license-file:   LICENSE
 copyright:      Thomas DuBuisson <thomas.dubuisson@gmail.com>
@@ -23,7 +23,7 @@ bug-reports:    https://github.com/TomMD/crypto-api
 stability:      stable
 build-type:     Simple
 cabal-version:  >= 1.6
-tested-with:    GHC == 7.2.2
+tested-with:    GHC == 7.6.2
 extra-source-files:
   cbits/misc.c
   cbits/misc.h
