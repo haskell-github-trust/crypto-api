@@ -28,6 +28,10 @@ extra-source-files:
   cbits/misc.c
   cbits/misc.h
 
+Flag ALL_CPOLYS
+  Description: Build all the CMAC polynomes up to 10000 bits instead of just the usual ones
+  Default:     False
+  Manual:      True
 
 Library
   Build-Depends: base == 4.*,
@@ -39,12 +43,16 @@ Library
   hs-source-dirs:
   exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC,
                    Crypto.Random, Crypto.Padding, Crypto.Modes
-  other-modules: Crypto.Util
+  other-modules: Crypto.Util, Crypto.CPoly
   extensions: ForeignFunctionInterface, MultiParamTypeClasses,
               BangPatterns, FunctionalDependencies, FlexibleInstances,
               TypeSynonymInstances
   c-sources: cbits/misc.c
   include-dirs: cbits
+  if flag(ALL_CPOLYS)
+    Build-Depends: array
+    cpp-options: -DALL_CPOLYS
+
 
 source-repository head
   type:     git
