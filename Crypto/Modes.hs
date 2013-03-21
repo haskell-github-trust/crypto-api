@@ -248,13 +248,9 @@ xorend bsize (n, x:xs) | n <= bsize = Just (x,((n-1),xs))
                        | otherwise = Just (0,((n-1),(x:xs)))
 
 -- |Obtain the CMAC* on lazy bytestrings
+-- |TODO: rebuild for Lazy bytes Strings :/
 cMacStar :: BlockCipher k => k -> [L.ByteString] -> L.ByteString
-cMacStar k l = go (lcmac (L.replicate bSize 0)) l
-  where
-       bSize = fromIntegral $ blockSizeBytes `for` k
-       bSizeb = fromIntegral $ blockSize `for` k
-       lcmac = cMacWithSubK k (cMacSubk k)
-       go s [] = s
+cMacStar k l = L.fromStrict $ cMacStar' k $ map (L.toStrict) l
 
 -- |Obtain the CMAC* on strict bytestrings
 cMacStar' :: BlockCipher k => k -> [B.ByteString] -> B.ByteString
