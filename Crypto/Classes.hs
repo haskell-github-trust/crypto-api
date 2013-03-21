@@ -42,9 +42,9 @@ import qualified Data.ByteString.Internal as I
 import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.State (StateT(..), runStateT)
-import Data.Bits ((.|.), xor)
+import Data.Bits ((.|.), xor, shiftR)
 import Data.List (foldl', genericDrop)
-import Data.Word (Word8, Word64)
+import Data.Word (Word8, Word16, Word64)
 import Data.Tagged
 import Crypto.Types
 import Crypto.Random
@@ -365,11 +365,12 @@ modeCtr' = modeUnCtr'
 
 -- |Counter mode for strict bytestrings
 modeUnCtr' :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> B.ByteString -> (B.ByteString, IV k)
-modeUnCtr' f k (IV iv) msg =
-       let ivStr = iterate f $ IV iv
-           ivLen = fromIntegral $ B.length iv
-           newIV = head $ genericDrop ((ivLen - 1 + B.length msg) `div` ivLen) ivStr
-       in (zwp' (B.concat $ collect (B.length msg) (map (encryptBlock k . initializationVector) ivStr)) msg, newIV)
+modeUnCtr' f k iv msg =
+       let fa (st,IV iv) c 
+              | B.null st = fa (encryptBlock k iv, f (IV iv)) c
+              | otherwise = let Just (s,nst) = B.uncons st in ((nst,IV iv),xor c s)
+           ((_,newIV),res) = B.mapAccumL fa (B.empty,iv) msg 
+       in (res,newIV)
 {-# INLINEABLE modeUnCtr' #-}
 
 -- |Ciphertext feed-back encryption mode for strict bytestrings (with
@@ -414,11 +415,10 @@ chunkFor' k = go
 -- |Increase an `IV` by one.  This is way faster than decoding,
 -- increasing, encoding
 incIV :: BlockCipher k => IV k -> IV k
-incIV (IV b) = IV $ snd $ B.mapAccumR (incw) True b
+incIV (IV b) = IV $ snd $ B.mapAccumR (incw) 1 b
   where
-       incw :: Bool -> Word8 -> (Bool, Word8)
-       incw True w = (w == maxBound, w + 1)
-       incw False w = (False, w)
+       incw :: Word16 -> Word8 -> (Word16, Word8)
+       incw i w = let nw=i+(fromIntegral w) in (shiftR nw 8, fromIntegral nw)
 
 -- |zipWith xor + Pack
 --
