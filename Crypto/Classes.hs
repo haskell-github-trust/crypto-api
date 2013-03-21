@@ -33,6 +33,7 @@ module Crypto.Classes
         , (.::.)
         , constTimeEq
         , encode
+        , incIV
         ) where
 
 import Data.Serialize

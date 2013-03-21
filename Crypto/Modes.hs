@@ -13,13 +13,13 @@
 module Crypto.Modes (
         -- * Initialization Vector Type, Modifiers (for all ciphers, all modes that use IVs)
           getIV, getIVIO, zeroIV
-        , incIV, dblIV
+        , dblIV
         -- * Blockcipher modes for lazy bytestrings. Versions for strict bytestrings are in 'Crypto.Classes'.
         , Crypto.Modes.ecb, Crypto.Modes.unEcb
         , Crypto.Modes.cbc, Crypto.Modes.unCbc
         , Crypto.Modes.cfb, Crypto.Modes.unCfb
         , Crypto.Modes.ofb, Crypto.Modes.unOfb
-        , Crypto.Modes.ctr, Crypto.Modes.unCtr, ctr', unCtr'
+        , Crypto.Modes.ctr, Crypto.Modes.unCtr
         , siv, unSiv, siv', unSiv'
         -- * Authentication modes
         , cbcMac', cbcMac, cMac, cMac' 
@@ -36,7 +36,7 @@ import qualified Data.Serialize.Put as SP
 import qualified Data.Serialize.Get as SG
 import Data.Bits (xor, shift, (.&.), (.|.), testBit, setBit, clearBit, Bits, complementBit)
 import Data.Tagged
-import Crypto.Classes (BlockCipher(..), for, blockSizeBytes)
+import Crypto.Classes (BlockCipher(..), for, blockSizeBytes, incIV)
 import Crypto.Random
 import Crypto.Util
 import Crypto.CPoly
@@ -189,18 +189,6 @@ unCtr f k (IV iv) msg =
            newIV = head $ genericDrop ((ivLen - 1 + L.length msg) `div` ivLen) ivStr
        in (zwp (L.fromChunks $ map (encryptBlock k) $ map initializationVector ivStr) msg, newIV)
 
--- |Counter mode for strict bytestrings
-ctr' :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> B.ByteString -> (B.ByteString, IV k)
-ctr' = unCtr'
-
--- |Counter mode for strict bytestrings
-unCtr' :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> B.ByteString -> (B.ByteString, IV k)
-unCtr' f k (IV iv) msg =
-       let ivStr = iterate f $ IV iv
-           ivLen = fromIntegral $ B.length iv
-           newIV = head $ genericDrop ((ivLen - 1 + B.length msg) `div` ivLen) ivStr
-       in (zwp' (B.concat $ collect (B.length msg) (map (encryptBlock k . initializationVector) ivStr)) msg, newIV)
-
 -- |Generate cmac subkeys.  The usage of seq tries to force evaluation
 -- of both keys avoiding posible timing attacks
 cMacSubk :: BlockCipher k => k -> (IV k, IV k)
@@ -323,7 +311,7 @@ unSiv k1 k2 xs c | length xs > bSizeb - 1 = Nothing
 -- return nothing when certain constraints aren't met.
 siv' :: BlockCipher k => k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
 siv' k1 k2 xs m | length xs > bSizeb - 1 = Nothing
-                | otherwise = Just $ B.append iv $ fst $ ctr' incIV k2 (IV $ sivMask iv) m
+                | otherwise = Just $ B.append iv $ fst $ Crypto.Classes.ctr k2 (IV $ sivMask iv) m
   where
        bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
@@ -342,16 +330,7 @@ unSiv' k1 k2 xs c | length xs > bSizeb - 1 = Nothing
        bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
        (iv,m) = B.splitAt bSize c
-       dm = fst $ unCtr' incIV k2 (IV $ sivMask iv) m
-
--- |Increase an `IV` by one.  This is way faster than decoding,
--- increasing, encoding
-incIV :: BlockCipher k => IV k -> IV k
-incIV (IV b) = IV $ snd $ B.mapAccumR (incw) True b
-  where
-       incw :: Bool -> Word8 -> (Bool, Word8)
-       incw True w = (w == maxBound, w + 1)
-       incw False w = (False, w)
+       dm = fst $ Crypto.Classes.unCtr k2 (IV $ sivMask iv) m
 
 -- |Accumulator based double operation
 dblw :: Bool -> (Int,[Int],Bool) -> Word8 -> ((Int,[Int],Bool), Word8)
