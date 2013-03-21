@@ -13,13 +13,16 @@
 module Crypto.Modes (
         -- * Initialization Vector Type, Modifiers (for all ciphers, all modes that use IVs)
           getIV, getIVIO, zeroIV
-        , incIV
+        , dblIV
         -- * Blockcipher modes for lazy bytestrings. Versions for strict bytestrings are in 'Crypto.Classes'.
         , Crypto.Modes.ecb, Crypto.Modes.unEcb
         , Crypto.Modes.cbc, Crypto.Modes.unCbc
         , Crypto.Modes.cfb, Crypto.Modes.unCfb
         , Crypto.Modes.ofb, Crypto.Modes.unOfb
-        , Crypto.Modes.ctr, Crypto.Modes.unCtr, ctr', unCtr'
+        , Crypto.Modes.ctr, Crypto.Modes.unCtr
+        , siv, unSiv, siv', unSiv'
+        -- * Authentication modes
+        , cbcMac', cbcMac, cMac, cMac' 
         -- * Combined modes (nothing here yet)
         -- , gmc
         -- , xts
@@ -33,9 +36,10 @@ import qualified Data.Serialize.Put as SP
 import qualified Data.Serialize.Get as SG
 import Data.Bits (xor, shift, (.&.), (.|.), testBit, setBit, clearBit, Bits, complementBit)
 import Data.Tagged
-import Crypto.Classes (BlockCipher(..), for, blockSizeBytes)
+import Crypto.Classes (BlockCipher(..), for, blockSizeBytes, incIV)
 import Crypto.Random
 import Crypto.Util
+import Crypto.CPoly
 import Crypto.Types
 import System.Entropy (getEntropy)
 import Control.Monad (liftM, forM_)
@@ -185,17 +189,14 @@ unCtr f k (IV iv) msg =
            newIV = head $ genericDrop ((ivLen - 1 + L.length msg) `div` ivLen) ivStr
        in (zwp (L.fromChunks $ map (encryptBlock k) $ map initializationVector ivStr) msg, newIV)
 
--- |Counter mode for strict bytestrings
-ctr' :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> B.ByteString -> (B.ByteString, IV k)
-ctr' = unCtr'
-
--- |Counter mode for strict bytestrings
-unCtr' :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> B.ByteString -> (B.ByteString, IV k)
-unCtr' f k (IV iv) msg =
-       let ivStr = iterate f $ IV iv
-           ivLen = fromIntegral $ B.length iv
-           newIV = head $ genericDrop ((ivLen - 1 + B.length msg) `div` ivLen) ivStr
-       in (zwp' (B.concat $ collect (B.length msg) (map (encryptBlock k . initializationVector) ivStr)) msg, newIV)
+-- |Generate cmac subkeys.  The usage of seq tries to force evaluation
+-- of both keys avoiding posible timing attacks
+cMacSubk :: BlockCipher k => k -> (IV k, IV k)
+cMacSubk k = (k1, k2) `seq` (k1, k2)
+  where
+       bSize = blockSizeBytes `for` k
+       k1 = dblIV $ IV $ encryptBlock k $ B.replicate bSize 0
+       k2 = dblIV $ k1
 
 -- |Pad the string as required by the cmac algorithm. In theory this
 --  should work at bit level but since the API works at byte level we
@@ -219,6 +220,10 @@ cMacWithSubK k (IV k1, IV k2) l = L.fromChunks $ [go (chunkFor k t) $ B.replicat
        go [] c = encryptBlock k (zwp' c fe)
        go (x:xs) c = go xs $ encryptBlock k $ zwp' c x
 
+-- |Obtain the cmac for lazy bytestrings
+cMac :: BlockCipher k => k -> L.ByteString -> L.ByteString
+cMac k = cMacWithSubK k (cMacSubk k)
+
 -- |Obtain the cmac with the specified subkey for strict bytestrings
 cMacWithSubK' :: BlockCipher k => k -> (IV k, IV k) -> B.ByteString -> B.ByteString
 cMacWithSubK' k (IV k1, IV k2) b = go (chunkFor' k t) $ B.replicate bSize1 0
@@ -232,11 +237,39 @@ cMacWithSubK' k (IV k1, IV k2) b = go (chunkFor' k t) $ B.replicate bSize1 0
        go [] c = encryptBlock k (zwp' c fe)
        go (x:xs) c = go xs $ encryptBlock k $ zwp' c x
 
+-- |Obtain the cmac for strict bytestrings
+cMac' :: BlockCipher k => k -> B.ByteString -> B.ByteString
+cMac' k = cMacWithSubK' k (cMacSubk k)
+
 -- |Generate the xor stream for the last step of the CMAC* algorithm
 xorend  :: Int -> (Int,[Word8]) -> Maybe (Word8,(Int,[Word8]))
 xorend bsize (0, []) = Nothing
 xorend bsize (n, x:xs) | n <= bsize = Just (x,((n-1),xs))
                        | otherwise = Just (0,((n-1),(x:xs)))
+
+-- |Obtain the CMAC* on lazy bytestrings
+cMacStar :: BlockCipher k => k -> [L.ByteString] -> L.ByteString
+cMacStar k l = go (lcmac (L.replicate bSize 0)) l
+  where
+        bSize = fromIntegral $ blockSizeBytes `for` k
+        bSizeb = fromIntegral $ blockSize `for` k
+        lcmac = cMacWithSubK k (cMacSubk k)
+        go s [] = s
+        go s [x] | (L.length x) >= bSize = lcmac $ zwp x $ L.unfoldr (xorend $ fromIntegral bSize) (fromIntegral $ L.length x,L.unpack s)
+                 | otherwise = lcmac $ zwp (dblL s) (L.unfoldr cMacPad (L.unpack x,True,fromIntegral bSize))
+        go s (x:xs) = go (zwp (dblL s) (lcmac x)) xs
+
+-- |Obtain the CMAC* on strict bytestrings
+cMacStar' :: BlockCipher k => k -> [B.ByteString] -> B.ByteString
+cMacStar' k s = go (lcmac (B.replicate bSize 0)) s
+  where
+       bSize = fromIntegral $ blockSizeBytes `for` k
+       bSizeb = fromIntegral $ blockSize `for` k
+       lcmac = cMacWithSubK' k (cMacSubk k)
+       go s [] = s
+       go s [x] | (B.length x) >= bSize = lcmac $ zwp' x $ fst $ B.unfoldrN (B.length x) (xorend bSize) (fromIntegral $ B.length x,B.unpack s)
+                | otherwise = lcmac $ zwp' (dblB s) (fst $ B.unfoldrN bSize cMacPad (B.unpack x,True,bSize))
+       go s (x:xs) = go (zwp' (dblB s) (lcmac x)) xs 
 
 -- |Create the mask for SIV based ciphers
 sivMask :: B.ByteString -> B.ByteString
@@ -247,15 +280,91 @@ sivMask b = snd $ B.mapAccumR (go) 0 b
        go 56 w = (64,clearBit w 7)
        go n w = (n+8,w)
 
--- |Increase an `IV` by one.  This is way faster than decoding,
--- increasing, encoding
-incIV :: BlockCipher k => IV k -> IV k
-incIV (IV b) = IV $ snd $ B.mapAccumR (incw) True b
+-- |SIV (Synthetic IV) mode for lazy bytestrings. First argument is
+-- the optional list of bytestrings to be authenticated but not
+-- encrypted As required by the specification this algorithm may
+-- return nothing when certain constraints aren't met.
+siv :: BlockCipher k => k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
+siv k1 k2 xs m | length xs > bSizeb - 1 = Nothing
+               | otherwise = Just $ L.append iv $ fst $ Crypto.Modes.ctr incIV k2 (IV $ sivMask $ B.concat $ L.toChunks iv) m
   where
-       incw :: Bool -> Word8 -> (Bool, Word8)
-       incw True w = (w == maxBound, w + 1)
-       incw False w = (False, w)
+       bSize = fromIntegral $ blockSizeBytes `for` k1
+       bSizeb = fromIntegral $ blockSize `for` k1
+       iv = cMacStar k1 $ xs ++ [m]
 
+
+-- |SIV (Synthetic IV) for lazy bytestrings.  First argument is the
+-- optional list of bytestrings to be authenticated but not encrypted.
+-- As required by the specification this algorithm may return nothing
+-- when authentication fails.
+unSiv :: BlockCipher k => k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
+unSiv k1 k2 xs c | length xs > bSizeb - 1 = Nothing
+                 | L.length c < fromIntegral bSize = Nothing
+                 | iv /= (cMacStar k1 $ xs ++ [dm]) = Nothing
+                 | otherwise = Just dm
+  where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
+       bSizeb = fromIntegral $ blockSize `for` k1
+       (iv,m) = L.splitAt (fromIntegral bSize) c
+       dm = fst $ Crypto.Modes.unCtr incIV k2 (IV $ sivMask $ B.concat $ L.toChunks iv) m
+
+-- |SIV (Synthetic IV) mode for strict bytestrings.  First argument is
+-- the optional list of bytestrings to be authenticated but not
+-- encrypted.  As required by the specification this algorithm may
+-- return nothing when certain constraints aren't met.
+siv' :: BlockCipher k => k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
+siv' k1 k2 xs m | length xs > bSizeb - 1 = Nothing
+                | otherwise = Just $ B.append iv $ fst $ Crypto.Classes.ctr k2 (IV $ sivMask iv) m
+  where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
+       bSizeb = fromIntegral $ blockSize `for` k1
+       iv = cMacStar' k1 $ xs ++ [m]
+
+-- |SIV (Synthetic IV) for strict bytestrings First argument is the
+-- optional list of bytestrings to be authenticated but not encrypted
+-- As required by the specification this algorithm may return nothing
+-- when authentication fails.
+unSiv' :: BlockCipher k => k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
+unSiv' k1 k2 xs c | length xs > bSizeb - 1 = Nothing
+                  | B.length c < bSize = Nothing
+                  | iv /= (cMacStar' k1 $ xs ++ [dm]) = Nothing
+                  | otherwise = Just dm
+  where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
+       bSizeb = fromIntegral $ blockSize `for` k1
+       (iv,m) = B.splitAt bSize c
+       dm = fst $ Crypto.Classes.unCtr k2 (IV $ sivMask iv) m
+
+-- |Accumulator based double operation
+dblw :: Bool -> (Int,[Int],Bool) -> Word8 -> ((Int,[Int],Bool), Word8)
+dblw hb (i,xs,b) w = dblw' hb
+  where
+       slw True w = (setBit (shift w 1) 0)
+       slw False w = (clearBit (shift w 1) 0)
+       cpolyw i [] w = ((i+8,[]),w)
+       cpolyw i (x:xs) w
+         | x < i +8 = (\(a,b) -> (a,complementBit b (x-i))) $ cpolyw i xs w
+         |otherwise = ((i+8,(x:xs)),w)
+       b' = testBit w 7
+       w' = slw b w
+       ((i',xs'),w'') = cpolyw i xs w'
+       dblw' False = i'`seq`xs'`seq`w''`seq`((i,xs,b'),w')
+       dblw' True  = ((i',xs',b'),w'')
+
+-- |Perform doubling as defined by the CMAC and SIV papers
+dblIV :: BlockCipher k => IV k -> IV k
+dblIV (IV b) = IV $ dblB b
+
+-- |Perform doubling as defined by the CMAC and SIV papers
+dblB :: B.ByteString -> B.ByteString
+dblB b | B.null b = b
+       | otherwise = snd $ B.mapAccumR (dblw (testBit (B.head b) 7)) (0,cpoly2revlist (B.length b * 8),False) b
+
+-- |Perform doubling as defined by the CMAC and SIV papers
+dblL :: L.ByteString -> L.ByteString
+dblL b | L.null b = b
+       | otherwise = snd $ L.mapAccumR (dblw (testBit (L.head b) 7)) (0,cpoly2revlist (L.length b * 8),False) b
+ 
 -- |Cast a bigEndian ByteString into an Integer
 decodeB :: B.ByteString -> Integer
 decodeB = B.foldl' (\acc w -> (shift acc 8) + toInteger(w)) 0
