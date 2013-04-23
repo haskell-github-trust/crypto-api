@@ -34,6 +34,7 @@ module Crypto.Classes
         , constTimeEq
         , encode
         , incIV
+        , module Crypto.Util
         ) where
 
 import Data.Serialize
@@ -49,6 +50,7 @@ import Data.Word (Word8, Word16, Word64)
 import Data.Tagged
 import Crypto.Types
 import Crypto.Random
+import Crypto.Util
 import System.IO.Unsafe (unsafePerformIO)
 import Foreign (Ptr)
 import Foreign.C (CChar(..), CInt(..))
@@ -269,39 +271,6 @@ buildSigningKeyPairIO bl = do
 buildSigningKeyPairGen :: (Signing p v, CryptoRandomGen g) => BitLength -> g -> Either GenError ((p, v), g)
 buildSigningKeyPairGen = flip buildSigningPair
 
--- |Obtain a tagged value for a given type
-for :: Tagged a b -> a -> b
-for t _ = unTagged t
-
--- |Infix `for` operator
-(.::.) :: Tagged a b -> a -> b
-(.::.) = for
-
--- | Checks two bytestrings for equality without breaches for
--- timing attacks.
---
--- Semantically, @constTimeEq = (==)@.  However, @x == y@ takes less
--- time when the first byte is different than when the first byte
--- is equal.  This side channel allows an attacker to mount a
--- timing attack.  On the other hand, @constTimeEq@ always takes the
--- same time regardless of the bytestrings' contents, unless they are
--- of difference size.
---
--- You should always use @constTimeEq@ when comparing secrets,
--- otherwise you may leave a significant security hole
--- (cf. <http://codahale.com/a-lesson-in-timing-attacks/>).
-constTimeEq :: B.ByteString -> B.ByteString -> Bool
-constTimeEq s1 s2 =
-    unsafePerformIO $
-    unsafeUseAsCStringLen s1 $ \(s1_ptr, s1_len) ->
-    unsafeUseAsCStringLen s2 $ \(s2_ptr, s2_len) ->
-    if s1_len /= s2_len
-      then return False
-      else (== 0) `fmap` c_constTimeEq s1_ptr s2_ptr (fromIntegral s1_len)
-
-foreign import ccall unsafe
-   c_constTimeEq :: Ptr CChar -> Ptr CChar -> CInt -> IO CInt
-
 -- | Like `ecb` but for strict bytestrings
 modeEcb' :: BlockCipher k => k -> B.ByteString -> B.ByteString
 modeEcb' k msg =
@@ -403,8 +372,6 @@ modeUnCfb' k (IV v) msg =
         in (p:ps, ivF)
 {-# INLINEABLE modeUnCfb' #-}
 
-
-
 chunkFor' :: (BlockCipher k) => k -> B.ByteString -> [B.ByteString]
 chunkFor' k = go
   where
@@ -420,15 +387,6 @@ incIV (IV b) = IV $ snd $ B.mapAccumR (incw) 1 b
   where
        incw :: Word16 -> Word8 -> (Word16, Word8)
        incw i w = let nw=i+(fromIntegral w) in (shiftR nw 8, fromIntegral nw)
-
--- |zipWith xor + Pack
---
--- As a result of rewrite rules, this should automatically be
--- optimized (at compile time) to use the bytestring libraries
--- 'zipWith'' function.
-zwp' :: B.ByteString -> B.ByteString -> B.ByteString
-zwp' a = B.pack . B.zipWith xor a
-{-# INLINEABLE zwp' #-}
 
 -- gather a specified number of bytes from the list of bytestrings
 collect :: Int -> [B.ByteString] -> [B.ByteString]

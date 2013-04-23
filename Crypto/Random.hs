@@ -37,6 +37,7 @@ module Crypto.Random
 import Control.Monad (liftM)
 import Control.Exception
 import Crypto.Types
+import Crypto.Util
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
 import Data.List (foldl')
 import Data.Tagged
@@ -230,24 +231,3 @@ splitGen g =
        case newGen ent of
                 Right new -> Right (g',new)
                 Left e -> Left e
-
--- | Useful utility to extract the result of a generator operation
--- and translate error results to exceptions.
-throwLeft :: Exception e => Either e a -> a
-throwLeft (Left e)  = throw e
-throwLeft (Right a) = a
-
--- |Obtain a tagged value for a particular instantiated type.
-for :: Tagged a b -> a -> b
-for t _ = unTagged t
-
--- |Helper function to convert bytestrings to integers
-bs2i :: B.ByteString -> Integer
-bs2i bs = B.foldl' (\i b -> (i `shiftL` 8) + fromIntegral b) 0 bs
-{-# INLINE bs2i #-}
-
--- |zipWith xor + Pack
--- As a result of rewrite rules, this should automatically be optimized (at compile time) 
--- to use the bytestring libraries 'zipWith'' function.
-zwp' a = B.pack . B.zipWith xor a
-{-# INLINE zwp' #-}

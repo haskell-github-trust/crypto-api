@@ -102,15 +102,6 @@ zwp  a b =
         in (zwp' a' b') : go as' bs'
 {-# INLINEABLE zwp #-}
 
--- |zipWith xor + Pack
---
--- As a result of rewrite rules, this should automatically be
--- optimized (at compile time) to use the bytestring libraries
--- 'zipWith'' function.
-zwp' :: B.ByteString -> B.ByteString -> B.ByteString
-zwp' a = B.pack . B.zipWith xor a
-{-# INLINEABLE zwp' #-}
-
 -- |Cipher block chaining encryption mode on strict bytestrings
 cbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 cbc' k (IV v) plaintext =
