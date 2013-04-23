@@ -2,11 +2,14 @@
 module Crypto.Util where
 
 import qualified Data.ByteString as B
-import Data.ByteString.Unsafe (unsafeIndex)
+import Data.ByteString.Unsafe (unsafeIndex, unsafeUseAsCStringLen)
 import Data.Bits (shiftL, shiftR)
 import Data.Bits (xor, setBit, shiftR, shiftL)
 import Control.Exception (Exception, throw)
 import Data.Tagged
+import System.IO.Unsafe
+import Foreign.C.Types
+import Foreign.Ptr
 
 -- |@incBS bs@ inefficiently computes the value @i2bs (8 * B.length bs) (bs2i bs + 1)@
 incBS :: B.ByteString -> B.ByteString

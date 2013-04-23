@@ -29,9 +29,6 @@ module Crypto.Classes
         , Signing(..)
         , buildSigningKeyPairIO
         -- * Misc helper functions
-        , for
-        , (.::.)
-        , constTimeEq
         , encode
         , incIV
         , module Crypto.Util
