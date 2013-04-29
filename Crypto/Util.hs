@@ -27,6 +27,13 @@ i2bs :: Int -> Integer -> B.ByteString
 i2bs l i = B.unfoldr (\l' -> if l' < 0 then Nothing else Just (fromIntegral (i `shiftR` l'), l' - 8)) (l-8)
 {-# INLINE i2bs #-}
 
+-- |@i2bs_unsized i@ converts @i@ to a 'ByteString' of sufficient bytes to express the integer.
+-- The integer must be non-negative and a zero will be encoded in one byte.
+i2bs_unsized :: Integer -> B.ByteString
+i2bs_unsized 0 = B.singleton 0
+i2bs_unsized i = B.reverse $ B.unfoldr (\i' -> if i' <= 0 then Nothing else Just (fromIntegral i', (i' `shiftR` 8))) i
+{-# INLINE i2bs_unsized #-}
+
 -- | Useful utility to extract the result of a generator operation
 -- and translate error results to exceptions.
 throwLeft :: Exception e => Either e a -> a
