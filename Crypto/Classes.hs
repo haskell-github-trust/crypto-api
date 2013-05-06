@@ -21,6 +21,7 @@ module Crypto.Classes
         -- * Cipher classes and helper functions
         , BlockCipher(..)
         , blockSizeBytes
+        , keyLengthBytes
         , buildKeyIO
         , StreamCipher(..)
         , buildStreamKeyIO
@@ -173,6 +174,11 @@ class ( Serialize k) => BlockCipher k where
 -- |The number of bytes in a block cipher block
 blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
 blockSizeBytes = fmap (`div` 8) blockSize
+
+-- |The number of bytes in a block cipher key (assuming it is an even
+-- multiple of 8 bits)
+keyLengthBytes :: (BlockCipher k) => Tagged k ByteLength
+keyLengthBytes = fmap (`div` 8) keyLength
 
 -- |Build a symmetric key using the system entropy (see 'System.Crypto.Random')
 buildKeyIO :: (BlockCipher k) => IO k
