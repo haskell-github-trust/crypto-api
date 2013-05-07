@@ -35,7 +35,7 @@ hmac (MacKey k) msg = res
          LT -> B.append k (B.replicate (blen - keylen) 0x00)
   ko = B.map (`xor` 0x5c) k'
   ki = fc $ B.map (`xor` 0x36) k'
-  fc = L.fromChunks . \s -> [s]
+  fc = L.fromStrict
 
 -- | @hmac k msg@ will compute an authentication code for @msg@ using key @k@
 hmac' :: (Hash c d) => MacKey c d -> B.ByteString -> d
