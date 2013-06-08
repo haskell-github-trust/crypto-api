@@ -79,8 +79,10 @@ bs2i bs = B.foldl' (\i b -> (i `shiftL` 8) + fromIntegral b) 0 bs
 {-# INLINE bs2i #-}
 
 -- |zipWith xor + Pack
--- As a result of rewrite rules, this should automatically be optimized (at compile time).
--- to use the bytestring libraries 'zipWith'' function.
+-- As a result of rewrite rules, this should automatically be
+-- optimized (at compile time). to use the bytestring libraries
+-- 'zipWith'' function.
+zwp' :: B.ByteString -> B.ByteString -> B.ByteString
 zwp' a = B.pack . B.zipWith xor a
 {-# INLINE zwp' #-}
 
