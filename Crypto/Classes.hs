@@ -23,12 +23,16 @@ module Crypto.Classes
         , blockSizeBytes
         , keyLengthBytes
         , buildKeyIO
+        , buildKeyGen
         , StreamCipher(..)
         , buildStreamKeyIO
+        , buildStreamKeyGen
         , AsymCipher(..)
         , buildKeyPairIO
+        , buildKeyPairGen
         , Signing(..)
         , buildSigningKeyPairIO
+        , buildSigningKeyPairGen
         -- * Misc helper functions
         , encode
         , incIV
