@@ -541,10 +541,10 @@ getIVIO = do
 {-# INLINEABLE getIVIO #-}
 
 ivProxy :: Proxy k -> Proxy (IV k)
-ivProxy = reproxy
+ivProxy = const Proxy
 
 deIVProxy :: Proxy (IV k) -> Proxy k
-deIVProxy = reproxy
+deIVProxy = const Proxy
 
 proxyOf :: a -> Proxy a
 proxyOf = const Proxy
