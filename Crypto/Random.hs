@@ -207,11 +207,11 @@ instance CryptoRandomGen SystemRandom where
   genSeedLength = Tagged maxBound
   genBytes req (SysRandom bs) =
     let reqI = fromIntegral req
-        rnd = L.take reqI bs
+        rnd  = L.take reqI bs
         rest = L.drop reqI bs
     in if L.length rnd == reqI
         then Right (B.concat $ L.toChunks rnd, SysRandom rest)
-        else Left $ RequestedTooManyBytes
+        else Left RequestedTooManyBytes
   reseed _ _ = Left NeedsInfiniteSeed
   newGenIO = getSystemGen
   reseedInfo _ = Never

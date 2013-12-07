@@ -36,20 +36,26 @@ module Crypto.Classes
         -- * Misc helper functions
         , encode
         , incIV
+        , zeroIV
+        , chunkFor, chunkFor'
         , module Crypto.Util
         ) where
 
 import Data.Serialize
+import qualified Data.Serialize.Get as SG
+import qualified Data.Serialize.Put as SP
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Internal as I
 import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.State (StateT(..), runStateT)
-import Data.Bits ((.|.), xor, shiftR)
+import Control.Monad (liftM)
+import Data.Bits ((.|.), xor, shiftR, clearBit)
 import Data.List (foldl', genericDrop)
 import Data.Word (Word8, Word16, Word64)
 import Data.Tagged
+import Data.Proxy
 import Crypto.Types
 import Crypto.Random
 import Crypto.Util
@@ -57,6 +63,7 @@ import System.IO.Unsafe (unsafePerformIO)
 import Foreign (Ptr)
 import Foreign.C (CChar(..), CInt(..))
 import System.Entropy
+import {-# SOURCE #-} Crypto.Modes
 
 -- |The Hash class is intended as the generic interface
 -- targeted by maintainers of Haskell digest implementations.
@@ -131,9 +138,9 @@ makeBlocks msg len = go (L.toChunks msg)
 
 -- |The BlockCipher class is intended as the generic interface
 -- targeted by maintainers of Haskell cipher implementations.
--- Using this generic interface higher level functions
--- such as 'cbc', and other functions from Data.Crypto.Modes, provide a useful API
--- for comsumers of cipher implementations.
+--
+-- Minimum complete definition: blockSize, encryptBlock, decryptBlock,
+-- buildKey, and keyLength.
 --
 -- Instances must handle unaligned data
 class ( Serialize k) => BlockCipher k where
@@ -156,12 +163,23 @@ class ( Serialize k) => BlockCipher k where
   -- | Cipherblock Chaining (decryption)
   unCbc         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   unCbc = modeUnCbc'
+
   -- | Counter (encryption)
   ctr           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   ctr = modeCtr' incIV
+
   -- | Counter (decryption)
   unCtr         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   unCtr = modeUnCtr' incIV
+
+  -- | Counter (encryption)
+  ctrLazy           :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+  ctrLazy = modeCtr incIV
+
+  -- | Counter (decryption)
+  unCtrLazy         :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+  unCtrLazy = modeUnCtr incIV
+
   -- | Ciphertext feedback (encryption)
   cfb           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   cfb = modeCfb'
@@ -171,9 +189,261 @@ class ( Serialize k) => BlockCipher k where
   -- | Output feedback (encryption)
   ofb           :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   ofb = modeOfb'
+
   -- | Output feedback (decryption)
   unOfb         :: k -> IV k -> B.ByteString -> (B.ByteString, IV k)
   unOfb = modeUnOfb'
+
+  -- |Cipher block chaining encryption for lazy bytestrings
+  cbcLazy       :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+  cbcLazy = modeCbc
+
+  -- |Cipher block chaining decryption for lazy bytestrings
+  unCbcLazy     :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+  unCbcLazy = modeUnCbc
+
+  -- |SIV (Synthetic IV) mode for lazy bytestrings. The third argument is
+  -- the optional list of bytestrings to be authenticated but not
+  -- encrypted As required by the specification this algorithm may
+  -- return nothing when certain constraints aren't met.
+  sivLazy :: k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
+  sivLazy = modeSiv
+
+  -- |SIV (Synthetic IV) for lazy bytestrings.  The third argument is the
+  -- optional list of bytestrings to be authenticated but not encrypted.
+  -- As required by the specification this algorithm may return nothing
+  -- when authentication fails.
+  unSivLazy :: k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
+  unSivLazy = modeUnSiv
+
+  -- |SIV (Synthetic IV) mode for strict bytestrings.  First argument is
+  -- the optional list of bytestrings to be authenticated but not
+  -- encrypted.  As required by the specification this algorithm may
+  -- return nothing when certain constraints aren't met.
+  siv :: k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
+  siv = modeSiv'
+
+  -- |SIV (Synthetic IV) for strict bytestrings First argument is the
+  -- optional list of bytestrings to be authenticated but not encrypted
+  -- As required by the specification this algorithm may return nothing
+  -- when authentication fails.
+  unSiv :: k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
+  unSiv = modeUnSiv'
+
+  -- |Cook book mode - not really a mode at all.  If you don't know what you're doing, don't use this mode^H^H^H^H library.
+  ecbLazy :: k -> L.ByteString -> L.ByteString
+  ecbLazy = modeEcb
+
+  -- |ECB decrypt, complementary to `ecb`.
+  unEcbLazy :: k -> L.ByteString -> L.ByteString
+  unEcbLazy = modeUnEcb
+
+  -- |Ciphertext feed-back encryption mode for lazy bytestrings (with s
+  -- == blockSize)
+  cfbLazy :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+  cfbLazy = modeCfb
+
+  -- |Ciphertext feed-back decryption mode for lazy bytestrings (with s
+  -- == blockSize)
+  unCfbLazy :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+  unCfbLazy = modeUnCfb
+
+  -- |Output feedback mode for lazy bytestrings
+  ofbLazy  :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+  ofbLazy = modeOfb
+
+  -- |Output feedback mode for lazy bytestrings
+  unOfbLazy :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+  unOfbLazy = modeUnOfb
+
+-- |Output feedback mode for lazy bytestrings
+modeOfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+modeOfb = modeUnOfb
+{-# INLINEABLE modeOfb #-}
+
+-- |Output feedback mode for lazy bytestrings
+modeUnOfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+modeUnOfb k (IV iv) msg =
+        let ivStr = drop 1 (iterate (encryptBlock k) iv)
+            ivLen = fromIntegral (B.length iv)
+            newIV = IV . B.concat . L.toChunks . L.take ivLen . L.drop (L.length msg) . L.fromChunks $ ivStr
+        in (zwp (L.fromChunks ivStr) msg, newIV)
+{-# INLINEABLE modeUnOfb #-}
+
+
+-- |Ciphertext feed-back encryption mode for lazy bytestrings (with s
+-- == blockSize)
+modeCfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+modeCfb k (IV v) msg =
+        let blks = chunkFor k msg
+            (cs,ivF) = go v blks
+        in (L.fromChunks cs, IV ivF)
+  where
+  go iv [] = ([],iv)
+  go iv (b:bs) =
+        let c = zwp' (encryptBlock k iv) b
+            (cs,ivFinal) = go c bs
+        in (c:cs, ivFinal)
+{-# INLINEABLE modeCfb #-}
+
+-- |Ciphertext feed-back decryption mode for lazy bytestrings (with s
+-- == blockSize)
+modeUnCfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+modeUnCfb k (IV v) msg = 
+        let blks = chunkFor k msg
+            (ps, ivF) = go v blks
+        in (L.fromChunks ps, IV ivF)
+  where
+  go iv [] = ([], iv)
+  go iv (b:bs) =
+        let p = zwp' (encryptBlock k iv) b
+            (ps, ivF) = go b bs
+        in (p:ps, ivF)
+{-# INLINEABLE modeUnCfb #-}
+
+-- |Obtain an `IV` using the provided CryptoRandomGenerator.
+getIV :: (BlockCipher k, CryptoRandomGen g) => g -> Either GenError (IV k, g)
+getIV g =
+        let bytes = ivBlockSizeBytes iv
+            gen = genBytes bytes g
+            fromRight (Right x) = x
+            iv  = IV (fst  . fromRight $ gen)
+        in case gen of
+                Left err -> Left err
+                Right (bs,g')
+                        | B.length bs == bytes  -> Right (iv, g')
+                        | otherwise             -> Left (GenErrorOther "Generator failed to provide requested number of bytes")
+{-# INLINEABLE getIV #-}
+
+-- | Obtain an 'IV' using the system entropy (see 'System.Crypto.Random')
+getIVIO :: (BlockCipher k) => IO (IV k)
+getIVIO = do
+        let p = Proxy
+            getTypedIV :: BlockCipher k => Proxy k -> IO (IV k)
+            getTypedIV pr = liftM IV (getEntropy (proxy blockSize pr `div` 8))
+        iv <- getTypedIV p
+        return (iv `asProxyTypeOf` ivProxy p)
+{-# INLINEABLE getIVIO #-}
+
+ivProxy :: Proxy k -> Proxy (IV k)
+ivProxy = const Proxy
+
+deIVProxy :: Proxy (IV k) -> Proxy k
+deIVProxy = const Proxy
+
+-- |Cook book mode - not really a mode at all.  If you don't know what you're doing, don't use this mode^H^H^H^H library.
+modeEcb :: BlockCipher k => k -> L.ByteString -> L.ByteString
+modeEcb k msg =
+        let chunks = chunkFor k msg
+        in L.fromChunks $ map (encryptBlock k) chunks
+{-# INLINEABLE modeEcb #-}
+
+-- |ECB decrypt, complementary to `ecb`.
+modeUnEcb :: BlockCipher k => k -> L.ByteString -> L.ByteString
+modeUnEcb k msg =
+        let chunks = chunkFor k msg
+        in L.fromChunks $ map (decryptBlock k) chunks
+{-# INLINEABLE modeUnEcb #-}
+
+-- |SIV (Synthetic IV) mode for lazy bytestrings. The third argument is
+-- the optional list of bytestrings to be authenticated but not
+-- encrypted As required by the specification this algorithm may
+-- return nothing when certain constraints aren't met.
+modeSiv :: BlockCipher k => k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
+modeSiv k1 k2 xs m
+    | length xs > bSizeb - 1 = Nothing
+    | otherwise = Just
+                . L.append iv
+                . fst
+                . ctrLazy k2 (IV . sivMask . B.concat . L.toChunks $ iv)
+                $ m
+  where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
+       bSizeb = fromIntegral $ blockSize `for` k1
+       iv = cMacStar k1 $ xs ++ [m]
+
+
+-- |SIV (Synthetic IV) for lazy bytestrings.  The third argument is the
+-- optional list of bytestrings to be authenticated but not encrypted.
+-- As required by the specification this algorithm may return nothing
+-- when authentication fails.
+modeUnSiv :: BlockCipher k => k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
+modeUnSiv k1 k2 xs c | length xs > bSizeb - 1 = Nothing
+                 | L.length c < fromIntegral bSize = Nothing
+                 | iv /= (cMacStar k1 $ xs ++ [dm]) = Nothing
+                 | otherwise = Just dm
+  where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
+       bSizeb = fromIntegral $ blockSize `for` k1
+       (iv,m) = L.splitAt (fromIntegral bSize) c
+       dm = fst $ modeUnCtr incIV k2 (IV $ sivMask $ B.concat $ L.toChunks iv) m
+
+-- |SIV (Synthetic IV) mode for strict bytestrings.  First argument is
+-- the optional list of bytestrings to be authenticated but not
+-- encrypted.  As required by the specification this algorithm may
+-- return nothing when certain constraints aren't met.
+modeSiv' :: BlockCipher k => k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
+modeSiv' k1 k2 xs m | length xs > bSizeb - 1 = Nothing
+                | otherwise = Just $ B.append iv $ fst $ Crypto.Classes.ctr k2 (IV $ sivMask iv) m
+  where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
+       bSizeb = fromIntegral $ blockSize `for` k1
+       iv = cMacStar' k1 $ xs ++ [m]
+
+-- |SIV (Synthetic IV) for strict bytestrings First argument is the
+-- optional list of bytestrings to be authenticated but not encrypted
+-- As required by the specification this algorithm may return nothing
+-- when authentication fails.
+modeUnSiv' :: BlockCipher k => k -> k -> [B.ByteString] -> B.ByteString -> Maybe B.ByteString
+modeUnSiv' k1 k2 xs c | length xs > bSizeb - 1 = Nothing
+                  | B.length c < bSize = Nothing
+                  | iv /= (cMacStar' k1 $ xs ++ [dm]) = Nothing
+                  | otherwise = Just dm
+  where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
+       bSizeb = fromIntegral $ blockSize `for` k1
+       (iv,m) = B.splitAt bSize c
+       dm = fst $ Crypto.Classes.unCtr k2 (IV $ sivMask iv) m
+
+
+modeCbc :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+modeCbc k (IV v) plaintext =
+        let blks = chunkFor k plaintext
+            (cts, iv) = go blks v
+        in (L.fromChunks cts, IV iv)
+  where
+  go [] iv = ([], iv)
+  go (b:bs) iv =
+        let c = encryptBlock k (zwp' iv b)
+            (cs, ivFinal) = go bs c
+        in (c:cs, ivFinal)
+{-# INLINEABLE modeCbc #-}
+
+modeUnCbc :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+modeUnCbc k (IV v) ciphertext =
+        let blks = chunkFor k ciphertext
+            (pts, iv) = go blks v
+        in (L.fromChunks pts, IV iv)
+  where
+  go [] iv = ([], iv)
+  go (c:cs) iv =
+        let p = zwp' (decryptBlock k c) iv
+            (ps, ivFinal) = go cs c
+        in (p:ps, ivFinal)
+{-# INLINEABLE modeUnCbc #-}
+
+-- |Counter mode for lazy bytestrings
+modeCtr :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+modeCtr = modeUnCtr
+
+-- |Counter  mode for lazy bytestrings
+modeUnCtr :: BlockCipher k => (IV k -> IV k) -> k -> IV k -> L.ByteString -> (L.ByteString, IV k)
+modeUnCtr f k (IV iv) msg =
+       let ivStr = iterate f $ IV iv
+           ivLen = fromIntegral $ B.length iv
+           newIV = head $ genericDrop ((ivLen - 1 + L.length msg) `div` ivLen) ivStr
+       in (zwp (L.fromChunks $ map (encryptBlock k) $ map initializationVector ivStr) msg, newIV)
+
 
 -- |The number of bytes in a block cipher block
 blockSizeBytes :: (BlockCipher k) => Tagged k ByteLength
@@ -207,7 +477,7 @@ buildKeyM getMore err = go (0::Int)
         Just k  -> return $ k `asTaggedTypeOf` bs
 
 -- |Asymetric ciphers (common ones being RSA or EC based)
-class (Serialize p, Serialize v) => AsymCipher p v | p -> v, v -> p where
+class AsymCipher p v | p -> v, v -> p where
   buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Either GenError ((p,v),g) -- ^ build a public/private key pair using the provided generator
   encryptAsym      :: (CryptoRandomGen g) => g -> p -> B.ByteString -> Either GenError (B.ByteString,g) -- ^ Asymetric encryption
   decryptAsym      :: v -> B.ByteString -> Maybe B.ByteString  -- ^ Asymetric decryption
@@ -379,14 +649,6 @@ modeUnCfb' k (IV v) msg =
         in (p:ps, ivF)
 {-# INLINEABLE modeUnCfb' #-}
 
-chunkFor' :: (BlockCipher k) => k -> B.ByteString -> [B.ByteString]
-chunkFor' k = go
-  where
-  blkSz = (blockSize `for` k) `div` 8
-  go bs | B.length bs < blkSz = []
-        | otherwise           = let (blk,rest) = B.splitAt blkSz bs in blk : go rest
-{-# INLINE chunkFor' #-}
-
 -- |Increase an `IV` by one.  This is way faster than decoding,
 -- increasing, encoding
 incIV :: BlockCipher k => IV k -> IV k
@@ -395,13 +657,55 @@ incIV (IV b) = IV $ snd $ B.mapAccumR (incw) 1 b
        incw :: Word16 -> Word8 -> (Word16, Word8)
        incw i w = let nw=i+(fromIntegral w) in (shiftR nw 8, fromIntegral nw)
 
--- gather a specified number of bytes from the list of bytestrings
-collect :: Int -> [B.ByteString] -> [B.ByteString]
-collect 0 _ = []
-collect _ [] = []
-collect i (b:bs)
-        | len < i  = b : collect (i - len) bs
-        | len >= i = [B.take i b]
+-- |Obtain an `IV` made only of zeroes
+zeroIV :: (BlockCipher k) => IV k
+zeroIV = iv
+  where bytes = ivBlockSizeBytes iv
+        iv  = IV $ B.replicate  bytes 0
+
+-- Break a bytestring into block size chunks.
+chunkFor :: (BlockCipher k) => k -> L.ByteString -> [B.ByteString]
+chunkFor k = go
   where
-  len = B.length b
-{-# INLINE collect #-}
+  blkSz = (blockSize `for` k) `div` 8
+  blkSzI = fromIntegral blkSz
+  go bs | L.length bs < blkSzI = []
+        | otherwise            = let (blk,rest) = L.splitAt blkSzI bs in B.concat (L.toChunks blk) : go rest
+{-# INLINE chunkFor #-}
+
+-- Break a bytestring into block size chunks.
+chunkFor' :: (BlockCipher k) => k -> B.ByteString -> [B.ByteString]
+chunkFor' k = go
+  where
+  blkSz = (blockSize `for` k) `div` 8
+  go bs | B.length bs < blkSz = []
+        | otherwise           = let (blk,rest) = B.splitAt blkSz bs in blk : go rest
+{-# INLINE chunkFor' #-}
+
+-- |Create the mask for SIV based ciphers
+sivMask :: B.ByteString -> B.ByteString
+sivMask b = snd $ B.mapAccumR (go) 0 b
+  where
+       go :: Int -> Word8 -> (Int,Word8)
+       go 24 w = (32,clearBit w 7)
+       go 56 w = (64,clearBit w 7)
+       go n w = (n+8,w)
+
+ivBlockSizeBytes :: BlockCipher k => IV k -> Int
+ivBlockSizeBytes iv =
+        let p = deIVProxy (proxyOf iv)
+        in proxy blockSize p `div` 8
+ where
+  proxyOf :: a -> Proxy a
+  proxyOf = const Proxy
+{-# INLINEABLE ivBlockSizeBytes #-}
+
+instance (BlockCipher k) => Serialize (IV k) where
+        get = do
+                let p = Proxy
+                    doGet :: BlockCipher k => Proxy k -> Get (IV k)
+                    doGet pr = liftM IV (SG.getByteString (proxy blockSizeBytes pr))
+                iv <- doGet p
+                return (iv `asProxyTypeOf` ivProxy p)
+        put (IV iv) = SP.putByteString iv
+

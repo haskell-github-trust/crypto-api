@@ -16,7 +16,6 @@ data IV k = IV { initializationVector :: {-# UNPACK #-} !B.ByteString
                } deriving (Eq, Ord, Show)
 
 
-
 -- |The length of a field (usually a ByteString) in bits
 type BitLength = Int
 

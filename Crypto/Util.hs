@@ -2,6 +2,7 @@
 module Crypto.Util where
 
 import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as L
 import Data.ByteString.Unsafe (unsafeIndex, unsafeUseAsCStringLen)
 import Data.Bits (shiftL, shiftR)
 import Data.Bits (xor, setBit, shiftR, shiftL)
@@ -85,4 +86,38 @@ bs2i bs = B.foldl' (\i b -> (i `shiftL` 8) + fromIntegral b) 0 bs
 zwp' :: B.ByteString -> B.ByteString -> B.ByteString
 zwp' a = B.pack . B.zipWith xor a
 {-# INLINE zwp' #-}
+
+-- |zipWith xor + Pack
+--
+-- This is written intentionally to take advantage
+-- of the bytestring libraries 'zipWith'' rewrite rule but at the
+-- extra cost of the resulting lazy bytestring being more fragmented
+-- than either of the two inputs.
+zwp :: L.ByteString -> L.ByteString -> L.ByteString
+zwp  a b = 
+        let as = L.toChunks a
+            bs = L.toChunks b
+        in L.fromChunks (go as bs)
+  where
+  go [] _ = []
+  go _ [] = []
+  go (a:as) (b:bs) =
+        let l = min (B.length a) (B.length b)
+            (a',ar) = B.splitAt l a
+            (b',br) = B.splitAt l b
+            as' = if B.length ar == 0 then as else ar : as
+            bs' = if B.length br == 0 then bs else br : bs
+        in (zwp' a' b') : go as' bs'
+{-# INLINEABLE zwp #-}
+
+-- gather a specified number of bytes from the list of bytestrings
+collect :: Int -> [B.ByteString] -> [B.ByteString]
+collect 0 _ = []
+collect _ [] = []
+collect i (b:bs)
+        | len < i  = b : collect (i - len) bs
+        | len >= i = [B.take i b]
+  where
+  len = B.length b
+{-# INLINE collect #-}
 
