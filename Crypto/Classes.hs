@@ -1,4 +1,5 @@
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
+{-# LANGUAGE ParallelListComp #-}
 {-|
  Maintainer: Thomas.DuBuisson@gmail.com
  Stability: beta
@@ -39,8 +40,11 @@ module Crypto.Classes
         , zeroIV
         , chunkFor, chunkFor'
         , module Crypto.Util
+        , module Crypto.Types
         ) where
 
+import Data.Data
+import Data.Typeable
 import Data.Serialize
 import qualified Data.Serialize.Get as SG
 import qualified Data.Serialize.Put as SP
@@ -51,7 +55,7 @@ import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.State (StateT(..), runStateT)
 import Control.Monad (liftM)
-import Data.Bits ((.|.), xor, shiftR, clearBit)
+import Data.Bits
 import Data.List (foldl', genericDrop)
 import Data.Word (Word8, Word16, Word64)
 import Data.Tagged
@@ -255,6 +259,18 @@ class ( Serialize k) => BlockCipher k where
   -- |Output feedback mode for lazy bytestrings
   unOfbLazy :: k -> IV k -> L.ByteString -> (L.ByteString, IV k)
   unOfbLazy = modeUnOfb
+
+  -- |CWC mode, returning.  @cwc k iv aad pt == (ct,tag)@.  That is cwc
+  -- is an authenticating encryption mode that takes the key, initilization
+  -- vector, additional authenticated data, and plaintext as input.  The
+  -- result is ciphertext and a authentication tag.
+  cwc :: k -> IV k -> B.ByteString -> B.ByteString -> Either BlockCipherError (B.ByteString,B.ByteString)
+  cwc = modeCwc'
+
+  -- |@unCwc k iv aad ct tag@ authenticates and decrypts data encrypted
+  -- using CWC mode.  Authentication failure result in @Nothing@.
+  unCwc :: k -> IV k -> B.ByteString -> B.ByteString -> B.ByteString -> Either BlockCipherError B.ByteString
+  unCwc = modeUnCwc'
 
 -- |Output feedback mode for lazy bytestrings
 modeOfb :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
@@ -649,6 +665,72 @@ modeUnCfb' k (IV v) msg =
         in (p:ps, ivF)
 {-# INLINEABLE modeUnCfb' #-}
 
+-- | CWC mode
+modeCwc' :: BlockCipher k => k -> IV k -> B.ByteString -> B.ByteString -> Either BlockCipherError (B.ByteString, B.ByteString)
+modeCwc' k iv aad pt
+   | genericLen aad > ccwAADSpace k = Left (InputTooLong "AAD too long to be authenticated CWC and given cipher")
+   | genericLen pt  > ccwMsgSpace k = Left (InputTooLong "PT too long to be protected with CWC and given cipher")
+   | otherwise                      = Right (ct,tag)
+  where
+    genericLen = fromIntegral . B.length
+    ct  = cwc_ctr' k iv pt
+    tag = cwc_mac' k iv aad ct
+
+ccwAADSpace, ccwMsgSpace :: BlockCipher k => k -> Integer
+ccwAADSpace k = fromIntegral (blockSizeBytes .::. k) * (2^32 - 1)
+ccwMsgSpace k = fromIntegral (blockSizeBytes .::. k) * (2^32 - 1)
+
+modeUnCwc' :: BlockCipher k => k -> IV k -> B.ByteString -> B.ByteString -> B.ByteString -> Either BlockCipherError B.ByteString
+modeUnCwc' k iv aad ct tag 
+  | invalidInput = Left $ InputTooLong "AAD or CT input was too long"
+  | invalidTag   = Left $ AuthenticationFailed ""
+  | otherwise    = Right pt
+  where
+    pt       = cwc_ctr' k iv ct
+
+    invalidInput  = genericLen aad > ccwAADSpace k ||
+                    genericLen ct  > ccwMsgSpace k
+    invalidTag    =  not (constTimeEq computedTag tag)
+    -- Notice the default implementation is to assume full tag sizes
+    computedTag = B.take (B.length tag) $ cwc_mac' k iv aad ct
+    genericLen  = fromIntegral . B.length
+
+-- The IV should be of length blockSizeBytes - 5
+cwc_ctr' :: BlockCipher k => k -> IV k -> B.ByteString -> B.ByteString
+cwc_ctr' k (IV iv) input =
+        let fullIV = B.concat [B.pack [0x80], iv, B.pack [0, 0, 0, 1]]
+        in fst $ modeCtr' incIV k (IV fullIV) input
+
+-- The IV should be of length blockSizeBytes - 5
+cwc_mac' :: BlockCipher k => k -> IV k -> B.ByteString -> B.ByteString -> B.ByteString
+cwc_mac' k (IV iv) aad ct =
+    let fullIV = B.concat [B.pack [0x80], iv, B.replicate 4 0]
+        r = modeEcb' k $ cwc_hash' k aad ct
+    in zwp' r $ modeEcb' k fullIV
+
+cwc_hash' :: BlockCipher k => k -> B.ByteString -> B.ByteString -> B.ByteString
+cwc_hash' k aad ct =
+    let z  = B.concat [ B.pack [0XC0], B.replicate ((blockSizeBytes .::. k) - 1) 0]
+        kh = cwcMask . bs2i . modeEcb' k $ z                             :: Integer
+        l  = cwcBlkSz - (B.length aad `rem` cwcBlkSz)
+        l' = cwcBlkSz - (B.length ct  `rem` cwcBlkSz)
+        x  = B.concat [ aad, B.replicate l 0, ct, B.replicate l' 0]
+        b  = B.length x `div` 12
+        ys = map bs2i $ toChunks 12 x                                   :: [Integer]
+        yb1 = 2^64 * fromIntegral (B.length aad)                        :: Integer
+    in i2bs 128 $ (yb1 + sum [ y * kh^i | y <- ys | i <- [b,b-1..1] ]) `rem` (2^127 - 1)
+  where
+      cwcMask = (.&.) (2^128 - 1)
+      cwcBlkSz = 16
+
+toChunks :: Int -> B.ByteString -> [B.ByteString]
+toChunks n val = go val
+  where
+  go b
+    | B.length b == 0 = []
+    | otherwise       = let (h,t) = B.splitAt n b
+                        in h : go t
+
 -- |Increase an `IV` by one.  This is way faster than decoding,
 -- increasing, encoding
 incIV :: BlockCipher k => IV k -> IV k
@@ -662,6 +744,11 @@ zeroIV :: (BlockCipher k) => IV k
 zeroIV = iv
   where bytes = ivBlockSizeBytes iv
         iv  = IV $ B.replicate  bytes 0
+
+zeroIVcwc :: BlockCipher k => IV k
+zeroIVcwc = iv
+  where bytes = ivBlockSizeBytes iv - 5  -- a constant of cwc (4 bytes for ctr mode, 1 for a sort of header on the iv)
+        iv    = IV $ B.replicate bytes 0
 
 -- Break a bytestring into block size chunks.
 chunkFor :: (BlockCipher k) => k -> L.ByteString -> [B.ByteString]
