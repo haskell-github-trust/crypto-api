@@ -479,8 +479,8 @@ buildKeyM getMore err = go (0::Int)
 -- |Asymetric ciphers (common ones being RSA or EC based)
 class AsymCipher p v | p -> v, v -> p where
   buildKeyPair :: CryptoRandomGen g => g -> BitLength -> Either GenError ((p,v),g) -- ^ build a public/private key pair using the provided generator
-  encryptAsym      :: (CryptoRandomGen g) => g -> p -> B.ByteString -> Either GenError (B.ByteString,g) -- ^ Asymetric encryption
-  decryptAsym      :: v -> B.ByteString -> Maybe B.ByteString  -- ^ Asymetric decryption
+  encryptAsym      :: (CryptoRandomGen g) => g -> p -> B.ByteString -> Either GenError (B.ByteString, g) -- ^ Asymetric encryption
+  decryptAsym      :: (CryptoRandomGen g) => g -> v -> B.ByteString -> Either GenError (B.ByteString, g) -- ^ Asymetric decryption
   publicKeyLength  :: p -> BitLength
   privateKeyLength :: v -> BitLength
 
