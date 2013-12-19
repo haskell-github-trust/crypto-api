@@ -36,8 +36,9 @@ module Crypto.Classes
         , buildSigningKeyPairGen
         -- * Misc helper functions
         , encode
-        , incIV
         , zeroIV
+        , incIV
+        , getIV, getIVIO
         , chunkFor, chunkFor'
         , module Crypto.Util
         , module Crypto.Types
