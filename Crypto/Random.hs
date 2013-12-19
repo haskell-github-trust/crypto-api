@@ -153,7 +153,7 @@ class CryptoRandomGen g where
                                 in Right (zwp' entropy' bs, g')
 
         -- |If the generator has produced too many random bytes on its
-        -- existing seed it will throw `NeedReseed`.  In that case,
+        -- existing seed it will return `NeedReseed`.  In that case,
         -- reseed the generator using this function and a new
         -- high-entropy seed of length >= `genSeedLength`.  Using
         -- bytestrings that are too short can result in an error
@@ -178,7 +178,7 @@ class CryptoRandomGen g where
                         Left _ -> go (i+1)
                         Right g -> return (g `asProxyTypeOf` p)
 
--- |get a random number generator based on the standard system entropy source
+-- |Get a random number generator based on the standard system entropy source
 getSystemGen :: IO SystemRandom
 getSystemGen = do
         ch <- openHandle
