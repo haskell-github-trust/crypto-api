@@ -39,6 +39,7 @@ import Control.Exception
 import Crypto.Types
 import Crypto.Util
 import Data.Bits (xor, setBit, shiftR, shiftL, (.&.))
+import Data.Data
 import Data.List (foldl')
 import Data.Tagged
 import Data.Typeable
@@ -75,7 +76,7 @@ data GenError =
         | NeedsInfiniteSeed     -- ^ This generator can not be
                                 -- instantiated or reseeded with a
                                 -- finite seed (ex: 'SystemRandom')
-  deriving (Eq, Ord, Show, Read, Typeable)
+  deriving (Eq, Ord, Show, Read, Data, Typeable)
 
 data ReseedInfo
     = InXBytes {-# UNPACK #-} !Word64   -- ^ Generator needs reseeded in X bytes
