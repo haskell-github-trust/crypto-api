@@ -1,5 +1,8 @@
--- |The module mirrors 'Crypto.Classes' except that it throws all errors as
--- exceptions instead of returning types of @Either error result@.
+-- |The module mirrors 'Crypto.Classes' except that errors are thrown as
+-- exceptions instead of having returning types of @Either error result@
+-- or @Maybe result@.
+--
+-- NB This module is experimental and might go away or be re-arranged.
 {-# LANGUAGE DeriveDataTypeable #-}
 module Crypto.Classes.Exceptions 
     ( C.Hash(..)
