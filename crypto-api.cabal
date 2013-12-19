@@ -43,7 +43,7 @@ Library
   hs-source-dirs:
   exposed-modules: Crypto.Classes, Crypto.Types, Crypto.HMAC,
                    Crypto.Random, Crypto.Padding, Crypto.Modes,
-                   Crypto.Util
+                   Crypto.Util, Crypto.Classes.Exceptions
   other-modules: Crypto.CPoly
   extensions: ForeignFunctionInterface, MultiParamTypeClasses,
               BangPatterns, FunctionalDependencies, FlexibleInstances,
