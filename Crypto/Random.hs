@@ -81,9 +81,9 @@ data GenError =
 data ReseedInfo
     = InXBytes {-# UNPACK #-} !Word64   -- ^ Generator needs reseeded in X bytes
     | InXCalls {-# UNPACK #-} !Word64   -- ^ Generator needs reseeded in X calls
-    | NotSoon           -- ^ The bound is over 2^64 bytes or calls
-    | Never             -- ^ This generator never reseeds (ex: 'SystemRandom')
-  deriving (Eq, Ord, Show, Read, Typeable)
+    | NotSoon                           -- ^ The bound is over 2^64 bytes or calls
+    | Never                             -- ^ This generator never reseeds (ex: 'SystemRandom')
+  deriving (Eq, Ord, Show, Read, Data, Typeable)
 
 instance Exception GenError
 
@@ -222,7 +222,8 @@ instance CryptoRandomGen SystemRandom where
 -- properties of the generator being split, several arguments from
 -- informed people indicate such a function is safe for NIST SP 800-90
 -- generators.  (see libraries\@haskell.org discussion around Sept, Oct
--- 2010)
+-- 2010).  You can find implementations of such generators in the 'DRBG'
+-- package.
 splitGen :: CryptoRandomGen g => g -> Either GenError (g,g)
 splitGen g =
   let e = genBytes (genSeedLength `for` g) g
