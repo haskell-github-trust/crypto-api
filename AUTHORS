@@ -1,13 +1,2 @@
 Thomas M. DuBuisson (TomMD)
 Francisco Blas Izquierdo Riera (klondike)
-
-
-
-Additional Authorship:
-
-Francisco Blas Izquierdo Riera (klondike) had contributed siv and cmac
-modes of operation which have since been removed due to a lack of users and
-constant complaints of compile time (due to the CPoly module).  I regard the
-compile time issue as a bug in GHC but the only realistic action I can take is
-to avoid the bug. Prospective users can find this code in the repo and are
-encouraged to fork it / upload to hackage as a stand-alone package.
