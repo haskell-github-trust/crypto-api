@@ -6,7 +6,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 module Crypto.Classes.Exceptions 
     ( C.Hash(..)
-    , C.hashFunc, C.hashFunc'
+    , C.hashFunc', C.hashFunc
     , C.BlockCipher, C.blockSize, C.encryptBlock, C.decryptBlock
     , C.keyLength
     , C.getIVIO, C.blockSizeBytes, C.keyLengthBytes, C.buildKeyIO
@@ -53,31 +53,31 @@ eExcept = either X.throw id
 buildKey :: C.BlockCipher k => B.ByteString -> k
 buildKey = mExcept KeyGenFailure . C.buildKey
 
--- |Random IV generation
+-- |Random 'IV' generation
 --
--- This is a wrapper that can throw a GenError on exception.
+-- This is a wrapper that can throw a 'GenError' on exception.
 getIV :: (C.BlockCipher k, CryptoRandomGen g) => g -> (IV k, g)
 getIV = eExcept . C.getIV
 
 -- |Symmetric key generation
 --
--- This is a wrapper that can throw a GenError on exception.
+-- This is a wrapper that can throw a 'GenError' on exception.
 buildKeyGen :: (CryptoRandomGen g, C.BlockCipher k) => g -> (k, g)
 buildKeyGen = eExcept . C.buildKeyGen
 
 -- |Asymetric key generation
 --
--- This is a wrapper that can throw a GenError on exception.
+-- This is a wrapper that can throw a 'GenError' on exception.
 buildKeyPair :: (CryptoRandomGen g, C.AsymCipher p v) => g -> BitLength -> ((p,v), g)
 buildKeyPair g = eExcept . C.buildKeyPair g
 
--- |Asymetric encryption
+-- |Asymmetric encryption
 --
--- This is a wrapper that can throw a GenError on exception.
+-- This is a wrapper that can throw a 'GenError' on exception.
 encryptAsym :: (CryptoRandomGen g, C.AsymCipher p v) => g -> p -> B.ByteString -> (B.ByteString, g)
 encryptAsym g p = eExcept . C.encryptAsym g p
 
--- |Asymetric decryption
+-- |Asymmetric decryption
 --
 -- This is a wrapper that can throw a GenError on exception.
 decryptAsym :: (CryptoRandomGen g, C.AsymCipher p v) => g -> v -> B.ByteString -> (B.ByteString, g)

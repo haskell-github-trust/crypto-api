@@ -17,8 +17,8 @@ module Crypto.Classes
         (
         -- * Hash class and helper functions
           Hash(..)
-        , hashFunc
         , hashFunc'
+        , hashFunc
         -- * Cipher classes and helper functions
         , BlockCipher(..)
         , blockSizeBytes
