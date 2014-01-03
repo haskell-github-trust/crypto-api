@@ -1,4 +1,4 @@
--- |The module mirrors 'Crypto.Classes' except that errors are thrown as
+-- |The module mirrors "Crypto.Classes" except that errors are thrown as
 -- exceptions instead of having returning types of @Either error result@
 -- or @Maybe result@.
 --
