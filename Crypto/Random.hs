@@ -9,7 +9,7 @@
  This module is for instantiating cryptographicly strong
 determinitic random bit generators (DRBGs, aka PRNGs) For the simple
 use case of using the system random number generator
-('System.Crypto.Random') to seed the DRBG:
+('System.Entropy') to seed the DRBG:
 
 @   g <- newGenIO
 @
@@ -160,7 +160,7 @@ class CryptoRandomGen g where
         -- (`NotEnoughEntropy`).
         reseed          :: B.ByteString -> g -> Either GenError g
 
-        -- |By default this uses "System.Crypto.Random" to obtain
+        -- |By default this uses "System.Entropy" to obtain
         -- entropy for `newGen`.
         newGenIO :: IO g
         newGenIO = go 0
