@@ -363,6 +363,7 @@ modeSiv k1 k2 xs m
                 . ctrLazy k2 (IV . sivMask . B.concat . L.toChunks $ iv)
                 $ m
   where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
        iv = cMacStar k1 $ xs ++ [m]
 
@@ -373,13 +374,13 @@ modeSiv k1 k2 xs m
 -- when authentication fails.
 modeUnSiv :: BlockCipher k => k -> k -> [L.ByteString] -> L.ByteString -> Maybe L.ByteString
 modeUnSiv k1 k2 xs c | length xs > bSizeb - 1 = Nothing
-                 | L.length c < bSize = Nothing
+                 | L.length c < fromIntegral bSize = Nothing
                  | iv /= (cMacStar k1 $ xs ++ [dm]) = Nothing
                  | otherwise = Just dm
   where
        bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
-       (iv,m) = L.splitAt bSize c
+       (iv,m) = L.splitAt (fromIntegral bSize) c
        dm = fst $ modeUnCtr incIV k2 (IV $ sivMask $ B.concat $ L.toChunks iv) m
 
 -- |SIV (Synthetic IV) mode for strict bytestrings.  First argument is
@@ -390,6 +391,7 @@ modeSiv' :: BlockCipher k => k -> k -> [B.ByteString] -> B.ByteString -> Maybe B
 modeSiv' k1 k2 xs m | length xs > bSizeb - 1 = Nothing
                 | otherwise = Just $ B.append iv $ fst $ Crypto.Classes.ctr k2 (IV $ sivMask iv) m
   where
+       bSize = fromIntegral $ blockSizeBytes `for` k1
        bSizeb = fromIntegral $ blockSize `for` k1
        iv = cMacStar' k1 $ xs ++ [m]
 
@@ -411,7 +413,7 @@ modeUnSiv' k1 k2 xs c | length xs > bSizeb - 1 = Nothing
 
 modeCbc :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 modeCbc k (IV v) plaintext =
-        let blks = nontruncatedChunkFor k plaintext
+        let blks = chunkFor k plaintext
             (cts, iv) = go blks v
         in (L.fromChunks cts, IV iv)
   where
@@ -424,7 +426,7 @@ modeCbc k (IV v) plaintext =
 
 modeUnCbc :: BlockCipher k => k -> IV k -> L.ByteString -> (L.ByteString, IV k)
 modeUnCbc k (IV v) ciphertext =
-        let blks = nontruncatedChunkFor k ciphertext
+        let blks = chunkFor k ciphertext
             (pts, iv) = go blks v
         in (L.fromChunks pts, IV iv)
   where
@@ -568,7 +570,7 @@ modeUnEcb' k ct =
 -- |Cipher block chaining encryption mode on strict bytestrings
 modeCbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 modeCbc' k (IV v) plaintext =
-        let blks = nontruncatedChunkFor' k plaintext
+        let blks = chunkFor' k plaintext
             (cts, iv) = go blks v
         in (B.concat cts, IV iv)
   where
@@ -582,7 +584,7 @@ modeCbc' k (IV v) plaintext =
 -- |Cipher block chaining decryption for strict bytestrings
 modeUnCbc' :: BlockCipher k => k -> IV k -> B.ByteString -> (B.ByteString, IV k)
 modeUnCbc' k (IV v) ciphertext =
-        let blks = nontruncatedChunkFor' k ciphertext
+        let blks = chunkFor' k ciphertext
             (pts, iv) = go blks v
         in (B.concat pts, IV iv)
   where
@@ -686,18 +688,8 @@ chunkFor k = go
   blkSz = (blockSize `for` k) `div` 8
   blkSzI = fromIntegral blkSz
   go bs | L.length bs < blkSzI = []
-        | otherwise            = let (blk,rest) = L.splitAt blkSzI bs in L.toStrict blk : go rest
+        | otherwise            = let (blk,rest) = L.splitAt blkSzI bs in B.concat (L.toChunks blk) : go rest
 {-# INLINE chunkFor #-}
-
--- Break a bytestring into block size chunks.
-nontruncatedChunkFor :: (BlockCipher k) => k -> L.ByteString -> [B.ByteString]
-nontruncatedChunkFor k = go
-  where
-  blkSz = (blockSize `for` k) `div` 8
-  blkSzI = fromIntegral blkSz
-  go bs | L.length bs < blkSzI = [L.toStrict bs]
-        | otherwise            = let (blk,rest) = L.splitAt blkSzI bs in L.toStrict blk : go rest
-{-# INLINE nontruncatedChunkFor #-}
 
 -- Break a bytestring into block size chunks.
 chunkFor' :: (BlockCipher k) => k -> B.ByteString -> [B.ByteString]
@@ -707,16 +699,6 @@ chunkFor' k = go
   go bs | B.length bs < blkSz = []
         | otherwise           = let (blk,rest) = B.splitAt blkSz bs in blk : go rest
 {-# INLINE chunkFor' #-}
-
--- Break a bytestring into block size chunks plus a final element of
--- possibly less length.  Inefficient!
-nontruncatedChunkFor' :: (BlockCipher k) => k -> B.ByteString -> [B.ByteString]
-nontruncatedChunkFor' k = go
-  where
-  blkSz = (blockSize `for` k) `div` 8
-  go bs | B.length bs < blkSz = [bs]
-        | otherwise           = let (blk,rest) = B.splitAt blkSz bs in blk : go rest
-{-# INLINE nontruncatedChunkFor' #-}
 
 -- |Create the mask for SIV based ciphers
 sivMask :: B.ByteString -> B.ByteString
