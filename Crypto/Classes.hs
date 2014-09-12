@@ -320,7 +320,7 @@ getIV g =
                         | otherwise             -> Left (GenErrorOther "Generator failed to provide requested number of bytes")
 {-# INLINEABLE getIV #-}
 
--- | Obtain an 'IV' using the system entropy (see 'System.Crypto.Random')
+-- | Obtain an 'IV' using the system entropy (see 'System.Entropy')
 getIVIO :: (BlockCipher k) => IO (IV k)
 getIVIO = do
         let p = Proxy
@@ -457,7 +457,7 @@ blockSizeBytes = fmap (`div` 8) blockSize
 keyLengthBytes :: (BlockCipher k) => Tagged k ByteLength
 keyLengthBytes = fmap (`div` 8) keyLength
 
--- |Build a symmetric key using the system entropy (see 'System.Crypto.Random')
+-- |Build a symmetric key using the system entropy (see 'System.Entropy')
 buildKeyIO :: (BlockCipher k) => IO k
 buildKeyIO = buildKeyM getEntropy fail
 
