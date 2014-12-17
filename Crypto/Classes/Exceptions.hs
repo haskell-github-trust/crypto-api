@@ -5,25 +5,34 @@
 -- NB This module is experimental and might go away or be re-arranged.
 {-# LANGUAGE DeriveDataTypeable #-}
 module Crypto.Classes.Exceptions 
-    ( C.Hash(..)
+    ( -- * Classes
+      C.Hash(..), C.AsymCipher, R.CryptoRandomGen, C.BlockCipher
+      -- * Hashing Operations
     , C.hashFunc', C.hashFunc
-    , C.BlockCipher, C.blockSize, C.encryptBlock, C.decryptBlock
-    , C.keyLength
-    , C.getIVIO, C.blockSizeBytes, C.keyLengthBytes, C.buildKeyIO
-    , C.AsymCipher, C.publicKeyLength, C.privateKeyLength, C.buildKeyPairIO
-    , C.Signing, C.signingKeyLength, C.verifyingKeyLength, C.verify
-    , C.incIV, C.zeroIV, R.CryptoRandomGen, R.genSeedLength, R.reseedInfo, R.reseedPeriod, R.newGenIO
-    --  Types
-    , R.GenError(..), R.ReseedInfo(..), CipherError(..)
-    -- Modes
+      -- * Symmetric Cryptographic Operations
+      -- ** Helpers
+    , C.blockSize, C.blockSizeBytes
+    , C.keyLength, C.keyLengthBytes
+    , C.incIV
+      -- ** Primitives
+    , C.encryptBlock, C.decryptBlock
+    -- * Key and IV construction
+    , buildKey, C.buildKeyIO, buildKeyGen
+    , getIV ,C.getIVIO, C.zeroIV
+    -- ** Block Cipher Modes of Operation
     , C.ecb, C.unEcb, C.cbc, C.unCbc, C.ctr, C.unCtr, C.ctrLazy, C.unCtrLazy
     , C.cfb, C.unCfb, C.ofb, C.unOfb, C.cbcLazy, C.unCbcLazy, C.sivLazy, C.unSivLazy
     , C.siv, C.unSiv, C.ecbLazy, C.unEcbLazy, C.cfbLazy, C.unCfbLazy, C.ofbLazy
     , C.unOfbLazy
-    -- Wrapped functions
-    , buildKey, getIV, buildKeyGen
-    , buildKeyPair, encryptAsym, decryptAsym
+    -- * RNG Operations
     , newGen, genBytes, genBytesWithEntropy, reseed, splitGen
+    , R.genSeedLength, R.reseedInfo, R.reseedPeriod, R.newGenIO
+    --  * Info Types
+    , R.GenError(..), R.ReseedInfo(..), CipherError(..)
+    -- * Asymmetric cryptographic operations
+    , buildKeyPair, encryptAsym, decryptAsym
+    , C.Signing, C.signingKeyLength, C.verifyingKeyLength, C.verify
+    , C.publicKeyLength, C.privateKeyLength, C.buildKeyPairIO
     ) where
 
 import qualified Crypto.Random     as R
