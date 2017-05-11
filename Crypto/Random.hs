@@ -162,6 +162,7 @@ class CryptoRandomGen g where
 
         -- |By default this uses "System.Entropy" to obtain
         -- entropy for `newGen`.
+        -- WARNING: The default implementation opens a file handle which will never be closed!
         newGenIO :: IO g
         newGenIO = go 0
           where
@@ -178,7 +179,8 @@ class CryptoRandomGen g where
                         Left _ -> go (i+1)
                         Right g -> return (g `asProxyTypeOf` p)
 
--- |Get a random number generator based on the standard system entropy source
+-- | Get a random number generator based on the standard system entropy source
+--   WARNING: This function opens a file handle which will never be closed!
 getSystemGen :: IO SystemRandom
 getSystemGen = do
         ch <- openHandle

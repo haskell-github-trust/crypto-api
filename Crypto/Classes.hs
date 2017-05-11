@@ -490,6 +490,7 @@ class AsymCipher p v | p -> v, v -> p where
   privateKeyLength :: v -> BitLength
 
 -- |Build a pair of asymmetric keys using the system random generator.
+--   WARNING: This function opens a file handle which will never be closed!
 buildKeyPairIO :: AsymCipher p v => BitLength -> IO (Either GenError (p,v))
 buildKeyPairIO bl = do
         g <- newGenIO :: IO SystemRandom
@@ -542,6 +543,7 @@ class (Serialize p, Serialize v) => Signing p v | p -> v, v -> p  where
   verifyingKeyLength :: p -> BitLength
 
 -- |Build a signing key using the system random generator
+--   WARNING: This function opens a file handle which will never be closed!
 buildSigningKeyPairIO :: (Signing p v) => BitLength -> IO (Either GenError (p,v))
 buildSigningKeyPairIO bl = do
         g <- newGenIO :: IO SystemRandom
