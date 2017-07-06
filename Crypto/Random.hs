@@ -228,10 +228,15 @@ instance CryptoRandomGen SystemRandom where
 -- package.
 splitGen :: CryptoRandomGen g => g -> Either GenError (g,g)
 splitGen g =
-  let e = genBytes (genSeedLength `for` g) g
+  let e = genBytes' (genSeedLength `for` g) g
   in case e of
     Left e -> Left e
     Right (ent,g') -> 
        case newGen ent of
                 Right new -> Right (g',new)
                 Left e -> Left e
+  where
+  genBytes' seedLength g
+    | seedLength < 0      = Left NeedsInfiniteSeed
+    | seedLength > (2^30) = Left NeedsInfiniteSeed
+    | otherwise           = genBytes seedLength g
